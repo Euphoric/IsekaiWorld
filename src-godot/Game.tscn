@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://HexagonalMap.cs" type="Script" id=1]
+[ext_resource path="res://MapCamera.cs" type="Script" id=2]
+[ext_resource path="res://FPSLabel.cs" type="Script" id=3]
+
+[sub_resource type="OpenSimplexNoise" id=2]
+
+[sub_resource type="NoiseTexture" id=1]
+noise = SubResource( 2 )
+
+[node name="Game" type="Node"]
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = SubResource( 1 )
+
+[node name="MapCamera" type="Camera2D" parent="."]
+current = true
+script = ExtResource( 2 )
+
+[node name="Map" type="Node2D" parent="."]
+
+[node name="HexagonalMap" type="Node2D" parent="Map"]
+script = ExtResource( 1 )
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Container" type="HBoxContainer" parent="UI"]
+margin_right = 123.0
+margin_bottom = 40.0
+
+[node name="DebugLabel" type="Label" parent="UI/Container"]
+margin_top = 13.0
+margin_right = 119.0
+margin_bottom = 27.0
+text = "This is debug label"
+
+[node name="FPSLabel" type="Label" parent="UI/Container"]
+margin_left = 123.0
+margin_top = 13.0
+margin_right = 153.0
+margin_bottom = 27.0
+text = "abcd"
+script = ExtResource( 3 )
