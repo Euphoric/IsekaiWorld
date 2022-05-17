@@ -8,7 +8,9 @@ public class HexagonalMap : Node2D
     private ArrayMesh _hexesMesh;
     
     private readonly float _hexSize = 16;
-    private CharacterNode _characterNode;
+    private HexagonNode _mouseoverHexagon;
+    private HexagonNode _characterHexagon;
+    private HexagonNode _targetHexagon;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -54,18 +56,46 @@ public class HexagonalMap : Node2D
             _hexesMesh.AddSurfaceFromArrays(Mesh.PrimitiveType.TriangleFan, arrays);
         }
 
-        _characterNode = new CharacterNode
+        _targetHexagon = new HexagonNode
         {
-            HexPosition = new HexCubeCoord(-3, 3, 0),
-            Scale = new Vector2(_hexSize, _hexSize)
+            HexPosition = HexCubeCoord.Zero,
+            Scale = new Vector2(_hexSize, _hexSize),
+            Color = Colors.White
         };
+        AddChild(_targetHexagon);
         
-        AddChild(_characterNode);
+        _characterHexagon = new HexagonNode
+        {
+            HexPosition = HexCubeCoord.Zero,
+            Scale = new Vector2(_hexSize, _hexSize),
+            Color = Colors.Blue
+        };
+        AddChild(_characterHexagon);
+
+        _mouseoverHexagon = new HexagonNode
+        {
+            Scale = new Vector2(_hexSize, _hexSize),
+            Color = Colors.Red
+        };
+        AddChild(_mouseoverHexagon);
     }
 
     public override void _Draw()
     {
         DrawMesh(_hexesMesh, null);
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        if (@event is InputEventMouseButton mouseButton)
+        {
+            if (mouseButton.Pressed)
+            {
+                _targetHexagon.HexPosition = _mouseoverHexagon.HexPosition;
+            }
+        }
+        
+        base._Input(@event);
     }
 
     public override void _Process(float delta)
@@ -76,7 +106,7 @@ public class HexagonalMap : Node2D
         
         var hex = HexCubeCoord.FromPosition(position, size);
         
-        _characterNode.HexPosition = hex;
+        _mouseoverHexagon.HexPosition = hex;
         
         base._Process(delta);
     }

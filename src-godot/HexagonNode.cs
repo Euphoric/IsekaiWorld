@@ -1,7 +1,8 @@
 ﻿using Godot;
 
-public class CharacterNode : Node2D
+public class HexagonNode : Node2D
 {
+    private readonly Line2D _polygonNode;
     private HexCubeCoord _hexPosition;
 
     public HexCubeCoord HexPosition
@@ -14,7 +15,13 @@ public class CharacterNode : Node2D
         }
     }
 
-    public CharacterNode()
+    public Color Color
+    {
+        get => _polygonNode.DefaultColor;
+        set => _polygonNode.DefaultColor = value;
+    }
+
+    public HexagonNode()
     {
         var size = 0.95f;
         var polygon = new[]
@@ -28,11 +35,12 @@ public class CharacterNode : Node2D
             HexCubeCoord.HexCorner(HexCubeCoord.Zero, size, 6)
         };
 
-        var polygonNode = new Line2D
+        _polygonNode = new Line2D
         {
             Points = polygon,
-            Width = 1.5f / 16
+            Width = 1.5f / 16,
+            DefaultColor = Colors.Red
         };
-        AddChild(polygonNode);
+        AddChild(_polygonNode);
     }
 }
