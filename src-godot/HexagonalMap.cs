@@ -12,6 +12,8 @@ public class HexagonalMap : Node2D
     private HexagonNode _characterHexagon;
     private HexagonNode _targetHexagon;
 
+    private float _movementTimer;
+    
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -107,6 +109,14 @@ public class HexagonalMap : Node2D
         var hex = HexCubeCoord.FromPosition(position, size);
         
         _mouseoverHexagon.HexPosition = hex;
+
+        _movementTimer += delta;
+        var movementDelay = 1/3f;
+        if (_movementTimer > movementDelay)
+        {
+            _movementTimer -= movementDelay;
+            _characterHexagon.HexPosition += HexagonDirection.BottomLeft;
+        }
         
         base._Process(delta);
     }

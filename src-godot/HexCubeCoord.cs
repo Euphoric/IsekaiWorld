@@ -71,4 +71,43 @@ public readonly struct HexCubeCoord
         return new Vector2(center.x + size * Mathf.Cos(angleRad),
             center.y + size * Mathf.Sin(angleRad));
     }
+
+    public static HexCubeCoord operator +(HexCubeCoord position, HexagonDirection direction)
+    {
+        int r = position.R;
+        int q = position.Q;
+        int s = position.S;
+
+        switch (direction)
+        {
+            case HexagonDirection.Left:
+                q -= 1;
+                s += 1;
+                break;
+            case HexagonDirection.Right:
+                q += 1;
+                s -= 1;
+                break;
+            case HexagonDirection.TopLeft:
+                r -= 1;
+                s += 1;
+                break;
+            case HexagonDirection.TopRight:
+                q += 1;
+                r -= 1;
+                break;
+            case HexagonDirection.BottomLeft:
+                q -= 1;
+                r += 1;
+                break;
+            case HexagonDirection.BottomRight:
+                r += 1;
+                s -= 1;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+        }
+        
+        return new HexCubeCoord(r, q, s);
+    }
 }
