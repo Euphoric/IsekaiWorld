@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Godot;
 
 public readonly struct HexCubeCoord
@@ -109,5 +110,18 @@ public readonly struct HexCubeCoord
         }
         
         return new HexCubeCoord(r, q, s);
+    }
+
+    public IReadOnlyList<HexCubeCoord> Neighbors()
+    {
+        return new[]
+        {
+            this + HexagonDirection.Left,
+            this + HexagonDirection.TopLeft,
+            this + HexagonDirection.TopRight,
+            this + HexagonDirection.Right,
+            this + HexagonDirection.BottomRight,
+            this + HexagonDirection.BottomLeft,
+        };
     }
 }

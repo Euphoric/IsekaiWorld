@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using Godot;
 
 public class HexagonalMap : Node2D
@@ -11,9 +12,11 @@ public class HexagonalMap : Node2D
     private HexagonNode _mouseoverHexagon;
     private HexagonNode _characterHexagon;
     private HexagonNode _targetHexagon;
-
-    private float _movementTimer;
+    private Line2D _path;
     
+    private float _movementTimer;
+    private HexagonPathfinding _pathfinding;
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -21,7 +24,9 @@ public class HexagonalMap : Node2D
         _map.GenerateMap();
         
         _hexesMesh = new ArrayMesh();
-
+        _pathfinding = new HexagonPathfinding();
+        _pathfinding.BuildMap(_map);
+        
         foreach (var cell in _map.Cells)
         {
             var center = cell.Position.Center(_hexSize);
@@ -80,6 +85,13 @@ public class HexagonalMap : Node2D
             Color = Colors.Red
         };
         AddChild(_mouseoverHexagon);
+
+        _path = new Line2D()
+        {
+            Width = 1,
+            DefaultColor = Colors.Blue
+        };
+        AddChild(_path);
     }
 
     public override void _Draw()
@@ -91,9 +103,12 @@ public class HexagonalMap : Node2D
     {
         if (@event is InputEventMouseButton mouseButton)
         {
-            if (mouseButton.Pressed)
+            if (mouseButton.ButtonIndex == (int)ButtonList.Left && mouseButton.Pressed)
             {
                 _targetHexagon.HexPosition = _mouseoverHexagon.HexPosition;
+                
+                var path = _pathfinding.FindPath(_characterHexagon.HexPosition, _targetHexagon.HexPosition);
+                _path.Points = path.Select(hex => hex.Center(_hexSize)).ToArray();
             }
         }
         
@@ -110,13 +125,15 @@ public class HexagonalMap : Node2D
         
         _mouseoverHexagon.HexPosition = hex;
 
-        _movementTimer += delta;
-        var movementDelay = 1/3f;
-        if (_movementTimer > movementDelay)
-        {
-            _movementTimer -= movementDelay;
-            _characterHexagon.HexPosition += HexagonDirection.BottomLeft;
-        }
+        // _movementTimer += delta;
+        // var movementDelay = 1/3f;
+        // if (_movementTimer > movementDelay)
+        // {
+        //     _movementTimer -= movementDelay;
+        //     _characterHexagon.HexPosition += HexagonDirection.BottomLeft;
+        // }
+        
+        
         
         base._Process(delta);
     }

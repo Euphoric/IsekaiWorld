@@ -3,4 +3,7 @@
     <TargetFramework>net472</TargetFramework>
     <RootNamespace></RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="RoyT.AStar" Version="3.0.2" />
+  </ItemGroup>
 </Project>
