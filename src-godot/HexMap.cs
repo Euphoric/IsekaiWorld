@@ -31,15 +31,22 @@ public class HexMap
 
     public void GenerateMap()
     {
-        var noise = new Simplex.Noise();
+        var surfaceNoise = new Simplex.Noise(){Seed = 123};
+        var rockWallNoise = new Simplex.Noise(){Seed = 654};
+        
         foreach (var cell in Cells)
         {
             var center = cell.Position.Center(1000);
-            var isGrass = noise.CalcPixel2D(
+            var isRockWall = rockWallNoise.CalcPixel2D(
+                Mathf.CeilToInt(center.x),
+                Mathf.CeilToInt(center.y), 1 / 1000f * 0.04f) < -0.5;
+            
+            var isGrass = surfaceNoise.CalcPixel2D(
                               Mathf.CeilToInt(center.x),
                               Mathf.CeilToInt(center.y), 1 / 1000f * 0.04f) <
-                          128;
-            var surface = isGrass ? 1 : 2;
+                          0;
+                          
+            var surface = isRockWall ? 3 : isGrass ? 1 : 2;
             cell.Surface = surface;
         }
     }

@@ -12,17 +12,30 @@ public class HexagonPathfinding
     
     public void BuildMap(HexMap hexMap)
     {
-        var hexes = hexMap.Hexes;
-        foreach (var hex in hexes)
+        bool[] isPassable = new[]
         {
+            false,
+            true,
+            true,
+            false
+        };
+        
+        var cells = hexMap.Cells;
+        foreach (var cell in cells)
+        {
+            var hex = cell.Position;
             var hexCenter = hex.Center(1);
             var node = new Node(new Position(hexCenter.x, hexCenter.y));
             _nodes[hex] = node;
             _nodeToHexPosition[node] = hex;
         }
 
-        foreach (var hex in hexes)
+        foreach (var cell in cells)
         {
+            if (!isPassable[cell.Surface])
+                continue;
+            
+            var hex = cell.Position;
             var hexNode = _nodes[hex];
             var neighbors = hex.Neighbors();
             foreach (var neighbor in neighbors)
