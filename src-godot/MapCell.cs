@@ -7,5 +7,5 @@
         Position = position;
     }
 
-    public int Surface { get; set; }
+    public SurfaceDefinition Surface { get; set; }
 }

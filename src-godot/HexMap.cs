@@ -46,7 +46,7 @@ public class HexMap
                               Mathf.CeilToInt(center.y), 1 / 1000f * 0.04f) <
                           0;
                           
-            var surface = isRockWall ? 3 : isGrass ? 1 : 2;
+            var surface = isRockWall ? SurfaceDefinitions.RockWall : isGrass ? SurfaceDefinitions.Grass : SurfaceDefinitions.Dirt;
             cell.Surface = surface;
         }
     }

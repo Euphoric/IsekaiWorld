@@ -32,7 +32,7 @@ public class HexagonPathfinding
 
         foreach (var cell in cells)
         {
-            if (!isPassable[cell.Surface])
+            if (!cell.Surface.IsPassable)
                 continue;
             
             var hex = cell.Position;

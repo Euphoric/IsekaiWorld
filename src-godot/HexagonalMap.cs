@@ -27,14 +27,6 @@ public class HexagonalMap : Node2D
         _pathfinding = new HexagonPathfinding();
         _pathfinding.BuildMap(_map);
 
-        Color[] surfaceColors = new[]
-        {
-            Colors.Black,
-            Colors.DarkGreen,
-            Colors.SaddleBrown,
-            Colors.DarkGray
-        };
-        
         foreach (var cell in _map.Cells)
         {
             var center = cell.Position.Center(_hexSize);
@@ -45,7 +37,7 @@ public class HexagonalMap : Node2D
                 points[i + 1] = HexCubeCoord.HexCorner(cell.Position, _hexSize, i);
             }
 
-            var hexColor = surfaceColors[cell.Surface];
+            var hexColor = cell.Surface.Color;
 
             Color[] colors = new[]
             {
