@@ -1,5 +1,3 @@
-using System;
-using System.Diagnostics;
 using System.Linq;
 using Godot;
 
@@ -11,11 +9,11 @@ public class HexagonalMap : Node2D
     private readonly float _hexSize = 16;
     private HexagonNode _mouseoverHexagon;
     private HexagonNode _characterHexagon;
-    private HexagonNode _targetHexagon;
-    private Line2D _path;
+    private HexagonNode _selectionHexagon;
+    private Line2D _characterPath;
     
-    private float _movementTimer;
     private HexagonPathfinding _pathfinding;
+    private CharaterEntity _characterEntity;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -61,14 +59,18 @@ public class HexagonalMap : Node2D
             _hexesMesh.AddSurfaceFromArrays(Mesh.PrimitiveType.TriangleFan, arrays);
         }
 
-        _targetHexagon = new HexagonNode
+        _selectionHexagon = new HexagonNode
         {
             HexPosition = HexCubeCoord.Zero,
             Scale = new Vector2(_hexSize, _hexSize),
             Color = Colors.White
         };
-        AddChild(_targetHexagon);
-        
+        AddChild(_selectionHexagon);
+
+        _characterEntity = new CharaterEntity(_pathfinding)
+        {
+            Position = HexCubeCoord.Zero
+        };
         _characterHexagon = new HexagonNode
         {
             HexPosition = HexCubeCoord.Zero,
@@ -76,20 +78,19 @@ public class HexagonalMap : Node2D
             Color = Colors.Blue
         };
         AddChild(_characterHexagon);
-
+        _characterPath = new Line2D
+        {
+            Width = 1,
+            DefaultColor = Colors.Blue
+        };
+        AddChild(_characterPath);
+        
         _mouseoverHexagon = new HexagonNode
         {
             Scale = new Vector2(_hexSize, _hexSize),
             Color = Colors.Red
         };
         AddChild(_mouseoverHexagon);
-
-        _path = new Line2D()
-        {
-            Width = 1,
-            DefaultColor = Colors.Blue
-        };
-        AddChild(_path);
     }
 
     public override void _Draw()
@@ -103,10 +104,9 @@ public class HexagonalMap : Node2D
         {
             if (mouseButton.ButtonIndex == (int)ButtonList.Left && mouseButton.Pressed)
             {
-                _targetHexagon.HexPosition = _mouseoverHexagon.HexPosition;
-                
-                var path = _pathfinding.FindPath(_characterHexagon.HexPosition, _targetHexagon.HexPosition);
-                _path.Points = path.Select(hex => hex.Center(_hexSize)).ToArray();
+                _selectionHexagon.HexPosition = _mouseoverHexagon.HexPosition;
+
+                _characterEntity.MoveTo(_mouseoverHexagon.HexPosition);
             }
         }
         
@@ -117,21 +117,12 @@ public class HexagonalMap : Node2D
     {
         var position = GetLocalMousePosition();
 
-        var size = _hexSize;
-        
-        var hex = HexCubeCoord.FromPosition(position, size);
-        
+        var hex = HexCubeCoord.FromPosition(position, _hexSize);
         _mouseoverHexagon.HexPosition = hex;
 
-        // _movementTimer += delta;
-        // var movementDelay = 1/3f;
-        // if (_movementTimer > movementDelay)
-        // {
-        //     _movementTimer -= movementDelay;
-        //     _characterHexagon.HexPosition += HexagonDirection.BottomLeft;
-        // }
-        
-        
+        _characterEntity.Update(delta);
+        _characterEntity.UpdateCharacterNode(_characterHexagon);
+        _characterEntity.UpdatePathNode(_characterPath);
         
         base._Process(delta);
     }

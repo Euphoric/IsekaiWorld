@@ -4,6 +4,18 @@ using Roy_T.AStar.Graphs;
 using Roy_T.AStar.Paths;
 using Roy_T.AStar.Primitives;
 
+public class PathfindingResult
+{
+    public bool Found { get; }
+    public IReadOnlyList<HexCubeCoord> Path { get; }
+
+    public PathfindingResult(bool found, IReadOnlyList<HexCubeCoord> path)
+    {
+        Found = found;
+        Path = path;
+    }
+}
+
 public class HexagonPathfinding
 {
     private readonly Dictionary<HexCubeCoord, Node> _nodes = new Dictionary<HexCubeCoord, Node>();
@@ -12,14 +24,6 @@ public class HexagonPathfinding
     
     public void BuildMap(HexMap hexMap)
     {
-        bool[] isPassable = new[]
-        {
-            false,
-            true,
-            true,
-            false
-        };
-        
         var cells = hexMap.Cells;
         foreach (var cell in cells)
         {
@@ -30,6 +34,7 @@ public class HexagonPathfinding
             _nodeToHexPosition[node] = hex;
         }
 
+        var hexPossToCell = cells.ToDictionary(x => x.Position, x => x);
         foreach (var cell in cells)
         {
             if (!cell.Surface.IsPassable)
@@ -44,13 +49,15 @@ public class HexagonPathfinding
                 {
                     continue;
                 }
-                
-                hexNode.Connect(neightborNode, Velocity.FromKilometersPerHour(1));
+
+                var neighborCell = hexPossToCell[neighbor];
+                if (neighborCell.Surface.IsPassable)
+                    hexNode.Connect(neightborNode, Velocity.FromKilometersPerHour(1));
             }
         }
     }
     
-    public IReadOnlyList<HexCubeCoord> FindPath(HexCubeCoord from, HexCubeCoord to)
+    public PathfindingResult FindPath(HexCubeCoord from, HexCubeCoord to)
     {
         var fromNode = _nodes[from];
         var toNode = _nodes[to];
@@ -58,6 +65,6 @@ public class HexagonPathfinding
         var pathFinder = new PathFinder();
         var path = pathFinder.FindPath(fromNode, toNode, Velocity.FromKilometersPerHour(1));
         var hexPath = path.Edges.Select(x => _nodeToHexPosition[x.End]);
-        return new[] { from }.Concat(hexPath).ToList();
+        return new PathfindingResult(path.Type == PathType.Complete, hexPath.ToList()) ;
     }
 }
