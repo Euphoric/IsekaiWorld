@@ -2,8 +2,12 @@
 
 public class HexagonNode : Node2D
 {
-    private readonly Line2D _polygonNode;
     private HexCubeCoord _hexPosition;
+    private ArrayMesh _hexesMesh;
+    private Color _color;
+    private bool _isDirty;
+    private float _outerSize = 1f;
+    private float _innerSize = 0.9f;
 
     public HexCubeCoord HexPosition
     {
@@ -17,30 +21,88 @@ public class HexagonNode : Node2D
 
     public Color Color
     {
-        get => _polygonNode.DefaultColor;
-        set => _polygonNode.DefaultColor = value;
+        get => _color;
+        set
+        {
+            _color = value;
+            _isDirty = true;
+        }
     }
 
-    public HexagonNode()
+    public float OuterSize
     {
-        var size = 0.95f;
-        var polygon = new[]
+        get => _outerSize;
+        set
         {
-            HexCubeCoord.HexCorner(HexCubeCoord.Zero, size, 0),
-            HexCubeCoord.HexCorner(HexCubeCoord.Zero, size, 1),
-            HexCubeCoord.HexCorner(HexCubeCoord.Zero, size, 2),
-            HexCubeCoord.HexCorner(HexCubeCoord.Zero, size, 3),
-            HexCubeCoord.HexCorner(HexCubeCoord.Zero, size, 4),
-            HexCubeCoord.HexCorner(HexCubeCoord.Zero, size, 5),
-            HexCubeCoord.HexCorner(HexCubeCoord.Zero, size, 6)
-        };
+            _outerSize = value;
+            _isDirty = true;
+        }
+    }
 
-        _polygonNode = new Line2D
+    public float InnerSize
+    {
+        get => _innerSize;
+        set
         {
-            Points = polygon,
-            Width = 1.5f / 16,
-            DefaultColor = Colors.Red
+            _innerSize = value;
+            _isDirty = true;
+        }
+    }
+
+    public override void _Ready()
+    {
+        _hexesMesh = new ArrayMesh();
+        
+        RebuildMesh();
+    }
+
+    public override void _Process(float delta)
+    {
+        if (_isDirty)
+            RebuildMesh();
+    }
+
+    private void RebuildMesh()
+    {
+        _hexesMesh.ClearSurfaces();
+
+        var outerSize = OuterSize;
+        var innerSize = InnerSize;
+
+        Vector2[] points = new Vector2[12];
+        for (int i = 0; i < 6; i++)
+        {
+            points[i * 2 + 0] = HexCubeCoord.HexCorner(HexCubeCoord.Zero, outerSize, i);
+            points[i * 2 + 1] = HexCubeCoord.HexCorner(HexCubeCoord.Zero, innerSize, i);
+        }
+
+        var hexColor = Color;
+
+        Color[] colors =
+        {
+            hexColor, hexColor,
+            hexColor, hexColor,
+            hexColor, hexColor,
+            hexColor, hexColor,
+            hexColor, hexColor,
+            hexColor, hexColor
         };
-        AddChild(_polygonNode);
+        var indices = new[]
+        {
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 1
+        };
+        var arrays = new Godot.Collections.Array();
+        arrays.Resize((int)ArrayMesh.ArrayType.Max);
+        arrays[(int)ArrayMesh.ArrayType.Vertex] = points;
+        arrays[(int)ArrayMesh.ArrayType.Index] = indices;
+        arrays[(int)ArrayMesh.ArrayType.Color] = colors;
+        _hexesMesh.AddSurfaceFromArrays(Mesh.PrimitiveType.TriangleStrip, arrays);
+        
+        _isDirty = false;
+    }
+
+    public override void _Draw()
+    {
+        DrawMesh(_hexesMesh, null);
     }
 }
