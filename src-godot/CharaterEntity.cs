@@ -4,18 +4,20 @@ using Godot;
 
 public class CharaterEntity
 {
-    private readonly HexagonalMap _map;
+    private readonly GameEntity _game;
     private readonly HexagonPathfinding _pathfinding;
 
     public HexCubeCoord Position { get; set; }
     public bool IsIdle => _currentActivity == null && !_activityQueue.Any();
     
+    public HexagonNode Node { get; set; }
+
     private IActivity _currentActivity;
     private readonly Queue<IActivity> _activityQueue = new Queue<IActivity>();
 
-    public CharaterEntity(HexagonalMap map, HexagonPathfinding pathfinding)
+    public CharaterEntity(GameEntity game, HexagonPathfinding pathfinding)
     {
-        _map = map;
+        _game = game;
         _pathfinding = pathfinding;
     }
 
@@ -26,24 +28,15 @@ public class CharaterEntity
             if (_activityQueue.Any())
             {
                 _currentActivity = _activityQueue.Dequeue();
-                _map.RunActivity(_currentActivity);
+                _game.RunActivity(_currentActivity);
             }
         }
         else if (_currentActivity.IsFinished)
         {
             _currentActivity = null;
         }
-    }
-
-    public void UpdateCharacterNode(HexagonNode node)
-    {
-        node.HexPosition = Position;
-    }
-
-    public void UpdatePathNode(Line2D node)
-    {
-        // var remainingPath = new[] { Position }.Concat(_movementQueue).ToArray();
-        // node.Points = remainingPath.Select(hex => hex.Center(16)).ToArray();
+        
+        Node.HexPosition = Position;
     }
 
     public void Construct(ConstructionEntity construction)
@@ -55,7 +48,7 @@ public class CharaterEntity
             movementPath = movementPath.Take(movementPath.Count() - 1);
             
             _activityQueue.Enqueue(new MovementActivity(this, movementPath.ToList()));
-            _activityQueue.Enqueue(new ConstructionActivity(_map, this, construction));
+            _activityQueue.Enqueue(new ConstructionActivity(_game, this, construction));
         }
     }
 }

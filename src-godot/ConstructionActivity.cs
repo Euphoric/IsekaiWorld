@@ -1,14 +1,14 @@
 public class ConstructionActivity : IActivity
 {
-    private readonly HexagonalMap _map;
+    private readonly GameEntity _game;
     public CharaterEntity Character { get; }
     public ConstructionEntity Construction { get; }
 
     public bool IsFinished { get; private set; }
     
-    public ConstructionActivity(HexagonalMap map, CharaterEntity character, ConstructionEntity construction)
+    public ConstructionActivity(GameEntity game, CharaterEntity character, ConstructionEntity construction)
     {
-        _map = map;
+        _game = game;
         Character = character;
         Construction = construction;
     }
@@ -23,7 +23,7 @@ public class ConstructionActivity : IActivity
         if (Construction.Progress > 3)
         {
             IsFinished = true;
-            _map.RemoveConstruction(Construction);
+            _game.RemoveConstruction(Construction);
         }
     }
 }
