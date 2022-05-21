@@ -4,42 +4,34 @@ using Godot;
 
 public class CharaterEntity
 {
+    private readonly HexagonalMap _map;
     private readonly HexagonPathfinding _pathfinding;
 
     public HexCubeCoord Position { get; set; }
-    private float _movementTimer;
-    private readonly Queue<HexCubeCoord> _movementQueue = new Queue<HexCubeCoord>();
+    public bool IsIdle => _currentActivity == null && !_activityQueue.Any();
+    
+    private IActivity _currentActivity;
+    private readonly Queue<IActivity> _activityQueue = new Queue<IActivity>();
 
-    public CharaterEntity(HexagonPathfinding pathfinding)
+    public CharaterEntity(HexagonalMap map, HexagonPathfinding pathfinding)
     {
+        _map = map;
         _pathfinding = pathfinding;
-    }
-
-    public void MoveTo(HexCubeCoord targetPosition)
-    {
-        _movementQueue.Clear();
-        
-        var pathResult = _pathfinding.FindPath(Position, targetPosition);
-        if (pathResult.Found)
-        {
-            foreach (var coord in pathResult.Path)
-            {
-                _movementQueue.Enqueue(coord);
-            }
-        }
     }
 
     public void Update(float delta)
     {
-        if (_movementQueue.Any())
+        if (_currentActivity == null)
         {
-            _movementTimer += delta;
-            var movementDelay = 1 / 3f;
-            if (_movementTimer > movementDelay)
+            if (_activityQueue.Any())
             {
-                _movementTimer -= movementDelay;
-                Position = _movementQueue.Dequeue();
+                _currentActivity = _activityQueue.Dequeue();
+                _map.RunActivity(_currentActivity);
             }
+        }
+        else if (_currentActivity.IsFinished)
+        {
+            _currentActivity = null;
         }
     }
 
@@ -50,7 +42,20 @@ public class CharaterEntity
 
     public void UpdatePathNode(Line2D node)
     {
-        var remainingPath = new []{ Position }.Concat(_movementQueue).ToArray();
-        node.Points = remainingPath.Select(hex => hex.Center(16)).ToArray();
+        // var remainingPath = new[] { Position }.Concat(_movementQueue).ToArray();
+        // node.Points = remainingPath.Select(hex => hex.Center(16)).ToArray();
+    }
+
+    public void Construct(ConstructionEntity construction)
+    {
+        var pathResult = _pathfinding.FindPath(Position, construction.Position);
+        if (pathResult.Found)
+        {
+            IEnumerable<HexCubeCoord> movementPath = pathResult.Path;
+            movementPath = movementPath.Take(movementPath.Count() - 1);
+            
+            _activityQueue.Enqueue(new MovementActivity(this, movementPath.ToList()));
+            _activityQueue.Enqueue(new ConstructionActivity(_map, this, construction));
+        }
     }
 }
