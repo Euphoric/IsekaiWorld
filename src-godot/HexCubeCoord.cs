@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Godot;
 
-public readonly struct HexCubeCoord
+public readonly struct HexCubeCoord : IEquatable<HexCubeCoord>
 {
     public int R { get; }
     public int Q { get; }
@@ -123,5 +123,36 @@ public readonly struct HexCubeCoord
             this + HexagonDirection.BottomRight,
             this + HexagonDirection.BottomLeft,
         };
+    }
+    
+    public bool Equals(HexCubeCoord other)
+    {
+        return R == other.R && Q == other.Q && S == other.S;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is HexCubeCoord other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            var hashCode = R;
+            hashCode = (hashCode * 397) ^ Q;
+            hashCode = (hashCode * 397) ^ S;
+            return hashCode;
+        }
+    }
+
+    public static bool operator ==(HexCubeCoord left, HexCubeCoord right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(HexCubeCoord left, HexCubeCoord right)
+    {
+        return !left.Equals(right);
     }
 }
