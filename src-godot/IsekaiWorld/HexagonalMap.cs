@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 
 public class HexagonalMap : Node2D
@@ -11,7 +12,7 @@ public class HexagonalMap : Node2D
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        _game = new GameEntity(this);
+        _game = new GameEntity();
         _game.Initialize();
 
         _game.AddCharacter();
@@ -96,6 +97,26 @@ public class HexagonalMap : Node2D
 
         _game.Update(delta);
 
+        _game.UpdateNodes(this);
+        
         base._Process(delta);
+    }
+
+    private readonly Dictionary<object, Node> _nodeMappings = new Dictionary<object, Node>();
+    
+    public void AddNodeReference(object entity, Node node)
+    {
+        _nodeMappings.Add(entity, node);
+    }
+
+    public void RemoveNodeFor(object entity)
+    {
+        RemoveChild(_nodeMappings[entity]);
+    }
+
+    public TNode GetEntityNode<TNode>(object entity)
+        where TNode : Node
+    {
+        return (TNode)_nodeMappings[entity];
     }
 }

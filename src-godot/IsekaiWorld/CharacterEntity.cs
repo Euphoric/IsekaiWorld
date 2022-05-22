@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Godot;
 
 public class CharacterEntity
 {
@@ -18,8 +17,13 @@ public class CharacterEntity
         _game = game;
         _pathfinding = pathfinding;
     }
+    
+    public INodeOperation Initialize()
+    {
+        return new CreateCharacter(this);
+    }
 
-    public void Update(float delta)
+    public INodeOperation Update(float delta)
     {
         if (_currentActivity == null)
         {
@@ -33,29 +37,13 @@ public class CharacterEntity
         {
             _currentActivity = null;
         }
+
+        return new UpdateCharacter(this);
     }
 
     public void Construct(ConstructionEntity construction)
     {
         _activityQueue.Enqueue(new MovementActivity(_pathfinding, this, construction.Position));
         _activityQueue.Enqueue(new ConstructionActivity(_game, this, construction));
-    }
-
-    private HexagonNode _node;
-
-    public void InitializeNode(HexagonalMap map)
-    {
-        var characterHexagon = new HexagonNode
-        {
-            HexPosition = HexCubeCoord.Zero,
-            Color = Colors.Blue
-        };
-        _node = characterHexagon;
-        map.AddChild(characterHexagon);
-    }
-
-    public void UpdateNode()
-    {
-        _node.HexPosition = Position;
     }
 }

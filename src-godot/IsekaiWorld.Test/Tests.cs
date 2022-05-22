@@ -8,7 +8,10 @@ namespace IsekaiWorld.Test
         [Fact]
         public void Test1()
         {
+            var game = new GameEntity();
+            var character = game.AddCharacter();
             
+            Assert.True(character.IsIdle);
         }
     }
 }

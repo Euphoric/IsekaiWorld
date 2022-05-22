@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using Godot;
 
 public class GameEntity
 {
-    public HexagonalMap Map { get; }
     public HexMap GameMap { get; private set; }
 
     private HexagonPathfinding _pathfinding;
@@ -14,10 +12,7 @@ public class GameEntity
     
     private readonly List<IActivity> _activities = new List<IActivity>();
 
-    public GameEntity(HexagonalMap map)
-    {
-        Map = map;
-    }
+    private readonly List<INodeOperation> _operations = new List<INodeOperation>();
     
     public void Initialize()
     {
@@ -28,16 +23,18 @@ public class GameEntity
         _pathfinding.BuildMap(GameMap);
     }
 
-    public void AddCharacter()
+    public CharacterEntity AddCharacter()
     {
         var characterEntity = new CharacterEntity(this, _pathfinding)
         {
             Position = HexCubeCoord.Zero,
         };
 
-        characterEntity.InitializeNode(Map);
-
         _characters.Add(characterEntity);
+
+        _operations.Add(characterEntity.Initialize());
+
+        return characterEntity;
     }
     
     public void RunActivity(IActivity activity)
@@ -48,7 +45,7 @@ public class GameEntity
     public void RemoveConstruction(ConstructionEntity construction)
     {
         _constructionEntities.Remove(construction);
-        Map.RemoveChild(construction.Node);
+        _operations.Add(new RemoveConstruction(construction));
     }
 
     public void Update(float delta)
@@ -66,7 +63,8 @@ public class GameEntity
 
         foreach (var character in _characters)
         {
-            character.Update(delta);            
+            var operation = character.Update(delta);
+            _operations.Add(operation);
         }
 
         foreach (var activity in _activities)
@@ -76,15 +74,20 @@ public class GameEntity
 
         foreach (var entity in _constructionEntities)
         {
-            entity.UpdateNode();
+            var operation = entity.UpdateNode();
+            _operations.Add(operation);
         }
 
-        foreach (var character in _characters)
-        {
-            character.UpdateNode();
-        }
-        
         _activities.RemoveAll(x => x.IsFinished);
+    }
+
+    public void UpdateNodes(HexagonalMap map)
+    {
+        foreach (var operation in _operations)
+        {
+            operation.Execute(map);
+        }
+        _operations.Clear();
     }
 
     public void StartConstruction(HexCubeCoord position)
@@ -92,17 +95,13 @@ public class GameEntity
         var constructionExists = _constructionEntities.Any(x => x.Position == position);
         if (!constructionExists)
         {
-            var constructionEntity = new ConstructionEntity();
-            constructionEntity.Position = position;
+            var constructionEntity = new ConstructionEntity
+            {
+                Position = position
+            };
             _constructionEntities.Add(constructionEntity);
 
-            var constructionNode = new HexagonNode
-            {
-                Color = Colors.MediumPurple,
-            };
-            constructionNode.HexPosition = constructionEntity.Position;
-            Map.AddChild(constructionNode);
-            constructionEntity.Node = constructionNode;
+            _operations.Add(new AddConstructionOperation(constructionEntity));
             
             _constructionJobs.Add(new ConstructionJob(constructionEntity));
         }
