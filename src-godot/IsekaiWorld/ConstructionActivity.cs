@@ -1,12 +1,12 @@
 public class ConstructionActivity : IActivity
 {
     private readonly GameEntity _game;
-    public CharaterEntity Character { get; }
+    public CharacterEntity Character { get; }
     public ConstructionEntity Construction { get; }
 
     public bool IsFinished { get; private set; }
     
-    public ConstructionActivity(GameEntity game, CharaterEntity character, ConstructionEntity construction)
+    public ConstructionActivity(GameEntity game, CharacterEntity character, ConstructionEntity construction)
     {
         _game = game;
         Character = character;

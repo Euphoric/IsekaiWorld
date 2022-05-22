@@ -9,7 +9,7 @@ public class ConstructionJob
         _construction = construction;
     }
 
-    public void StartWorking(CharaterEntity character)
+    public void StartWorking(CharacterEntity character)
     {
         InProgress = true;
         character.Construct(_construction);

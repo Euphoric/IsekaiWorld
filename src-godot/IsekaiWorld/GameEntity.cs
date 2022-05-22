@@ -8,7 +8,7 @@ public class GameEntity
     public HexMap GameMap { get; private set; }
 
     private HexagonPathfinding _pathfinding;
-    private readonly List<CharaterEntity> _characters = new List<CharaterEntity>();
+    private readonly List<CharacterEntity> _characters = new List<CharacterEntity>();
     private readonly List<ConstructionEntity> _constructionEntities = new List<ConstructionEntity>();
     private readonly List<ConstructionJob> _constructionJobs = new List<ConstructionJob>();
     
@@ -30,19 +30,14 @@ public class GameEntity
 
     public void AddCharacter()
     {
-        var characterHexagon = new HexagonNode
-        {
-            HexPosition = HexCubeCoord.Zero,
-            Color = Colors.Blue
-        };
-        var characterEntity = new CharaterEntity(this, _pathfinding)
+        var characterEntity = new CharacterEntity(this, _pathfinding)
         {
             Position = HexCubeCoord.Zero,
-            Node = characterHexagon
         };
 
+        characterEntity.InitializeNode(Map);
+
         _characters.Add(characterEntity);
-        Map.AddChild(characterHexagon);
     }
     
     public void RunActivity(IActivity activity)
@@ -82,6 +77,11 @@ public class GameEntity
         foreach (var entity in _constructionEntities)
         {
             entity.UpdateNode();
+        }
+
+        foreach (var character in _characters)
+        {
+            character.UpdateNode();
         }
         
         _activities.RemoveAll(x => x.IsFinished);

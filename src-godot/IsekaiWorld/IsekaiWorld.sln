@@ -1,0 +1,27 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IsekaiWorld", "IsekaiWorld.csproj", "{27AB0A05-3873-4E03-A0F5-1E59F552903A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IsekaiWorld.Test", "..\IsekaiWorld.Test\IsekaiWorld.Test.csproj", "{5B623FEC-84E8-458E-86DF-4456797127CA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+	Debug|Any CPU = Debug|Any CPU
+	ExportDebug|Any CPU = ExportDebug|Any CPU
+	ExportRelease|Any CPU = ExportRelease|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{27AB0A05-3873-4E03-A0F5-1E59F552903A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27AB0A05-3873-4E03-A0F5-1E59F552903A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27AB0A05-3873-4E03-A0F5-1E59F552903A}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{27AB0A05-3873-4E03-A0F5-1E59F552903A}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{27AB0A05-3873-4E03-A0F5-1E59F552903A}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{27AB0A05-3873-4E03-A0F5-1E59F552903A}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{5B623FEC-84E8-458E-86DF-4456797127CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B623FEC-84E8-458E-86DF-4456797127CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B623FEC-84E8-458E-86DF-4456797127CA}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B623FEC-84E8-458E-86DF-4456797127CA}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{5B623FEC-84E8-458E-86DF-4456797127CA}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B623FEC-84E8-458E-86DF-4456797127CA}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -3,12 +3,12 @@ using System.Linq;
 
 public class MovementActivity : IActivity
 {
-    private readonly CharaterEntity _charater;
+    private readonly CharacterEntity _charater;
     
     private float _movementTimer;
     private readonly Queue<HexCubeCoord> _movementQueue = new Queue<HexCubeCoord>();
 
-    public MovementActivity(HexagonPathfinding pathfinding, CharaterEntity charater, HexCubeCoord target)
+    public MovementActivity(HexagonPathfinding pathfinding, CharacterEntity charater, HexCubeCoord target)
     {
         _charater = charater;
         
