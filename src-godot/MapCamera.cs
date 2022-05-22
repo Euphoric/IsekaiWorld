@@ -5,6 +5,7 @@ public class MapCamera : Camera2D
 {
 	public override void _Ready()
 	{
+		Zoom = Vector2.One / 16f;
 	}
 
 	public override void _Input(InputEvent @event)

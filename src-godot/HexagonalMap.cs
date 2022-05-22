@@ -4,8 +4,7 @@ public class HexagonalMap : Node2D
 {
     private  GameEntity _game;
     private ArrayMesh _hexesMesh;
-
-    public float HexSize => 16;
+    
     private HexagonNode _mouseoverHexagon;
     private HexagonNode _selectionHexagon;
 
@@ -21,12 +20,12 @@ public class HexagonalMap : Node2D
 
         foreach (var cell in _game.GameMap.Cells)
         {
-            var center = cell.Position.Center(HexSize);
+            var center = cell.Position.Center(1);
             Vector2[] points = new Vector2[7];
             points[0] = center;
             for (int i = 0; i < 6; i++)
             {
-                points[i + 1] = HexCubeCoord.HexCorner(cell.Position, HexSize, i);
+                points[i + 1] = HexCubeCoord.HexCorner(cell.Position, 1, i);
             }
 
             var hexColor = cell.Surface.Color;
@@ -55,14 +54,12 @@ public class HexagonalMap : Node2D
         _selectionHexagon = new HexagonNode
         {
             HexPosition = HexCubeCoord.Zero,
-            Scale = new Vector2(HexSize, HexSize),
             Color = Colors.White
         };
         AddChild(_selectionHexagon);
 
         _mouseoverHexagon = new HexagonNode
         {
-            Scale = new Vector2(HexSize, HexSize),
             Color = Colors.Red
         };
         AddChild(_mouseoverHexagon);
@@ -93,7 +90,7 @@ public class HexagonalMap : Node2D
     {
         var position = GetLocalMousePosition();
 
-        var hex = HexCubeCoord.FromPosition(position, HexSize);
+        var hex = HexCubeCoord.FromPosition(position, 1);
         _mouseoverHexagon.HexPosition = hex;
 
         _game.Update(delta);

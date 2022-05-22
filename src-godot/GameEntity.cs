@@ -32,7 +32,6 @@ public class GameEntity
         var characterHexagon = new HexagonNode
         {
             HexPosition = HexCubeCoord.Zero,
-            Scale = new Vector2(Map.HexSize, Map.HexSize),
             Color = Colors.Blue
         };
         _characterEntity = new CharaterEntity(this, _pathfinding)
@@ -90,7 +89,6 @@ public class GameEntity
             var constructionNode = new HexagonNode
             {
                 Color = Colors.MediumPurple,
-                Scale = new Vector2(Map.HexSize, Map.HexSize),
             };
             constructionNode.HexPosition = constructionEntity.Position;
             Map.AddChild(constructionNode);

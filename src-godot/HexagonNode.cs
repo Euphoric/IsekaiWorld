@@ -15,7 +15,7 @@ public class HexagonNode : Node2D
         set
         {
             _hexPosition = value;
-            Position = _hexPosition.Center(16);
+            Position = _hexPosition.Center(1);
         }
     }
 
