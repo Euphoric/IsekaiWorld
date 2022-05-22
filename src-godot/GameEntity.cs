@@ -8,9 +8,10 @@ public class GameEntity
     public HexMap GameMap { get; private set; }
 
     private HexagonPathfinding _pathfinding;
-    private CharaterEntity _characterEntity;
+    private readonly List<CharaterEntity> _characters = new List<CharaterEntity>();
     private readonly List<ConstructionEntity> _constructionEntities = new List<ConstructionEntity>();
-
+    private readonly List<ConstructionJob> _constructionJobs = new List<ConstructionJob>();
+    
     private readonly List<IActivity> _activities = new List<IActivity>();
 
     public GameEntity(HexagonalMap map)
@@ -34,12 +35,13 @@ public class GameEntity
             HexPosition = HexCubeCoord.Zero,
             Color = Colors.Blue
         };
-        _characterEntity = new CharaterEntity(this, _pathfinding)
+        var characterEntity = new CharaterEntity(this, _pathfinding)
         {
             Position = HexCubeCoord.Zero,
             Node = characterHexagon
         };
 
+        _characters.Add(characterEntity);
         Map.AddChild(characterHexagon);
     }
     
@@ -56,13 +58,21 @@ public class GameEntity
 
     public void Update(float delta)
     {
-        if (_characterEntity.IsIdle && _constructionEntities.Any())
+        var idleCharacter = _characters.Where(x => x.IsIdle);
+        foreach (var character in idleCharacter)
         {
-            var firstConstruction = _constructionEntities.First();
-            _characterEntity.Construct(firstConstruction);
+            var availableJobs = _constructionJobs.Where(o=>!o.InProgress).ToList();
+            if (!availableJobs.Any())
+                break;
+
+            var job = availableJobs.First();
+            job.StartWorking(character);
         }
 
-        _characterEntity.Update(delta);
+        foreach (var character in _characters)
+        {
+            character.Update(delta);            
+        }
 
         foreach (var activity in _activities)
         {
@@ -93,6 +103,8 @@ public class GameEntity
             constructionNode.HexPosition = constructionEntity.Position;
             Map.AddChild(constructionNode);
             constructionEntity.Node = constructionNode;
+            
+            _constructionJobs.Add(new ConstructionJob(constructionEntity));
         }
     }
 }

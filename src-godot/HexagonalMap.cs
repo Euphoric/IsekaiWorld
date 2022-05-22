@@ -15,6 +15,7 @@ public class HexagonalMap : Node2D
         _game.Initialize();
 
         _game.AddCharacter();
+        _game.AddCharacter();
         
         _hexesMesh = new ArrayMesh();
 

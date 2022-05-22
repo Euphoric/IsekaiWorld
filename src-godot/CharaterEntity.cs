@@ -41,14 +41,7 @@ public class CharaterEntity
 
     public void Construct(ConstructionEntity construction)
     {
-        var pathResult = _pathfinding.FindPath(Position, construction.Position);
-        if (pathResult.Found)
-        {
-            IEnumerable<HexCubeCoord> movementPath = pathResult.Path;
-            movementPath = movementPath.Take(movementPath.Count() - 1);
-            
-            _activityQueue.Enqueue(new MovementActivity(this, movementPath.ToList()));
-            _activityQueue.Enqueue(new ConstructionActivity(_game, this, construction));
-        }
+        _activityQueue.Enqueue(new MovementActivity(_pathfinding, this, construction.Position));
+        _activityQueue.Enqueue(new ConstructionActivity(_game, this, construction));
     }
 }
