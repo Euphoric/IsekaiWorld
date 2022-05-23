@@ -4,8 +4,8 @@ using System.Linq;
 public class GameEntity
 {
     public HexMap GameMap { get; private set; }
-
-    private HexagonPathfinding _pathfinding;
+    public HexagonPathfinding Pathfinding { get; private set; }
+    
     private readonly List<CharacterEntity> _characters = new List<CharacterEntity>();
     private readonly List<ConstructionEntity> _constructionEntities = new List<ConstructionEntity>();
     private readonly List<ConstructionJob> _constructionJobs = new List<ConstructionJob>();
@@ -19,13 +19,13 @@ public class GameEntity
         GameMap = new HexMap(32);
         GameMap.GenerateMap();
         
-        _pathfinding = new HexagonPathfinding();
-        _pathfinding.BuildMap(GameMap);
+        Pathfinding = new HexagonPathfinding();
+        Pathfinding.BuildMap(GameMap);
     }
 
     public CharacterEntity AddCharacter()
     {
-        var characterEntity = new CharacterEntity(this, _pathfinding)
+        var characterEntity = new CharacterEntity(this)
         {
             Position = HexCubeCoord.Zero,
         };
@@ -50,17 +50,6 @@ public class GameEntity
 
     public void Update(float delta)
     {
-        var idleCharacter = _characters.Where(x => x.IsIdle);
-        foreach (var character in idleCharacter)
-        {
-            var availableJobs = _constructionJobs.Where(o=>!o.InProgress).ToList();
-            if (!availableJobs.Any())
-                break;
-
-            var job = availableJobs.First();
-            job.StartWorking(character);
-        }
-
         foreach (var character in _characters)
         {
             var operation = character.Update(delta);
@@ -103,7 +92,17 @@ public class GameEntity
 
             _operations.Add(new AddConstructionOperation(constructionEntity));
             
-            _constructionJobs.Add(new ConstructionJob(constructionEntity));
+            _constructionJobs.Add(new ConstructionJob(this, constructionEntity));
         }
+    }
+
+    public ConstructionJob GetNextJob(CharacterEntity character)
+    {
+        var availableJobs = _constructionJobs.Where(o=>!o.InProgress).ToList();
+        if (!availableJobs.Any())
+            return null;
+
+        var job = availableJobs.First();
+        return job;
     }
 }

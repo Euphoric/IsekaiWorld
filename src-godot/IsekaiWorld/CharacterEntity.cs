@@ -4,18 +4,15 @@ using System.Linq;
 public class CharacterEntity
 {
     private readonly GameEntity _game;
-    private readonly HexagonPathfinding _pathfinding;
 
     public HexCubeCoord Position { get; set; }
-    public bool IsIdle => _currentActivity == null && !_activityQueue.Any();
+    public bool IsIdle => CurrentActivity == null;
 
-    private IActivity _currentActivity;
-    private readonly Queue<IActivity> _activityQueue = new Queue<IActivity>();
+    public IActivity CurrentActivity { get; private set; }
 
-    public CharacterEntity(GameEntity game, HexagonPathfinding pathfinding)
+    public CharacterEntity(GameEntity game)
     {
         _game = game;
-        _pathfinding = pathfinding;
     }
     
     public INodeOperation Initialize()
@@ -25,25 +22,26 @@ public class CharacterEntity
 
     public INodeOperation Update(float delta)
     {
-        if (_currentActivity == null)
+        if (CurrentActivity != null && CurrentActivity.IsFinished)
         {
-            if (_activityQueue.Any())
-            {
-                _currentActivity = _activityQueue.Dequeue();
-                _game.RunActivity(_currentActivity);
-            }
+            CurrentActivity = null;
         }
-        else if (_currentActivity.IsFinished)
+        
+        if (CurrentActivity == null)
         {
-            _currentActivity = null;
+            var job = _game.GetNextJob(this);
+            if (job != null)
+            {
+                job.StartWorking(this);
+                _game.RunActivity(CurrentActivity);
+            }
         }
 
         return new UpdateCharacter(this);
     }
 
-    public void Construct(ConstructionEntity construction)
+    public void StartActivity(IActivity activity)
     {
-        _activityQueue.Enqueue(new MovementActivity(_pathfinding, this, construction.Position));
-        _activityQueue.Enqueue(new ConstructionActivity(_game, this, construction));
+        CurrentActivity = activity;
     }
 }

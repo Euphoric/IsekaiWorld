@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 public readonly struct HexCubeCoord : IEquatable<HexCubeCoord>
@@ -123,6 +124,11 @@ public readonly struct HexCubeCoord : IEquatable<HexCubeCoord>
             this + HexagonDirection.BottomRight,
             this + HexagonDirection.BottomLeft,
         };
+    }
+    
+    public bool IsNextTo(HexCubeCoord position)
+    {
+        return Neighbors().Contains(position);
     }
     
     public bool Equals(HexCubeCoord other)
