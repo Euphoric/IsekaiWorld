@@ -12,7 +12,8 @@ public class ConstructionEntity
     
     public float Progress { get; set; }
     public float CompleteProgress => 3;
-    
+    public float ProgressRelative => Progress / CompleteProgress;
+
 
     public INodeOperation UpdateNode()
     {

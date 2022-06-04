@@ -130,6 +130,10 @@ public class GameEntity
         return _buildings.FirstOrDefault(b => b.Position == position);
     }
     
+    public ConstructionEntity ConstructionOn(HexCubeCoord position)
+    {
+        return _constructionEntities.FirstOrDefault(c => c.Position == position);
+    }
 
     public void SpawnBuilding(ConstructionEntity construction)
     {

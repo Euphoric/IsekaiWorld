@@ -4,22 +4,86 @@ using Godot;
 
 public class GameUserInterface
 {
+    private interface ISelection
+    {
+        string Label { get; }
+        bool Update();
+    }
+
+    private class CharacterSelection : ISelection
+    {
+        public CharacterSelection(CharacterEntity character)
+        {
+            Label = "Character: " + character.Label;
+        }
+
+        public string Label { get;  }
+        
+        public bool Update()
+        {
+            return false;
+        }
+    }
+
+    private class BuildingSelection : ISelection
+    {
+        public BuildingSelection(BuildingEntity building)
+        {
+            Label = "Building: " + building.Label;
+        }
+
+        public string Label { get;  }
+        
+        public bool Update()
+        {
+            return false;
+        }
+    }
+
+    private class ConstructionSelection : ISelection
+    {
+        private readonly ConstructionEntity _construction;
+
+        public ConstructionSelection(ConstructionEntity construction)
+        {
+            _construction = construction;
+        }
+
+        public string Label { get; private set; }
+
+        public bool Update()
+        {
+            var progress = Mathf.FloorToInt(_construction.ProgressRelative * 100);
+            Label = $"Construction: {_construction.BuildingDefinition.Label} Progress: {progress}";
+
+            return true;
+        }
+    }
+
     private readonly GameEntity _game;
 
-    private bool _selectedCharacterDirty;
-    private string _selectionLabel;
-
+    private bool _selectedLabelDirty;
+    private ISelection _currentSelection;
+    
     public GameUserInterface(GameEntity game)
     {
         _game = game;
     }
-    
+
     public IEnumerable<INodeOperation> Update()
     {
-        if (_selectedCharacterDirty)
+        if (_selectedLabelDirty)
         {
-            yield return new UpdateSelectedEntityOperation(_selectionLabel);
-            _selectedCharacterDirty = false;
+            yield return new UpdateSelectedEntityOperation(_currentSelection.Label);
+            _selectedLabelDirty = false;
+        }
+        
+        if (_currentSelection != null)
+        {
+            if (_currentSelection.Update())
+            {
+                yield return new UpdateSelectedEntityOperation(_currentSelection.Label);
+            }
         }
     }
 
@@ -28,15 +92,22 @@ public class GameUserInterface
         var selectedCharacter = _game.CharacterOn(position);
         if (selectedCharacter != null)
         {
-            _selectedCharacterDirty = true;
-            _selectionLabel = "Character: " + selectedCharacter.Label;
+            _selectedLabelDirty = true;
+            _currentSelection = new CharacterSelection(selectedCharacter);
         }
 
         var selectedBuilding = _game.BuildingOn(position);
         if (selectedBuilding != null)
         {
-            _selectedCharacterDirty = true;
-            _selectionLabel = "Building: " + selectedBuilding.Label;
+            _selectedLabelDirty = true;
+            _currentSelection = new BuildingSelection(selectedBuilding);
+        }
+
+        var selectedConstruction = _game.ConstructionOn(position);
+        if (selectedConstruction != null)
+        {
+            _selectedLabelDirty = true;
+            _currentSelection = new ConstructionSelection(selectedConstruction);
         }
     }
 
