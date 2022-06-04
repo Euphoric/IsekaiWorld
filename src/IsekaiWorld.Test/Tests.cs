@@ -1,4 +1,6 @@
-﻿using Xunit;
+﻿using System.Linq;
+using FluentAssertions;
+using Xunit;
 
 namespace IsekaiWorld.Test
 {
@@ -8,24 +10,26 @@ namespace IsekaiWorld.Test
         public void Test1()
         {
             var game = new GameEntity();
-            game.Initialize();
+            game.Initialize(new EmptyMapGenerator());
             
-            var character = game.AddCharacter("CharacterX");
-            
-            Assert.True(character.IsIdle);
-            
-            game.StartConstruction(new HexCubeCoord(1, 1, -2));
-            
-            Assert.True(character.IsIdle);
-            
-            game.Update(0.1f);
-            
-            Assert.False(character.IsIdle);
-            var construction = Assert.IsType<ConstructionActivity>(character.CurrentActivity);
-            Assert.False(construction.IsFinished);
+            var character = game.AddCharacter("Test guy");
+            character.Position = HexCubeCoord.Zero;
 
-            game.UpdateUntil(() => construction.IsFinished);
-            game.Update(0.1f);
+            foreach (var cell in game.GameMap.Cells)
+            {
+                if (cell.Position.DistanceFrom(HexCubeCoord.Zero) < 5)
+                {
+                    game.StartConstruction(cell.Position);    
+                }
+            }
+
+            game.UpdateUntil(()=>
+            {
+                var issues = game.CheckForIssues().ToList();
+                issues.Should().BeEmpty();
+                
+                return !game.Constructions.Any();
+            }, 300);
         }
     }
 }

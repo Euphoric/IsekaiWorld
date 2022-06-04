@@ -131,6 +131,11 @@ public readonly struct HexCubeCoord : IEquatable<HexCubeCoord>
         return Neighbors().Contains(position);
     }
     
+    public int DistanceFrom(HexCubeCoord coord)
+    {
+        return (Math.Abs(this.Q - coord.Q) + Math.Abs(this.R - coord.R) + Math.Abs(this.S - coord.S)) / 2;
+    }
+    
     public bool Equals(HexCubeCoord other)
     {
         return R == other.R && Q == other.Q && S == other.S;

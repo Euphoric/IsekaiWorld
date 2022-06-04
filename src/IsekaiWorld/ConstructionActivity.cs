@@ -5,10 +5,10 @@ public class ConstructionActivity : IActivity
     public ConstructionEntity Construction { get; }
 
     private MovementActivity _movement;
-    
-    
+
+
     public bool IsFinished { get; private set; }
-    
+
     public ConstructionActivity(GameEntity game, CharacterEntity character, ConstructionEntity construction)
     {
         _game = game;
@@ -21,7 +21,9 @@ public class ConstructionActivity : IActivity
         if (IsFinished)
             return;
 
-        bool isNextToConstruction = Character.Position.IsNextTo(Construction.Position);
+        bool isNextToConstruction =
+            Construction.Position == Character.Position ||
+            Character.Position.IsNextTo(Construction.Position);
 
         if (!isNextToConstruction)
         {
@@ -29,13 +31,13 @@ public class ConstructionActivity : IActivity
             {
                 _movement = new MovementActivity(_game.Pathfinding, Character, Construction.Position);
             }
-            
+
             _movement.Update(delta);
         }
         else
         {
             _movement = null;
-            
+
             Construction.Progress += delta;
 
             if (Construction.Progress > 3)
@@ -43,7 +45,7 @@ public class ConstructionActivity : IActivity
                 IsFinished = true;
                 _game.RemoveConstruction(Construction);
                 _game.SpawnBuilding(Construction);
-            }            
+            }
         }
     }
 }

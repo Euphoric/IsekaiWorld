@@ -30,34 +30,17 @@ public class HexMap
         }
     }
 
-    public void GenerateMap()
-    {
-        var surfaceNoise = new Simplex.Noise(){Seed = 123};
-        var rockWallNoise = new Simplex.Noise(){Seed = 654};
-        
-        foreach (var cell in Cells)
-        {
-            var center = cell.Position.Center(1000);
-            var isRockWall = rockWallNoise.CalcPixel2D(
-                Mathf.CeilToInt(center.x),
-                Mathf.CeilToInt(center.y), 1 / 1000f * 0.04f) < -0.5;
-            
-            var isGrass = surfaceNoise.CalcPixel2D(
-                              Mathf.CeilToInt(center.x),
-                              Mathf.CeilToInt(center.y), 1 / 1000f * 0.04f) <
-                          0;
-                          
-            var surface = isRockWall ? SurfaceDefinitions.RockWall : isGrass ? SurfaceDefinitions.Grass : SurfaceDefinitions.Dirt;
-            cell.Surface = surface;
-        }
-    }
-    
     public void SetCell(HexCubeCoord position, SurfaceDefinition surface)
     {
-        var cell = Cells.First(c => c.Position == position);
+        var cell = CellForPosition(position);
         cell.Surface = surface;
 
         _mapChangeDirty = true;
+    }
+
+    public MapCell CellForPosition(HexCubeCoord position)
+    {
+        return Cells.First(c => c.Position == position);
     }
 
     public void Update(HexagonalMap map)

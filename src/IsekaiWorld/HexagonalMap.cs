@@ -12,7 +12,7 @@ public class HexagonalMap : Node2D
 	public override void _Ready()
 	{
 		_game = new GameEntity();
-		_game.Initialize();
+		_game.Initialize(new MapGenerator());
 
 		var adamCharacter = _game.AddCharacter("Adam");
 		adamCharacter.Position = new HexCubeCoord(1, 1, -2);

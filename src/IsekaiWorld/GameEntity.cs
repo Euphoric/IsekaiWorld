@@ -5,24 +5,25 @@ public class GameEntity
 {
     public HexMap GameMap { get; private set; }
     public HexagonPathfinding Pathfinding { get; private set; }
-    
+
     public GameUserInterface UserInterface { get; private set; }
-    
+
+    public IReadOnlyList<ConstructionEntity> Constructions => _constructionEntities;
+
     private readonly List<CharacterEntity> _characters = new List<CharacterEntity>();
     private readonly List<ConstructionEntity> _constructionEntities = new List<ConstructionEntity>();
     private readonly List<ConstructionJob> _constructionJobs = new List<ConstructionJob>();
-    
+
     private readonly List<IActivity> _activities = new List<IActivity>();
 
     private readonly List<INodeOperation> _operations = new List<INodeOperation>();
-    
-    public void Initialize()
+
+    public void Initialize(IMapGenerator mapGenerator)
     {
         UserInterface = new GameUserInterface(this);
-        
-        GameMap = new HexMap(32);
-        GameMap.GenerateMap();
-        
+
+        GameMap = mapGenerator.GenerateNewMap();
+
         Pathfinding = new HexagonPathfinding();
         Pathfinding.BuildMap(GameMap);
     }
@@ -40,12 +41,12 @@ public class GameEntity
 
         return characterEntity;
     }
-    
+
     public void RunActivity(IActivity activity)
     {
         _activities.Add(activity);
     }
-    
+
     public void RemoveConstruction(ConstructionEntity construction)
     {
         _constructionEntities.Remove(construction);
@@ -85,8 +86,9 @@ public class GameEntity
         {
             operation.Execute(map);
         }
+
         _operations.Clear();
-        
+
         GameMap.Update(map);
     }
 
@@ -102,14 +104,14 @@ public class GameEntity
             _constructionEntities.Add(constructionEntity);
 
             _operations.Add(new AddConstructionOperation(constructionEntity));
-            
+
             _constructionJobs.Add(new ConstructionJob(this, constructionEntity));
         }
     }
 
     public ConstructionJob GetNextJob(CharacterEntity character)
     {
-        var availableJobs = _constructionJobs.Where(o=>!o.InProgress).ToList();
+        var availableJobs = _constructionJobs.Where(o => !o.InProgress).ToList();
         if (!availableJobs.Any())
             return null;
 
@@ -127,5 +129,37 @@ public class GameEntity
         var surface = SurfaceDefinitions.ConstructedWall;
         GameMap.SetCell(construction.Position, surface);
         Pathfinding.SetPathing(construction.Position, surface);
+
+        var stuckCharacter = _characters.FirstOrDefault(c => c.Position == construction.Position);
+        if (stuckCharacter != null)
+        {
+            var unstuckCell = stuckCharacter.Position.Neighbors().Select(c => GameMap.CellForPosition(c))
+                .FirstOrDefault(c => c.Surface.IsPassable);
+            if (unstuckCell != null)
+            {
+                stuckCharacter.Position = unstuckCell.Position;
+            }
+        }
+    }
+
+    public IEnumerable<string> CheckForIssues()
+    {
+        foreach (var character in _characters)
+        {
+            var cellUnderCharacter = GameMap.CellForPosition(character.Position);
+            if (!cellUnderCharacter.Surface.IsPassable)
+            {
+                yield return $"Character '{character.Label}' stuck on impassable surface on {character.Position}";
+            }
+        }
+
+        foreach (var construction in _constructionEntities)
+        {
+            var cellUnderConstruction = GameMap.CellForPosition(construction.Position);
+            if (!cellUnderConstruction.Surface.IsPassable)
+            {
+                yield return $"Construction on impassable surface on {construction.Position}";
+            }
+        }
     }
 }
