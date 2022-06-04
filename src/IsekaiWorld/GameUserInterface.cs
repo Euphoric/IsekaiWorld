@@ -7,7 +7,7 @@ public class GameUserInterface
     private readonly GameEntity _game;
 
     private bool _selectedCharacterDirty;
-    private CharacterEntity _selectedCharacter;
+    private string _selectionLabel;
 
     public GameUserInterface(GameEntity game)
     {
@@ -18,18 +18,25 @@ public class GameUserInterface
     {
         if (_selectedCharacterDirty)
         {
-            yield return new UpdateSelectedEntityOperation("Character: " + _selectedCharacter.Label);
+            yield return new UpdateSelectedEntityOperation(_selectionLabel);
             _selectedCharacterDirty = false;
         }
     }
-    
-    public void SelectItemOn(HexCubeCoord position)
+
+    private void SelectItemOn(HexCubeCoord position)
     {
-        var selectedCharacter = _game.EntityOn(position);
-        if (selectedCharacter != null && selectedCharacter != _selectedCharacter)
+        var selectedCharacter = _game.CharacterOn(position);
+        if (selectedCharacter != null)
         {
             _selectedCharacterDirty = true;
-            _selectedCharacter = selectedCharacter;
+            _selectionLabel = "Character: " + selectedCharacter.Label;
+        }
+
+        var selectedBuilding = _game.BuildingOn(position);
+        if (selectedBuilding != null)
+        {
+            _selectedCharacterDirty = true;
+            _selectionLabel = "Building: " + selectedBuilding.Label;
         }
     }
 
