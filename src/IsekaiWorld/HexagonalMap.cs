@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Godot;
 
@@ -22,6 +21,16 @@ public class HexagonalMap : Node2D
 		
 		_hexesMesh = new ArrayMesh();
 
+		_mouseoverHexagon = new HexagonNode
+		{
+			Color = Colors.Red
+		};
+		AddChild(_mouseoverHexagon);
+	}
+
+	public void RefreshGameMap()
+	{
+		_hexesMesh.ClearSurfaces();
 		foreach (var cell in _game.GameMap.Cells)
 		{
 			var center = cell.Position.Center(1);
@@ -34,7 +43,8 @@ public class HexagonalMap : Node2D
 
 			var hexColor = cell.Surface.Color;
 
-			Color[] colors = {
+			Color[] colors =
+			{
 				hexColor,
 				hexColor,
 				hexColor,
@@ -54,12 +64,6 @@ public class HexagonalMap : Node2D
 			arrays[(int)ArrayMesh.ArrayType.Color] = colors;
 			_hexesMesh.AddSurfaceFromArrays(Mesh.PrimitiveType.TriangleFan, arrays);
 		}
-
-		_mouseoverHexagon = new HexagonNode
-		{
-			Color = Colors.Red
-		};
-		AddChild(_mouseoverHexagon);
 	}
 
 	public override void _Draw()

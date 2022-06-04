@@ -86,6 +86,8 @@ public class GameEntity
             operation.Execute(map);
         }
         _operations.Clear();
+        
+        GameMap.Update(map);
     }
 
     public void StartConstruction(HexCubeCoord position)
@@ -118,5 +120,12 @@ public class GameEntity
     public CharacterEntity EntityOn(HexCubeCoord position)
     {
         return _characters.FirstOrDefault(c => c.Position == position);
+    }
+
+    public void SpawnBuilding(ConstructionEntity construction)
+    {
+        var surface = SurfaceDefinitions.ConstructedWall;
+        GameMap.SetCell(construction.Position, surface);
+        Pathfinding.SetPathing(construction.Position, surface);
     }
 }

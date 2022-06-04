@@ -42,6 +42,7 @@ public class ConstructionActivity : IActivity
             {
                 IsFinished = true;
                 _game.RemoveConstruction(Construction);
+                _game.SpawnBuilding(Construction);
             }            
         }
     }

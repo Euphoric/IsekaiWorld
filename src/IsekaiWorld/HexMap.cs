@@ -11,9 +11,10 @@ public class HexMap
     }
 
     public IReadOnlyList<HexCubeCoord> Hexes { get; }
-
     public IReadOnlyList<MapCell> Cells { get; }
 
+    private bool _mapChangeDirty = true; 
+    
     private static IEnumerable<HexCubeCoord> MapCoordinates(int size)
     {
         for (int r = -size; r <= size; r++)
@@ -48,6 +49,23 @@ public class HexMap
                           
             var surface = isRockWall ? SurfaceDefinitions.RockWall : isGrass ? SurfaceDefinitions.Grass : SurfaceDefinitions.Dirt;
             cell.Surface = surface;
+        }
+    }
+    
+    public void SetCell(HexCubeCoord position, SurfaceDefinition surface)
+    {
+        var cell = Cells.First(c => c.Position == position);
+        cell.Surface = surface;
+
+        _mapChangeDirty = true;
+    }
+
+    public void Update(HexagonalMap map)
+    {
+        if (_mapChangeDirty)
+        {
+            map.RefreshGameMap();
+            _mapChangeDirty = false;
         }
     }
 }

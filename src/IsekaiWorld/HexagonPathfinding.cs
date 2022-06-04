@@ -20,8 +20,7 @@ public class HexagonPathfinding
 {
     private readonly Dictionary<HexCubeCoord, Node> _nodes = new Dictionary<HexCubeCoord, Node>();
     private readonly Dictionary<INode, HexCubeCoord> _nodeToHexPosition = new Dictionary<INode, HexCubeCoord>();
-    
-    
+
     public void BuildMap(HexMap hexMap)
     {
         var cells = hexMap.Cells;
@@ -66,5 +65,12 @@ public class HexagonPathfinding
         var path = pathFinder.FindPath(fromNode, toNode, Velocity.FromKilometersPerHour(1));
         var hexPath = path.Edges.Select(x => _nodeToHexPosition[x.End]);
         return new PathfindingResult(path.Type == PathType.Complete, hexPath.ToList()) ;
+    }
+
+    public void SetPathing(HexCubeCoord position, SurfaceDefinition surface)
+    {
+        var centerNode = _nodes[position];
+        centerNode.Incoming.Clear();
+        centerNode.Outgoing.Clear();
     }
 }
