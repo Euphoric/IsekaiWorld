@@ -10,7 +10,7 @@ namespace IsekaiWorld.Test
             var game = new GameEntity();
             game.Initialize();
             
-            var character = game.AddCharacter();
+            var character = game.AddCharacter("CharacterX");
             
             Assert.True(character.IsIdle);
             

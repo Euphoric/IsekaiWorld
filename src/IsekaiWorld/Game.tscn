@@ -50,5 +50,13 @@ margin_right = 168.0
 margin_bottom = 20.0
 text = "Construction"
 
+[node name="SelectionLabel" type="Label" parent="UI"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -40.0
+margin_bottom = -20.0
+text = "Selection label"
+
 [connection signal="pressed" from="UI/HBoxContainer/SelectionButton" to="Map/HexagonalMap" method="_on_SelectionButton_pressed"]
 [connection signal="pressed" from="UI/HBoxContainer/ConstructionButton" to="Map/HexagonalMap" method="_on_ConstructionButton_pressed"]

@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-
 public class CharacterEntity
 {
     private readonly GameEntity _game;
@@ -9,9 +6,11 @@ public class CharacterEntity
     public bool IsIdle => CurrentActivity == null;
 
     public IActivity CurrentActivity { get; private set; }
+    public string Label { get; private set; }
 
-    public CharacterEntity(GameEntity game)
+    public CharacterEntity(GameEntity game, string label)
     {
+        Label = label;
         _game = game;
     }
     

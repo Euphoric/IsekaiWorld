@@ -6,6 +6,8 @@ public class GameEntity
     public HexMap GameMap { get; private set; }
     public HexagonPathfinding Pathfinding { get; private set; }
     
+    public GameUserInterface UserInterface { get; private set; }
+    
     private readonly List<CharacterEntity> _characters = new List<CharacterEntity>();
     private readonly List<ConstructionEntity> _constructionEntities = new List<ConstructionEntity>();
     private readonly List<ConstructionJob> _constructionJobs = new List<ConstructionJob>();
@@ -16,6 +18,8 @@ public class GameEntity
     
     public void Initialize()
     {
+        UserInterface = new GameUserInterface(this);
+        
         GameMap = new HexMap(32);
         GameMap.GenerateMap();
         
@@ -23,9 +27,9 @@ public class GameEntity
         Pathfinding.BuildMap(GameMap);
     }
 
-    public CharacterEntity AddCharacter()
+    public CharacterEntity AddCharacter(string label)
     {
-        var characterEntity = new CharacterEntity(this)
+        var characterEntity = new CharacterEntity(this, label)
         {
             Position = HexCubeCoord.Zero,
         };
@@ -64,6 +68,11 @@ public class GameEntity
         foreach (var entity in _constructionEntities)
         {
             var operation = entity.UpdateNode();
+            _operations.Add(operation);
+        }
+
+        foreach (var operation in UserInterface.Update())
+        {
             _operations.Add(operation);
         }
 
@@ -106,8 +115,8 @@ public class GameEntity
         return job;
     }
 
-    public void SelectItemOn(HexCubeCoord position)
+    public CharacterEntity EntityOn(HexCubeCoord position)
     {
-        var selectedCharacter = _characters.FirstOrDefault(c => c.Position == position);
+        return _characters.FirstOrDefault(c => c.Position == position);
     }
 }

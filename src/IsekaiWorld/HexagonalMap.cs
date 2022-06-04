@@ -15,8 +15,10 @@ public class HexagonalMap : Node2D
 		_game = new GameEntity();
 		_game.Initialize();
 
-		_game.AddCharacter();
-		_game.AddCharacter();
+		var adamCharacter = _game.AddCharacter("Adam");
+		adamCharacter.Position = new HexCubeCoord(1, 1, -2);
+		var eveCharacter = _game.AddCharacter("Eve");
+		eveCharacter.Position = new HexCubeCoord(1, -1, 0);
 		
 		_hexesMesh = new ArrayMesh();
 
@@ -74,12 +76,11 @@ public class HexagonalMap : Node2D
 		{
 			if (mouseButton.ButtonIndex == (int)ButtonList.Left && mouseButton.Pressed)
 			{
-				
 				var clickPosition = _mouseoverHexagon.HexPosition;
 				switch (_currentTool)
 				{
 					case Tool.Selection:
-						_game.SelectItemOn(clickPosition);
+						_game.UserInterface.SelectItemOn(clickPosition);
 						break;
 					case Tool.Construction:
 						_game.StartConstruction(clickPosition);
