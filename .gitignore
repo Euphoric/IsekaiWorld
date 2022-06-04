@@ -351,3 +351,6 @@ MigrationBackup/
 
 # Rider
 **/.idea/
+
+# Godot mono runtime folder
+**/.mono
