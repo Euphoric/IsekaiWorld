@@ -95,7 +95,8 @@ public class GameEntity
     public void StartConstruction(HexCubeCoord position)
     {
         var constructionExists = _constructionEntities.Any(x => x.Position == position);
-        if (!constructionExists)
+        var isTerrainPassable = GameMap.CellForPosition(position).Surface.IsPassable;
+        if (!constructionExists && isTerrainPassable)
         {
             var constructionEntity = new ConstructionEntity
             {
