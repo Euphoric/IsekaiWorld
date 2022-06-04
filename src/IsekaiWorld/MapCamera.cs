@@ -49,7 +49,7 @@ public class MapCamera : Camera2D
 		float speed = 100;
 		Position += velocity * speed * delta;
 
-		var label = GetNode<Label>("../UI/Container/DebugLabel");
+		var label = GetNode<Label>("/root/Game/UI/Container/DebugLabel");
 		label.Text = Position + " / " + Zoom;
 	}
 }

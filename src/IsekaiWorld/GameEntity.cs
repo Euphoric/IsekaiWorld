@@ -105,4 +105,9 @@ public class GameEntity
         var job = availableJobs.First();
         return job;
     }
+
+    public void SelectItemOn(HexCubeCoord position)
+    {
+        var selectedCharacter = _characters.FirstOrDefault(c => c.Position == position);
+    }
 }
