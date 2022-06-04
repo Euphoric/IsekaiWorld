@@ -60,9 +60,6 @@ public class HexagonalMap : Node2D
 			Color = Colors.Red
 		};
 		AddChild(_mouseoverHexagon);
-
-		var uiNode = GetNode<CanvasLayer>("/root/Game/UI");
-		uiNode.AddChild(new Label(){Text = "Test label"});
 	}
 
 	public override void _Draw()
@@ -77,39 +74,23 @@ public class HexagonalMap : Node2D
 			if (mouseButton.ButtonIndex == (int)ButtonList.Left && mouseButton.Pressed)
 			{
 				var clickPosition = _mouseoverHexagon.HexPosition;
-				switch (_currentTool)
-				{
-					case Tool.Selection:
-						_game.UserInterface.SelectItemOn(clickPosition);
-						break;
-					case Tool.Construction:
-						_game.StartConstruction(clickPosition);
-						break;
-					default:
-						throw new ArgumentOutOfRangeException();
-				}
+				_game.UserInterface.MouseClickOnMap(clickPosition);
 			}
 		}
 
 		base._Input(@event);
 	}
 
-	enum Tool
-	{
-		Selection,
-		Construction
-	}
-
-	private Tool _currentTool = Tool.Selection;
-	
+	// ReSharper disable once UnusedMember.Global
 	public void _on_SelectionButton_pressed()
 	{
-		_currentTool = Tool.Selection;
+		_game.UserInterface.SelectionToggled();
 	}
 	
+	// ReSharper disable once UnusedMember.Global
 	public void _on_ConstructionButton_pressed()
 	{
-		_currentTool = Tool.Construction;
+		_game.UserInterface.ContructionToggled();
 	}
 
 	public override void _Process(float delta)

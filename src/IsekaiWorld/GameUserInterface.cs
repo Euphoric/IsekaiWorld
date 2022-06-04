@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 
@@ -30,6 +31,39 @@ public class GameUserInterface
             _selectedCharacterDirty = true;
             _selectedCharacter = selectedCharacter;
         }
+    }
+
+    enum Tool
+    {
+        Selection,
+        Construction
+    }
+
+    private Tool _currentTool = Tool.Selection;
+    
+    public void MouseClickOnMap(HexCubeCoord clickPosition)
+    {
+        switch (_currentTool)
+        {
+            case Tool.Selection:
+                _game.UserInterface.SelectItemOn(clickPosition);
+                break;
+            case Tool.Construction:
+                _game.StartConstruction(clickPosition);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    public void SelectionToggled()
+    {
+        _currentTool = Tool.Selection;
+    }
+
+    public void ContructionToggled()
+    {
+        _currentTool = Tool.Construction;
     }
 }
 
