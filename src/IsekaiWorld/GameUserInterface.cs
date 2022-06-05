@@ -154,9 +154,9 @@ public class UpdateSelectedEntityOperation : INodeOperation
         _selectionLabelText = selectionLabelText;
     }
     
-    public void Execute(HexagonalMap map)
+    public void Execute(GameNode gameNode)
     {
-        var selectionLabel = map.GetNode<Label>("/root/Game/UI/SelectionLabel");
+        var selectionLabel = gameNode.GetNode<Label>("/root/GameNode/UserInterface/SelectionLabel");
         selectionLabel.Text = _selectionLabelText;
     }
 }

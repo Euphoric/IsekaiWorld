@@ -1,24 +1,15 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 
 public class HexagonalMap : Node2D
 {
-	private  GameEntity _game;
 	private ArrayMesh _hexesMesh;
-	
 	private HexagonNode _mouseoverHexagon;
-
-	// Called when the node enters the scene tree for the first time.
+	private GameEntity _game;
+	
 	public override void _Ready()
 	{
-		_game = new GameEntity();
-		_game.Initialize(new MapGenerator());
-
-		var adamCharacter = _game.AddCharacter("Adam");
-		adamCharacter.Position = new HexCubeCoord(1, 1, -2);
-		var eveCharacter = _game.AddCharacter("Eve");
-		eveCharacter.Position = new HexCubeCoord(1, -1, 0);
-		
 		_hexesMesh = new ArrayMesh();
 
 		_mouseoverHexagon = new HexagonNode
@@ -26,6 +17,14 @@ public class HexagonalMap : Node2D
 			Color = Colors.Red
 		};
 		AddChild(_mouseoverHexagon);
+	}
+
+	public override void _EnterTree()
+	{
+		var gameNode = GetNode<GameNode>("/root/GameNode");
+		_game = gameNode.GameEntity;
+		
+		base._EnterTree();
 	}
 
 	public void RefreshGameMap()
@@ -85,18 +84,6 @@ public class HexagonalMap : Node2D
 		base._Input(@event);
 	}
 
-	// ReSharper disable once UnusedMember.Global
-	public void _on_SelectionButton_pressed()
-	{
-		_game.UserInterface.SelectionToggled();
-	}
-	
-	// ReSharper disable once UnusedMember.Global
-	public void _on_ConstructionButton_pressed()
-	{
-		_game.UserInterface.ContructionToggled();
-	}
-
 	public override void _Process(float delta)
 	{
 		var position = GetLocalMousePosition();
@@ -104,28 +91,6 @@ public class HexagonalMap : Node2D
 		var hex = HexCubeCoord.FromPosition(position, 1);
 		_mouseoverHexagon.HexPosition = hex;
 
-		_game.Update(delta);
-
-		_game.UpdateNodes(this);
-		
 		base._Process(delta);
-	}
-
-	private readonly Dictionary<object, Node> _nodeMappings = new Dictionary<object, Node>();
-	
-	public void AddNodeReference(object entity, Node node)
-	{
-		_nodeMappings.Add(entity, node);
-	}
-
-	public void RemoveNodeFor(object entity)
-	{
-		RemoveChild(_nodeMappings[entity]);
-	}
-
-	public TNode GetEntityNode<TNode>(object entity)
-		where TNode : Node
-	{
-		return (TNode)_nodeMappings[entity];
 	}
 }

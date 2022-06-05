@@ -9,9 +9,9 @@ public class UpdateConstruction : INodeOperation
         _constructionEntity = constructionEntity;
     }
 
-    public void Execute(HexagonalMap map)
+    public void Execute(GameNode gameNode)
     {
-        var node = map.GetEntityNode<HexagonNode>(_constructionEntity);
+        var node = gameNode.GetEntityNode<HexagonNode>(_constructionEntity);
         
         var percentProgress = _constructionEntity.ProgressRelative;
         node.InnerSize = Mathf.Min(Mathf.Max((1 - percentProgress)*0.9f, 0), 0.9f);

@@ -7,8 +7,8 @@ public class RemoveConstruction : INodeOperation
         _construction = construction;
     }
 
-    public void Execute(HexagonalMap map)
+    public void Execute(GameNode gameNode)
     {
-        map.RemoveNodeFor(_construction);
+        gameNode.RemoveNodeFor(_construction);
     }
 }

@@ -9,14 +9,15 @@ public class AddConstructionOperation : INodeOperation
         _constructionEntity = constructionEntity;
     }
 
-    public void Execute(HexagonalMap map)
+    public void Execute(GameNode gameNode)
     {
         var constructionNode = new HexagonNode
         {
             Color = Colors.MediumPurple,
         };
         constructionNode.HexPosition = _constructionEntity.Position;
-        map.AddChild(constructionNode);
-        map.AddNodeReference(_constructionEntity, constructionNode);
+        var mapNode = gameNode.GetEntityNode<HexagonalMap>(gameNode.GameEntity.GameMap);
+        mapNode.AddChild(constructionNode);
+        gameNode.AddNodeReference(_constructionEntity, constructionNode);
     }
 }

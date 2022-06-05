@@ -1,4 +1,4 @@
 public interface INodeOperation
 {
-    void Execute(HexagonalMap map);
+    void Execute(GameNode gameNode);
 }

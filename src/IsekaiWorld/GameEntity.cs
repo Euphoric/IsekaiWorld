@@ -83,16 +83,17 @@ public class GameEntity
         _activities.RemoveAll(x => x.IsFinished);
     }
 
-    public void UpdateNodes(HexagonalMap map)
+    public void UpdateNodes(GameNode gameNode)
     {
         foreach (var operation in _operations)
         {
-            operation.Execute(map);
+            operation.Execute(gameNode);
         }
 
         _operations.Clear();
 
-        GameMap.Update(map);
+        var hexagonalMapNode = gameNode.GetEntityNode<HexagonalMap>(GameMap);
+        GameMap.Update(hexagonalMapNode);
     }
 
     public void StartConstruction(HexCubeCoord position)

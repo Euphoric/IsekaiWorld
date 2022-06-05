@@ -9,14 +9,15 @@ public class CreateCharacter : INodeOperation
         _character = character;
     }
 
-    public void Execute(HexagonalMap map)
+    public void Execute(GameNode gameNode)
     {
         var characterHexagon = new HexagonNode
         {
             HexPosition = HexCubeCoord.Zero,
             Color = Colors.Blue
         };
-        map.AddChild(characterHexagon);
-        map.AddNodeReference(_character, characterHexagon);
+        var mapNode = gameNode.GetEntityNode<HexagonalMap>(gameNode.GameEntity.GameMap);
+        mapNode.AddChild(characterHexagon);
+        gameNode.AddNodeReference(_character, characterHexagon);
     }
 }
