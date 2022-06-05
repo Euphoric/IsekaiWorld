@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-public class HexMap
+public class HexagonalMapEntity
 {
-    public HexMap(int size)
+    public HexagonalMapEntity(int size)
     {
         Hexes = MapCoordinates(size).ToList();
         Cells = Hexes.Select(pos => new MapCell(pos)).ToList();
@@ -53,16 +53,16 @@ public class HexMap
     
     private class RefreshMapOperation : INodeOperation
     {
-        private readonly HexMap _mapEntity;
+        private readonly HexagonalMapEntity _mapEntityEntity;
 
-        public RefreshMapOperation(HexMap mapEntity)
+        public RefreshMapOperation(HexagonalMapEntity mapEntityEntity)
         {
-            _mapEntity = mapEntity;
+            _mapEntityEntity = mapEntityEntity;
         }
         
         public void Execute(GameNode gameNode)
         {
-            var hexagonalMapNode = gameNode.GetEntityNode<HexagonalMap>(_mapEntity);
+            var hexagonalMapNode = gameNode.GetEntityNode<HexagonalMap>(_mapEntityEntity);
             hexagonalMapNode.RefreshGameMap();
         }
     }

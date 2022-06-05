@@ -2,14 +2,14 @@ using Godot;
 
 public interface IMapGenerator
 {
-    HexMap GenerateNewMap();
+    HexagonalMapEntity GenerateNewMap();
 }
 
 public class MapGenerator : IMapGenerator
 {
-    public HexMap GenerateNewMap()
+    public HexagonalMapEntity GenerateNewMap()
     {
-        var map = new HexMap(32);
+        var map = new HexagonalMapEntity(32);
         
         var surfaceNoise = new Simplex.Noise(){Seed = 123};
         var rockWallNoise = new Simplex.Noise(){Seed = 654};
@@ -36,9 +36,9 @@ public class MapGenerator : IMapGenerator
 
 public class EmptyMapGenerator : IMapGenerator
 {
-    public HexMap GenerateNewMap()
+    public HexagonalMapEntity GenerateNewMap()
     {
-        var map = new HexMap(8);
+        var map = new HexagonalMapEntity(8);
 
         foreach (var cell in map.Cells)
         {

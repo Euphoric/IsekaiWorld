@@ -3,7 +3,7 @@ using System.Linq;
 
 public class GameEntity
 {
-    public HexMap GameMap { get; private set; }
+    public HexagonalMapEntity GameMap { get; private set; }
     public HexagonPathfinding Pathfinding { get; private set; }
 
     public GameUserInterface UserInterface { get; private set; }

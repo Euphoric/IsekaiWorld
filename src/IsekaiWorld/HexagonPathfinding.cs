@@ -21,9 +21,9 @@ public class HexagonPathfinding
     private readonly Dictionary<HexCubeCoord, Node> _nodes = new Dictionary<HexCubeCoord, Node>();
     private readonly Dictionary<INode, HexCubeCoord> _nodeToHexPosition = new Dictionary<INode, HexCubeCoord>();
 
-    public void BuildMap(HexMap hexMap)
+    public void BuildMap(HexagonalMapEntity hexagonalMapEntity)
     {
-        var cells = hexMap.Cells;
+        var cells = hexagonalMapEntity.Cells;
         foreach (var cell in cells)
         {
             var hex = cell.Position;
