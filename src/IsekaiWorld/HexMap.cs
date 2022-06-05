@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Godot;
 
 public class HexMap
 {
@@ -43,12 +42,28 @@ public class HexMap
         return Cells.First(c => c.Position == position);
     }
 
-    public void Update(HexagonalMap map)
+    public IEnumerable<INodeOperation> Update()
     {
         if (_mapChangeDirty)
         {
-            map.RefreshGameMap();
+            yield return new RefreshMapOperation(this);
             _mapChangeDirty = false;
+        }
+    }
+    
+    private class RefreshMapOperation : INodeOperation
+    {
+        private readonly HexMap _mapEntity;
+
+        public RefreshMapOperation(HexMap mapEntity)
+        {
+            _mapEntity = mapEntity;
+        }
+        
+        public void Execute(GameNode gameNode)
+        {
+            var hexagonalMapNode = gameNode.GetEntityNode<HexagonalMap>(_mapEntity);
+            hexagonalMapNode.RefreshGameMap();
         }
     }
 }

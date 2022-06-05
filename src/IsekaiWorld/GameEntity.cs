@@ -80,6 +80,11 @@ public class GameEntity
             _operations.Add(operation);
         }
 
+        foreach (var operation in GameMap.Update())
+        {
+            _operations.Add(operation);
+        }
+
         _activities.RemoveAll(x => x.IsFinished);
     }
 
@@ -91,9 +96,6 @@ public class GameEntity
         }
 
         _operations.Clear();
-
-        var hexagonalMapNode = gameNode.GetEntityNode<HexagonalMap>(GameMap);
-        GameMap.Update(hexagonalMapNode);
     }
 
     public void StartConstruction(HexCubeCoord position)

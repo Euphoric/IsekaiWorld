@@ -45,7 +45,8 @@ public class GameNode : Node
 
 	public void RemoveNodeFor(object entity)
 	{
-		RemoveChild(_nodeMappings[entity]);
+		var nodeToRemove = _nodeMappings[entity];
+		nodeToRemove.GetParent().RemoveChild(nodeToRemove);
 	}
 
 	public TNode GetEntityNode<TNode>(object entity)
