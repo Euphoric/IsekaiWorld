@@ -3,8 +3,11 @@ using System.Linq;
 
 public class HexagonalMapEntity
 {
+    public int Size { get; }
+
     public HexagonalMapEntity(int size)
     {
+        Size = size;
         Hexes = MapCoordinates(size).ToList();
         Cells = Hexes.Select(pos => new MapCell(pos)).ToList();
     }
@@ -37,6 +40,11 @@ public class HexagonalMapEntity
         _mapChangeDirty = true;
     }
 
+    public bool IsWithinMap(HexCubeCoord hexCubeCoord)
+    {
+        return hexCubeCoord.DistanceFrom(HexCubeCoord.Zero) <= Size;
+    }
+    
     public MapCell CellForPosition(HexCubeCoord position)
     {
         return Cells.First(c => c.Position == position);

@@ -48,3 +48,48 @@ public class EmptyMapGenerator : IMapGenerator
         return map;
     }
 }
+
+public class WallTilingTestMapGenerator : IMapGenerator
+{
+    public HexagonalMapEntity GenerateNewMap()
+    {
+        var map = new HexagonalMapEntity(16);
+
+        foreach (var cell in map.Cells)
+        {
+            cell.Surface = SurfaceDefinitions.Grass;
+        }
+        
+        map.CellForPosition(new HexCubeCoord(3, 3, -6)).Surface = SurfaceDefinitions.ConstructedWall;
+        map.CellForPosition(new HexCubeCoord(3, 2, -5)).Surface = SurfaceDefinitions.ConstructedWall;
+        map.CellForPosition(new HexCubeCoord(3, 1, -4)).Surface = SurfaceDefinitions.ConstructedWall;
+        
+        map.CellForPosition(new HexCubeCoord(-3, 3, 0)).Surface = SurfaceDefinitions.ConstructedWall;
+        map.CellForPosition(new HexCubeCoord(-2, 3, -1)).Surface = SurfaceDefinitions.ConstructedWall;
+        map.CellForPosition(new HexCubeCoord(-1, 3, -2)).Surface = SurfaceDefinitions.ConstructedWall;
+        
+        map.CellForPosition(new HexCubeCoord(-3, 0, 3)).Surface = SurfaceDefinitions.ConstructedWall;
+        map.CellForPosition(new HexCubeCoord(-2, -1, 3)).Surface = SurfaceDefinitions.ConstructedWall;
+        map.CellForPosition(new HexCubeCoord(-1, -2, 3)).Surface = SurfaceDefinitions.ConstructedWall;
+        
+        map.CellForPosition(new HexCubeCoord(1, -4, 3)).Surface = SurfaceDefinitions.ConstructedWall;
+        map.CellForPosition(new HexCubeCoord(2, -5, 3)).Surface = SurfaceDefinitions.ConstructedWall;
+        map.CellForPosition(new HexCubeCoord(1, -5, 4)).Surface = SurfaceDefinitions.ConstructedWall;
+        
+        map.CellForPosition(new HexCubeCoord(4, -3, -1)).Surface = SurfaceDefinitions.ConstructedWall;
+        map.CellForPosition(new HexCubeCoord(5, -4, -1)).Surface = SurfaceDefinitions.ConstructedWall;
+        map.CellForPosition(new HexCubeCoord(5, -3, -2)).Surface = SurfaceDefinitions.ConstructedWall;
+        
+        map.CellForPosition(new HexCubeCoord(-7, 3, 4)).Surface = SurfaceDefinitions.ConstructedWall;
+        map.CellForPosition(new HexCubeCoord(-6, 2, 4)).Surface = SurfaceDefinitions.ConstructedWall;
+        map.CellForPosition(new HexCubeCoord(-8, 3, 5)).Surface = SurfaceDefinitions.ConstructedWall;
+        map.CellForPosition(new HexCubeCoord(-7, 4, 3)).Surface = SurfaceDefinitions.ConstructedWall;
+        
+        map.CellForPosition(new HexCubeCoord(-7, 7, 0)).Surface = SurfaceDefinitions.ConstructedWall;
+        map.CellForPosition(new HexCubeCoord(-7, 6, 1)).Surface = SurfaceDefinitions.ConstructedWall;
+        map.CellForPosition(new HexCubeCoord(-6, 7, -1)).Surface = SurfaceDefinitions.ConstructedWall;
+        map.CellForPosition(new HexCubeCoord(-8, 8, 0)).Surface = SurfaceDefinitions.ConstructedWall;
+        
+        return map;
+    }
+}

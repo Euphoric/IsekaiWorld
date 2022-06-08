@@ -17,7 +17,9 @@ public class GameNode : Node
 	
 	public override void _Ready()
 	{
-		_game.Initialize(new MapGenerator());
+		var mapGenerator = new MapGenerator();
+		//var mapGenerator = new WallTilingTestMapGenerator();
+		_game.Initialize(mapGenerator);
 		
 		var adamCharacter = _game.AddCharacter("Adam");
 		adamCharacter.Position = new HexCubeCoord(1, 1, -2);
