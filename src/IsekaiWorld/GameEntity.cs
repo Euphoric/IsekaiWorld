@@ -98,13 +98,13 @@ public class GameEntity
         _operations.Clear();
     }
 
-    public void StartConstruction(HexCubeCoord position)
+    public void StartConstruction(HexCubeCoord position, BuildingDefinition building)
     {
         var constructionExists = _constructionEntities.Any(x => x.Position == position);
         var isTerrainPassable = GameMap.CellForPosition(position).Surface.IsPassable;
         if (!constructionExists && isTerrainPassable)
         {
-            var constructionEntity = new ConstructionEntity(position, BuildingDefinitions.Wall);
+            var constructionEntity = new ConstructionEntity(position, building);
             _constructionEntities.Add(constructionEntity);
 
             _operations.Add(new AddConstructionOperation(constructionEntity));

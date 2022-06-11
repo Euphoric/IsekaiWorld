@@ -118,7 +118,8 @@ public class GameUserInterface
     }
 
     private Tool _currentTool = Tool.Selection;
-    
+    private BuildingDefinition _currentBuildingSelection;
+
     public void MouseClickOnMap(HexCubeCoord clickPosition)
     {
         switch (_currentTool)
@@ -127,7 +128,7 @@ public class GameUserInterface
                 _game.UserInterface.SelectItemOn(clickPosition);
                 break;
             case Tool.Construction:
-                _game.StartConstruction(clickPosition);
+                _game.StartConstruction(clickPosition, _currentBuildingSelection);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -139,9 +140,10 @@ public class GameUserInterface
         _currentTool = Tool.Selection;
     }
 
-    public void ContructionToggled()
+    public void ConstructionToggled(BuildingDefinition buildingDefinition)
     {
         _currentTool = Tool.Construction;
+        _currentBuildingSelection = buildingDefinition;
     }
 }
 
