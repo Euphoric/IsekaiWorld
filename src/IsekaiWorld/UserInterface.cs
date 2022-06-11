@@ -17,20 +17,16 @@ public class UserInterface : CanvasLayer
     {
         base._Ready();
 
-        var wallButton = new Button
+        foreach (var definition in BuildingDefinitions.Definitions)
         {
-            Text = "Wall",
-        };
-        string buildingId = BuildingDefinitions.Wall.Id;
-        wallButton.Connect("pressed", this, nameof(_on_ConstructionSelectionButton_pressed), new GodotArray { buildingId }); 
-        ConstructionContainer.AddChild(wallButton);
-
-        // var tileFloorButton = new Button
-        // {
-        //     Text = "Tile floor"
-        // };
-        // tileFloorButton.Connect("pressed", this, nameof(_on_ConstructionSelectionButton_pressed), new Godot.Collections.Array(BuildingDefinitions.Wall.Id));
-        // ConstructionContainer.AddChild(tileFloorButton);
+            var button = new Button
+            {
+                Text = definition.Label,
+            };
+            string buildingId = definition.Id;
+            button.Connect("pressed", this, nameof(_on_ConstructionSelectionButton_pressed), new GodotArray { buildingId }); 
+            ConstructionContainer.AddChild(button);            
+        }
 
         ConstructionContainer.Visible = false;
     }

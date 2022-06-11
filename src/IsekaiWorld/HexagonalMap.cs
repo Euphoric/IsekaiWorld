@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Godot;
 
@@ -80,7 +79,7 @@ public class HexagonalMap : Node2D
                 textureScale = 1;
             }
 
-            var isWallSurface = surface == SurfaceDefinitions.RockWall || surface == SurfaceDefinitions.ConstructedWall;
+            var isWallSurface = surface == SurfaceDefinitions.RockWall || surface == SurfaceDefinitions.StoneWall || surface == SurfaceDefinitions.WoodenWall;
 
 // ReSharper disable InconsistentNaming
             var verticesCount = 3 * 6 * cells.Count;
@@ -390,7 +389,8 @@ public class HexagonalMap : Node2D
         {
             var neighborCell = _game.GameMap.CellForPosition(neighborHex);
             isNeighborWall = neighborCell.Surface == SurfaceDefinitions.RockWall ||
-                             neighborCell.Surface == SurfaceDefinitions.ConstructedWall;
+                             neighborCell.Surface == SurfaceDefinitions.StoneWall ||
+                             neighborCell.Surface == SurfaceDefinitions.WoodenWall;
         }
         else
         {
@@ -417,7 +417,7 @@ public class HexagonalMap : Node2D
             {
                 texture = _dirtTexture;
             }
-            else if (surface == SurfaceDefinitions.RockWall || surface == SurfaceDefinitions.ConstructedWall)
+            else if (surface == SurfaceDefinitions.RockWall || surface == SurfaceDefinitions.StoneWall || surface == SurfaceDefinitions.WoodenWall)
             {
                 texture = _wallTexture;
             }
@@ -446,7 +446,6 @@ public class HexagonalMap : Node2D
 
         var hex = HexCubeCoord.FromPosition(position, 1);
         _mouseoverHexagon.HexPosition = hex;
-        //Debug.WriteLine(hex);
 
         base._Process(delta);
     }

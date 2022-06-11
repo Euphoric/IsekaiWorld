@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Linq;
 
 public class BuildingDefinition
 {
@@ -17,15 +18,19 @@ public class BuildingDefinition
 
 public static class BuildingDefinitions
 {
-    public static readonly BuildingDefinition Wall = new BuildingDefinition("Core.Wall", "Wall", SurfaceDefinitions.ConstructedWall);
-
-    private static readonly Dictionary<string, BuildingDefinition> Definitions = new Dictionary<string, BuildingDefinition>()
-    {
-        { Wall.Id, Wall }
-    };
+    public static readonly BuildingDefinition StoneWall = new BuildingDefinition("Core.Wall.Stone", "Stone Wall", SurfaceDefinitions.StoneWall);
+    public static readonly BuildingDefinition WoodenWall = new BuildingDefinition("Core.Wall.Wood", "Wooden Wall", SurfaceDefinitions.WoodenWall);
     
+    private static readonly Dictionary<string, BuildingDefinition> DefinitionsMap = new Dictionary<string, BuildingDefinition>()
+    {
+        { WoodenWall.Id, WoodenWall},
+        { StoneWall.Id, StoneWall }
+    };
+
+    public static IReadOnlyList<BuildingDefinition> Definitions => DefinitionsMap.Values.ToList();
+
     public static BuildingDefinition GetById(string buildingDefinitionId)
     {
-        return Definitions[buildingDefinitionId];
+        return DefinitionsMap[buildingDefinitionId];
     }
 }
