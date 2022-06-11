@@ -21,6 +21,8 @@ public class GameEntity
 
     private readonly List<INodeOperation> _operations = new List<INodeOperation>();
 
+    private readonly List<ItemEntity> _items = new List<ItemEntity>();
+
     public void Initialize(IMapGenerator mapGenerator)
     {
         UserInterface = new GameUserInterface(this);
@@ -73,6 +75,12 @@ public class GameEntity
         {
             var operation = entity.UpdateNode();
             _operations.Add(operation);
+        }
+
+        foreach (var entity in _items)
+        {
+            var operations = entity.Update();
+            _operations.AddRange(operations);
         }
 
         foreach (var operation in UserInterface.Update())
@@ -176,6 +184,21 @@ public class GameEntity
             {
                 yield return $"Construction on impassable surface on {construction.Position}";
             }
+        }
+    }
+
+    public void SpawnItem(HexCubeCoord position)
+    {
+        var itemDefinition = ItemDefinitions.Wood;
+        var existingEntity = _items.FirstOrDefault(i => i.Position == position);
+        if (existingEntity == null)
+        {
+            var itemEntity = new ItemEntity(position, itemDefinition, 1);
+            _items.Add(itemEntity);
+        }
+        else
+        {
+            existingEntity.AddCount(1);
         }
     }
 }

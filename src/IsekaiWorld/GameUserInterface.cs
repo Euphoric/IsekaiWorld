@@ -115,7 +115,8 @@ public class GameUserInterface
     {
         Selection,
         Construction,
-        PlaceBuilding
+        PlaceBuilding,
+        PlaceItem
     }
 
     private Tool _currentTool = Tool.Selection;
@@ -133,6 +134,9 @@ public class GameUserInterface
                 break;
             case Tool.PlaceBuilding:
                 _game.SpawnBuilding(clickPosition, _currentBuildingSelection);
+                break;
+            case Tool.PlaceItem:
+                _game.SpawnItem(clickPosition);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -154,6 +158,11 @@ public class GameUserInterface
     {
         _currentTool = Tool.PlaceBuilding;
         _currentBuildingSelection = buildingDefinition;
+    }
+
+    public void PlaceItemSelected()
+    {
+        _currentTool = Tool.PlaceItem;
     }
 }
 

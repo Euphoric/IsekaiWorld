@@ -65,4 +65,13 @@ public class UserInterface : CanvasLayer
             ToolLabel.Text = "Place building: " + buildingDefinition.Label;
         }
     }
+    
+    // ReSharper disable once UnusedMember.Global
+    public void _on_PlaceItemButton_pressed()
+    {
+        ConstructionContainer.Visible = false;
+        
+        _game.UserInterface.PlaceItemSelected();
+        ToolLabel.Text = "Place item";
+    }
 }
