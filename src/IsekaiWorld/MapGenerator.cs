@@ -9,7 +9,7 @@ public class MapGenerator : IMapGenerator
 {
     public HexagonalMapEntity GenerateNewMap()
     {
-        var map = new HexagonalMapEntity(32);
+        var map = new HexagonalMapEntity(64);
         
         var surfaceNoise = new Simplex.Noise(){Seed = 123};
         var rockWallNoise = new Simplex.Noise(){Seed = 654};

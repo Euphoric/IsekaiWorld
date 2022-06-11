@@ -10,8 +10,10 @@ public class HexagonalMapEntity
         Size = size;
         Hexes = MapCoordinates(size).ToList();
         Cells = Hexes.Select(pos => new MapCell(pos)).ToList();
+        _cellsByPosition = Cells.ToDictionary(c => c.Position, c => c);
     }
 
+    private IReadOnlyDictionary<HexCubeCoord, MapCell> _cellsByPosition;
     public IReadOnlyList<HexCubeCoord> Hexes { get; }
     public IReadOnlyList<MapCell> Cells { get; }
 
@@ -47,7 +49,7 @@ public class HexagonalMapEntity
     
     public MapCell CellForPosition(HexCubeCoord position)
     {
-        return Cells.First(c => c.Position == position);
+        return _cellsByPosition[position];
     }
 
     public IEnumerable<INodeOperation> Update()
