@@ -33,13 +33,16 @@ public class UserInterface : CanvasLayer
 
     public Label ToolLabel => GetNode<Label>("ToolLabel");
     public Container ConstructionContainer => GetNode<Container>("ConstructionContainer");
+    public CheckButton PlaceDirectlyButton => ConstructionContainer.GetNode<CheckButton>("PlaceDirectlyButton");
     
     // ReSharper disable once UnusedMember.Global
     public void _on_SelectionButton_pressed()
     {
+        ConstructionContainer.Visible = false;
+
         ToolLabel.Text = "Selection";
         
-        _game.UserInterface.SelectionToggled();
+        _game.UserInterface.SelectionSelected();
     }
     
     // ReSharper disable once UnusedMember.Global
@@ -51,8 +54,15 @@ public class UserInterface : CanvasLayer
     public void _on_ConstructionSelectionButton_pressed(string buildingDefinitionId)
     {
         var buildingDefinition = BuildingDefinitions.GetById(buildingDefinitionId);
-        _game.UserInterface.ConstructionToggled(buildingDefinition);
-        
-        ToolLabel.Text = "Construction: " + buildingDefinition.Label;
+        if (!PlaceDirectlyButton.Pressed)
+        {
+            _game.UserInterface.ConstructionSelected(buildingDefinition);
+            ToolLabel.Text = "Construction: " + buildingDefinition.Label;
+        }
+        else
+        {
+            _game.UserInterface.PlaceBuildingSelected(buildingDefinition);
+            ToolLabel.Text = "Place building: " + buildingDefinition.Label;
+        }
     }
 }

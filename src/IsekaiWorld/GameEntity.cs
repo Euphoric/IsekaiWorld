@@ -138,12 +138,11 @@ public class GameEntity
         return _constructionEntities.FirstOrDefault(c => c.Position == position);
     }
 
-    public void SpawnBuilding(ConstructionEntity construction)
+    public void SpawnBuilding(HexCubeCoord position, BuildingDefinition buildingDefinition)
     {
-        var surface = construction.BuildingDefinition.Surface;
-        var position = construction.Position;
-        
-        _buildings.Add(new BuildingEntity(position, construction.BuildingDefinition));
+        var surface = buildingDefinition.Surface;
+
+        _buildings.Add(new BuildingEntity(position, buildingDefinition));
         GameMap.SetCell(position, surface);
         Pathfinding.SetPathing(position, surface);
 

@@ -44,7 +44,8 @@ public class ConstructionActivity : IActivity
             {
                 IsFinished = true;
                 _game.RemoveConstruction(Construction);
-                _game.SpawnBuilding(Construction);
+                ConstructionEntity construction = Construction;
+                _game.SpawnBuilding(construction.Position, construction.BuildingDefinition);
             }
         }
     }

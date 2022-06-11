@@ -114,7 +114,8 @@ public class GameUserInterface
     enum Tool
     {
         Selection,
-        Construction
+        Construction,
+        PlaceBuilding
     }
 
     private Tool _currentTool = Tool.Selection;
@@ -130,19 +131,28 @@ public class GameUserInterface
             case Tool.Construction:
                 _game.StartConstruction(clickPosition, _currentBuildingSelection);
                 break;
+            case Tool.PlaceBuilding:
+                _game.SpawnBuilding(clickPosition, _currentBuildingSelection);
+                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
     }
 
-    public void SelectionToggled()
+    public void SelectionSelected()
     {
         _currentTool = Tool.Selection;
     }
 
-    public void ConstructionToggled(BuildingDefinition buildingDefinition)
+    public void ConstructionSelected(BuildingDefinition buildingDefinition)
     {
         _currentTool = Tool.Construction;
+        _currentBuildingSelection = buildingDefinition;
+    }
+    
+    public void PlaceBuildingSelected(BuildingDefinition buildingDefinition)
+    {
+        _currentTool = Tool.PlaceBuilding;
         _currentBuildingSelection = buildingDefinition;
     }
 }

@@ -52,6 +52,7 @@ text = "Selection"
 margin_left = 75.0
 margin_right = 168.0
 margin_bottom = 20.0
+rect_pivot_offset = Vector2( 123, 10 )
 text = "Construction"
 
 [node name="SelectionLabel" type="Label" parent="UserInterface"]
@@ -66,6 +67,11 @@ text = "Selection label"
 margin_top = 37.0
 margin_right = 418.0
 margin_bottom = 527.0
+
+[node name="PlaceDirectlyButton" type="CheckButton" parent="UserInterface/ConstructionContainer"]
+margin_right = 166.0
+margin_bottom = 40.0
+text = "Place directly"
 
 [node name="ToolLabel" type="Label" parent="UserInterface"]
 anchor_top = 1.0
