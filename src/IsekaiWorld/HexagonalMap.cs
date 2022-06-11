@@ -14,11 +14,13 @@ public class HexagonalMap : Node2D
     private Texture _grassTexture;
     private Texture _dirtTexture;
     private Texture _wallTexture;
-
+    private Texture _tileTexture;
+    
     public override void _Ready()
     {
         _grassTexture = ResourceLoader.Load<Texture>("res://Textures/Surface/grass.png");
         _dirtTexture = ResourceLoader.Load<Texture>("res://Textures/Surface/dirt.jpg");
+        _tileTexture = ResourceLoader.Load<Texture>("res://Textures/Surface/TilePatternEven_Floor.png");
         _wallTexture = ResourceLoader.Load<Texture>("res://Textures/Wall/wall texture.svg");
 
         _mouseoverHexagon = new HexagonNode
@@ -73,6 +75,10 @@ public class HexagonalMap : Node2D
             else if (surface == SurfaceDefinitions.Dirt)
             {
                 textureScale = 1.0f;
+            }
+            else if (surface == SurfaceDefinitions.TileFloor)
+            {
+                textureScale = 0.05f;
             }
             else
             {
@@ -416,6 +422,9 @@ public class HexagonalMap : Node2D
             else if (surface == SurfaceDefinitions.Dirt)
             {
                 texture = _dirtTexture;
+            }else if (surface == SurfaceDefinitions.TileFloor)
+            {
+                texture = _tileTexture;
             }
             else if (surface == SurfaceDefinitions.RockWall || surface == SurfaceDefinitions.StoneWall || surface == SurfaceDefinitions.WoodenWall)
             {
