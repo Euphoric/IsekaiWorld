@@ -187,13 +187,13 @@ public class GameEntity
         }
     }
 
-    public void SpawnItem(HexCubeCoord position)
+    public void SpawnItem(HexCubeCoord position, ItemDefinition item)
     {
-        var itemDefinition = ItemDefinitions.Wood;
-        var existingEntity = _items.FirstOrDefault(i => i.Position == position);
-        if (existingEntity == null)
+        var existingEntity = _items.FirstOrDefault(i => i.Position == position && i.Definition == item);
+        var spawnNewEntity = existingEntity == null;
+        if (spawnNewEntity)
         {
-            var itemEntity = new ItemEntity(position, itemDefinition, 1);
+            var itemEntity = new ItemEntity(position, item, 1);
             _items.Add(itemEntity);
         }
         else

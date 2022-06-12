@@ -80,6 +80,11 @@ margin_right = 166.0
 margin_bottom = 40.0
 text = "Place directly"
 
+[node name="PlaceItemContainer" type="GridContainer" parent="UserInterface"]
+margin_top = 31.0
+margin_right = 392.0
+margin_bottom = 533.0
+
 [node name="ToolLabel" type="Label" parent="UserInterface"]
 anchor_top = 1.0
 anchor_bottom = 1.0

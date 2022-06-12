@@ -1,10 +1,10 @@
 using Godot;
 
-public class UpdateItem : INodeOperation
+public class UpdateItemOperation : INodeOperation
 {
     public ItemEntity ItemEntity { get; }
 
-    public UpdateItem(ItemEntity itemEntity)
+    public UpdateItemOperation(ItemEntity itemEntity)
     {
         ItemEntity = itemEntity;
     }
@@ -16,7 +16,7 @@ public class UpdateItem : INodeOperation
         var existingNode = mapNode.GetNodeOrNull<HexagonNode>(ItemEntity.EntityId.ToString());
         if (existingNode == null)
         {
-            var texture = ResourceLoader.Load<Texture>("res://Textures/Thing/WoodLog/WoodLog_c.png");
+            var texture = ResourceLoader.Load<Texture>(ItemEntity.Definition.TextureResource);
             var size = texture.GetSize();
         
             var sprite = new Sprite

@@ -29,7 +29,7 @@ public class ItemEntity
         if (_isDirty)
         {
             _isDirty = false;
-            yield return new UpdateItem(this);
+            yield return new UpdateItemOperation(this);
         }
     }
 }
