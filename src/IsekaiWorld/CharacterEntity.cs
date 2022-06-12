@@ -2,6 +2,8 @@ using System.Collections.Generic;
 
 public class CharacterEntity : IEntity
 {
+    public bool IsRemoved => false;
+    
     private readonly GameEntity _game;
 
     public HexCubeCoord Position { get; set; }

@@ -11,7 +11,9 @@ public class BuildingEntity : IEntity
     public HexCubeCoord Position { get; }
     public BuildingDefinition BuildingDefinition { get; }
     public string Label => BuildingDefinition.Label;
-    
+
+    public bool IsRemoved => false;
+
     public IEnumerable<INodeOperation> Update()
     {
         yield break;

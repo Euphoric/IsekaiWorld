@@ -48,8 +48,7 @@ public class GameEntity
 
     public void RemoveConstruction(ConstructionEntity construction)
     {
-        _entities.Remove(construction);
-        _operations.Add(new RemoveConstruction(construction));
+        construction.RemoveEntity();
     }
 
     public void Update(float delta)
@@ -59,6 +58,7 @@ public class GameEntity
             var operations = entity.Update();
             _operations.AddRange(operations);
         }
+        _entities.RemoveAll(ent => ent.IsRemoved);
 
         foreach (var operation in UserInterface.Update())
         {
@@ -95,10 +95,7 @@ public class GameEntity
         {
             var constructionEntity = new ConstructionEntity(position, building);
             _entities.Add(constructionEntity);
-
-            // TODO: Move to ConstructionEntity
-            _operations.Add(new AddConstructionOperation(constructionEntity));
-
+            
             _constructionJobs.Add(new ConstructionJob(this, constructionEntity));
         }
     }

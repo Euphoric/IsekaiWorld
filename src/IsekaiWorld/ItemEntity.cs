@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public class ItemEntity : IEntity
 {
+    public bool IsRemoved => false;
+    
     private bool _isDirty = true;
     
     public ItemEntity(HexCubeCoord position, ItemDefinition definition, int count)

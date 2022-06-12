@@ -7,6 +7,7 @@ public class GameNode : Node
     private  GameEntity _game;
 
     public GameEntity GameEntity => _game;
+    public HexagonalMap MapNode { get; private set; }
 
     public override void _EnterTree()
     {
@@ -26,8 +27,8 @@ public class GameNode : Node
         var eveCharacter = _game.AddCharacter("Eve");
         eveCharacter.Position = new HexCubeCoord(1, -1, 0);
 
-        var mapNode = GetNode<HexagonalMap>("Map/HexagonalMap");
-        AddNodeReference(_game.GameMap, mapNode);
+        MapNode = GetNode<HexagonalMap>("Map/HexagonalMap");
+        AddNodeReference(_game.GameMap, MapNode);
     }
 
     public override void _Process(float delta)
