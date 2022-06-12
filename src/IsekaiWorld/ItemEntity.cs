@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public class ItemEntity
+public class ItemEntity : IEntity
 {
     private bool _isDirty = true;
     

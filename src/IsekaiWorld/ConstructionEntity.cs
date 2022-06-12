@@ -1,4 +1,6 @@
-public class ConstructionEntity
+using System.Collections.Generic;
+
+public class ConstructionEntity : IEntity
 {
     
     public HexCubeCoord Position { get; }
@@ -14,9 +16,8 @@ public class ConstructionEntity
     public float CompleteProgress => 3;
     public float ProgressRelative => Progress / CompleteProgress;
 
-
-    public INodeOperation UpdateNode()
+    public IEnumerable<INodeOperation> Update()
     {
-        return new UpdateConstruction(this);
+        yield return new UpdateConstruction(this);
     }
 }

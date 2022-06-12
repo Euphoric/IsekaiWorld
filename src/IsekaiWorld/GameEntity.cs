@@ -5,24 +5,18 @@ public class GameEntity
 {
     public HexagonalMapEntity GameMap { get; private set; }
     public HexagonPathfinding Pathfinding { get; private set; }
-
     public GameUserInterface UserInterface { get; private set; }
 
-    public IReadOnlyList<ConstructionEntity> Constructions => _constructionEntities;
-    public IReadOnlyList<BuildingEntity> Buildings => _buildings;
+    public IReadOnlyList<ConstructionEntity> Constructions => _entities.OfType<ConstructionEntity>().ToList();
 
-    private readonly List<CharacterEntity> _characters = new List<CharacterEntity>();
-    private readonly List<BuildingEntity> _buildings = new List<BuildingEntity>();
-    
-    private readonly List<ConstructionEntity> _constructionEntities = new List<ConstructionEntity>();
     private readonly List<ConstructionJob> _constructionJobs = new List<ConstructionJob>();
 
     private readonly List<IActivity> _activities = new List<IActivity>();
 
     private readonly List<INodeOperation> _operations = new List<INodeOperation>();
 
-    private readonly List<ItemEntity> _items = new List<ItemEntity>();
-
+    private readonly List<IEntity> _entities = new List<IEntity>();
+    
     public void Initialize(IMapGenerator mapGenerator)
     {
         UserInterface = new GameUserInterface(this);
@@ -40,7 +34,7 @@ public class GameEntity
             Position = HexCubeCoord.Zero,
         };
 
-        _characters.Add(characterEntity);
+        _entities.Add(characterEntity);
 
         _operations.Add(characterEntity.Initialize());
 
@@ -54,30 +48,13 @@ public class GameEntity
 
     public void RemoveConstruction(ConstructionEntity construction)
     {
-        _constructionEntities.Remove(construction);
+        _entities.Remove(construction);
         _operations.Add(new RemoveConstruction(construction));
     }
 
     public void Update(float delta)
     {
-        foreach (var character in _characters)
-        {
-            var operation = character.Update(delta);
-            _operations.Add(operation);
-        }
-
-        foreach (var activity in _activities)
-        {
-            activity.Update(delta);
-        }
-
-        foreach (var entity in _constructionEntities)
-        {
-            var operation = entity.UpdateNode();
-            _operations.Add(operation);
-        }
-
-        foreach (var entity in _items)
+        foreach (var entity in _entities)
         {
             var operations = entity.Update();
             _operations.AddRange(operations);
@@ -92,7 +69,11 @@ public class GameEntity
         {
             _operations.Add(operation);
         }
-
+        
+        foreach (var activity in _activities)
+        {
+            activity.Update(delta);
+        }
         _activities.RemoveAll(x => x.IsFinished);
     }
 
@@ -108,13 +89,14 @@ public class GameEntity
 
     public void StartConstruction(HexCubeCoord position, BuildingDefinition building)
     {
-        var constructionExists = _constructionEntities.Any(x => x.Position == position);
+        var constructionExists = _entities.OfType<ConstructionEntity>().Any(x => x.Position == position);
         var isTerrainPassable = GameMap.CellForPosition(position).Surface.IsPassable;
         if (!constructionExists && isTerrainPassable)
         {
             var constructionEntity = new ConstructionEntity(position, building);
-            _constructionEntities.Add(constructionEntity);
+            _entities.Add(constructionEntity);
 
+            // TODO: Move to ConstructionEntity
             _operations.Add(new AddConstructionOperation(constructionEntity));
 
             _constructionJobs.Add(new ConstructionJob(this, constructionEntity));
@@ -133,28 +115,28 @@ public class GameEntity
 
     public CharacterEntity CharacterOn(HexCubeCoord position)
     {
-        return _characters.FirstOrDefault(c => c.Position == position);
+        return _entities.OfType<CharacterEntity>().FirstOrDefault(c => c.Position == position);
     }
     
     public BuildingEntity BuildingOn(HexCubeCoord position)
     {
-        return _buildings.FirstOrDefault(b => b.Position == position);
+        return _entities.OfType<BuildingEntity>().FirstOrDefault(b => b.Position == position);
     }
     
     public ConstructionEntity ConstructionOn(HexCubeCoord position)
     {
-        return _constructionEntities.FirstOrDefault(c => c.Position == position);
+        return _entities.OfType<ConstructionEntity>().FirstOrDefault(c => c.Position == position);
     }
 
     public void SpawnBuilding(HexCubeCoord position, BuildingDefinition buildingDefinition)
     {
         var surface = buildingDefinition.Surface;
 
-        _buildings.Add(new BuildingEntity(position, buildingDefinition));
+        _entities.Add(new BuildingEntity(position, buildingDefinition));
         GameMap.SetCell(position, surface);
         Pathfinding.SetPathing(position, surface);
 
-        var stuckCharacter = _characters.FirstOrDefault(c => c.Position == position);
+        var stuckCharacter = _entities.OfType<CharacterEntity>().FirstOrDefault(c => c.Position == position);
         if (stuckCharacter != null)
         {
             var unstuckCell = stuckCharacter.Position.Neighbors().Select(c => GameMap.CellForPosition(c))
@@ -168,7 +150,7 @@ public class GameEntity
 
     public IEnumerable<string> CheckForIssues()
     {
-        foreach (var character in _characters)
+        foreach (var character in _entities.OfType<CharacterEntity>())
         {
             var cellUnderCharacter = GameMap.CellForPosition(character.Position);
             if (!cellUnderCharacter.Surface.IsPassable)
@@ -177,7 +159,7 @@ public class GameEntity
             }
         }
 
-        foreach (var construction in _constructionEntities)
+        foreach (var construction in _entities.OfType<ConstructionEntity>())
         {
             var cellUnderConstruction = GameMap.CellForPosition(construction.Position);
             if (!cellUnderConstruction.Surface.IsPassable)
@@ -189,12 +171,12 @@ public class GameEntity
 
     public void SpawnItem(HexCubeCoord position, ItemDefinition item)
     {
-        var existingEntity = _items.FirstOrDefault(i => i.Position == position && i.Definition == item);
+        var existingEntity = _entities.OfType<ItemEntity>().FirstOrDefault(i => i.Position == position && i.Definition == item);
         var spawnNewEntity = existingEntity == null;
         if (spawnNewEntity)
         {
             var itemEntity = new ItemEntity(position, item, 1);
-            _items.Add(itemEntity);
+            _entities.Add(itemEntity);
         }
         else
         {

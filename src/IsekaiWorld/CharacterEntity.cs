@@ -1,4 +1,6 @@
-public class CharacterEntity
+using System.Collections.Generic;
+
+public class CharacterEntity : IEntity
 {
     private readonly GameEntity _game;
 
@@ -19,7 +21,7 @@ public class CharacterEntity
         return new CreateCharacter(this);
     }
 
-    public INodeOperation Update(float delta)
+    public IEnumerable<INodeOperation> Update()
     {
         if (CurrentActivity != null && CurrentActivity.IsFinished)
         {
@@ -36,7 +38,7 @@ public class CharacterEntity
             }
         }
 
-        return new UpdateCharacter(this);
+        yield return new UpdateCharacter(this);
     }
 
     public void StartActivity(IActivity activity)
