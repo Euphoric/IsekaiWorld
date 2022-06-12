@@ -110,19 +110,9 @@ public class GameEntity
         return job;
     }
 
-    public CharacterEntity CharacterOn(HexCubeCoord position)
+    public IEnumerable<IEntity> EntitiesOn(HexCubeCoord position)
     {
-        return _entities.OfType<CharacterEntity>().FirstOrDefault(c => c.Position == position);
-    }
-    
-    public BuildingEntity BuildingOn(HexCubeCoord position)
-    {
-        return _entities.OfType<BuildingEntity>().FirstOrDefault(b => b.Position == position);
-    }
-    
-    public ConstructionEntity ConstructionOn(HexCubeCoord position)
-    {
-        return _entities.OfType<ConstructionEntity>().FirstOrDefault(c => c.Position == position);
+        return _entities.Where(c => c.Position == position);
     }
 
     public void SpawnBuilding(HexCubeCoord position, BuildingDefinition buildingDefinition)

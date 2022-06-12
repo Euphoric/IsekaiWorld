@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 public class GameUserInterface
@@ -17,8 +18,8 @@ public class GameUserInterface
             Label = "Character: " + character.Label;
         }
 
-        public string Label { get;  }
-        
+        public string Label { get; }
+
         public bool Update()
         {
             return false;
@@ -32,8 +33,8 @@ public class GameUserInterface
             Label = "Building: " + building.Label;
         }
 
-        public string Label { get;  }
-        
+        public string Label { get; }
+
         public bool Update()
         {
             return false;
@@ -64,7 +65,7 @@ public class GameUserInterface
 
     private bool _selectedLabelDirty;
     private ISelection _currentSelection;
-    
+
     public GameUserInterface(GameEntity game)
     {
         _game = game;
@@ -77,7 +78,7 @@ public class GameUserInterface
             yield return new UpdateSelectedEntityOperation(_currentSelection.Label);
             _selectedLabelDirty = false;
         }
-        
+
         if (_currentSelection != null)
         {
             if (_currentSelection.Update())
@@ -89,25 +90,27 @@ public class GameUserInterface
 
     private void SelectItemOn(HexCubeCoord position)
     {
-        var selectedCharacter = _game.CharacterOn(position);
-        if (selectedCharacter != null)
-        {
-            _selectedLabelDirty = true;
-            _currentSelection = new CharacterSelection(selectedCharacter);
-        }
+        var selectedEntity = _game.EntitiesOn(position).FirstOrDefault();
 
-        var selectedBuilding = _game.BuildingOn(position);
-        if (selectedBuilding != null)
+        if (selectedEntity != null)
         {
             _selectedLabelDirty = true;
-            _currentSelection = new BuildingSelection(selectedBuilding);
-        }
-
-        var selectedConstruction = _game.ConstructionOn(position);
-        if (selectedConstruction != null)
-        {
-            _selectedLabelDirty = true;
-            _currentSelection = new ConstructionSelection(selectedConstruction);
+            if (selectedEntity is CharacterEntity selectedCharacter)
+            {
+                _currentSelection = new CharacterSelection(selectedCharacter);
+            }
+            else if (selectedEntity is BuildingEntity selectedBuilding)
+            {
+                _currentSelection = new BuildingSelection(selectedBuilding);
+            }
+            else if (selectedEntity is ConstructionEntity selectedConstruction)
+            {
+                _currentSelection = new ConstructionSelection(selectedConstruction);
+            }
+            else
+            {
+                throw new Exception("Unknown entity type: " + selectedEntity.GetType());
+            }
         }
     }
 
@@ -154,7 +157,7 @@ public class GameUserInterface
         _currentTool = Tool.Construction;
         _currentBuildingSelection = buildingDefinition;
     }
-    
+
     public void PlaceBuildingSelected(BuildingDefinition buildingDefinition)
     {
         _currentTool = Tool.PlaceBuilding;
@@ -168,7 +171,7 @@ public class GameUserInterface
     }
 }
 
-public class UpdateSelectedEntityOperation : INodeOperation 
+public class UpdateSelectedEntityOperation : INodeOperation
 {
     private readonly string _selectionLabelText;
 
@@ -176,7 +179,7 @@ public class UpdateSelectedEntityOperation : INodeOperation
     {
         _selectionLabelText = selectionLabelText;
     }
-    
+
     public void Execute(GameNode gameNode)
     {
         var selectionLabel = gameNode.GetNode<Label>("/root/GameNode/UserInterface/SelectionLabel");
