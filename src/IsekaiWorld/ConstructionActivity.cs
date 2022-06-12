@@ -1,3 +1,5 @@
+using System;
+
 public class ConstructionActivity : IActivity
 {
     private readonly GameEntity _game;
@@ -45,7 +47,19 @@ public class ConstructionActivity : IActivity
                 IsFinished = true;
                 _game.RemoveConstruction(Construction);
                 ConstructionEntity construction = Construction;
-                _game.SpawnBuilding(construction.Position, construction.BuildingDefinition);
+                if (construction.Definition.PlaceBuildingId != null)
+                {
+                    var buildingDefinition = BuildingDefinitions.GetById(construction.Definition.PlaceBuildingId);
+                    _game.SpawnBuilding(construction.Position, buildingDefinition);
+                }
+                else if (construction.Definition.PlaceFloorId != null)
+                {
+                    // TODO
+                }
+                else
+                {
+                    throw new Exception("Invalid construction setup for: " + construction.Definition.Id);
+                }
             }
         }
     }

@@ -17,14 +17,14 @@ public class UserInterface : CanvasLayer
     {
         base._Ready();
 
-        foreach (var definition in BuildingDefinitions.Definitions)
+        foreach (var definition in ConstructionDefinitions.Definitions)
         {
             var button = new Button
             {
                 Text = definition.Label,
             };
-            string buildingId = definition.Id;
-            button.Connect("pressed", this, nameof(_on_ConstructionSelectionButton_pressed), new GodotArray { buildingId }); 
+            var binds = new GodotArray { definition.Id };
+            button.Connect("pressed", this, nameof(_on_ConstructionSelectionButton_pressed), binds); 
             ConstructionContainer.AddChild(button);            
         }
         
@@ -67,18 +67,19 @@ public class UserInterface : CanvasLayer
         ConstructionContainer.Visible = !ConstructionContainer.Visible;
     }
 
-    public void _on_ConstructionSelectionButton_pressed(string buildingDefinitionId)
+    public void _on_ConstructionSelectionButton_pressed(string constructionDefinitionId)
     {
-        var buildingDefinition = BuildingDefinitions.GetById(buildingDefinitionId);
+        var definition = ConstructionDefinitions.GetById(constructionDefinitionId);
         if (!PlaceDirectlyButton.Pressed)
         {
-            _game.UserInterface.ConstructionSelected(buildingDefinition);
-            ToolLabel.Text = "Construction: " + buildingDefinition.Label;
+            _game.UserInterface.ConstructionSelected(definition);
+            ToolLabel.Text = "Construction: " + definition.Label;
         }
         else
         {
-            _game.UserInterface.PlaceBuildingSelected(buildingDefinition);
-            ToolLabel.Text = "Place building: " + buildingDefinition.Label;
+            // TODO: Fix
+            // _game.UserInterface.PlaceBuildingSelected(definition);
+            // ToolLabel.Text = "Place building: " + definition.Label;
         }
     }
     

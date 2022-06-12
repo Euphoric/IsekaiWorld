@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,6 +9,7 @@ public class GameEntity
     public GameUserInterface UserInterface { get; private set; }
 
     public IReadOnlyList<ConstructionEntity> Constructions => _entities.OfType<ConstructionEntity>().ToList();
+    public IReadOnlyList<BuildingEntity> Buildings => _entities.OfType<BuildingEntity>().ToList();
 
     private readonly List<ConstructionJob> _constructionJobs = new List<ConstructionJob>();
 
@@ -21,8 +23,10 @@ public class GameEntity
     {
         UserInterface = new GameUserInterface(this);
 
-        GameMap = mapGenerator.GenerateNewMap();
-
+        var (map, buildings) = mapGenerator.GenerateNewMap();
+        GameMap = map;
+        _entities.AddRange(buildings);
+        
         Pathfinding = new HexagonPathfinding();
         Pathfinding.BuildMap(GameMap);
     }
@@ -87,13 +91,13 @@ public class GameEntity
         _operations.Clear();
     }
 
-    public void StartConstruction(HexCubeCoord position, BuildingDefinition building)
+    public void StartConstruction(HexCubeCoord position, ConstructionDefinition construction)
     {
         var constructionExists = _entities.OfType<ConstructionEntity>().Any(x => x.Position == position);
         var isTerrainPassable = GameMap.CellForPosition(position).Surface.IsPassable;
         if (!constructionExists && isTerrainPassable)
         {
-            var constructionEntity = new ConstructionEntity(position, building);
+            var constructionEntity = new ConstructionEntity(position, construction);
             _entities.Add(constructionEntity);
             
             _constructionJobs.Add(new ConstructionJob(this, constructionEntity));
@@ -117,11 +121,9 @@ public class GameEntity
 
     public void SpawnBuilding(HexCubeCoord position, BuildingDefinition buildingDefinition)
     {
-        var surface = buildingDefinition.Surface;
-
         _entities.Add(new BuildingEntity(position, buildingDefinition));
-        GameMap.SetCell(position, surface);
-        Pathfinding.SetPathing(position, surface);
+        //GameMap.SetCell(position, surface);
+        //Pathfinding.SetPathing(position, surface);
 
         var stuckCharacter = _entities.OfType<CharacterEntity>().FirstOrDefault(c => c.Position == position);
         if (stuckCharacter != null)

@@ -56,24 +56,16 @@ public class HexagonalMapEntity
     {
         if (_mapChangeDirty)
         {
-            yield return new RefreshMapOperation(this);
+            yield return new RefreshMapOperation();
             _mapChangeDirty = false;
         }
     }
     
-    private class RefreshMapOperation : INodeOperation
+    public class RefreshMapOperation : INodeOperation
     {
-        private readonly HexagonalMapEntity _mapEntityEntity;
-
-        public RefreshMapOperation(HexagonalMapEntity mapEntityEntity)
-        {
-            _mapEntityEntity = mapEntityEntity;
-        }
-        
         public void Execute(GameNode gameNode)
         {
-            var hexagonalMapNode = gameNode.GetEntityNode<HexagonalMap>(_mapEntityEntity);
-            hexagonalMapNode.RefreshGameMap();
+            gameNode.MapNode.InvalidateMap();
         }
     }
 }

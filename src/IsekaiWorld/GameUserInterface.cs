@@ -55,7 +55,7 @@ public class GameUserInterface
         public bool Update()
         {
             var progress = Mathf.FloorToInt(_construction.ProgressRelative * 100);
-            Label = $"Construction: {_construction.BuildingDefinition.Label} Progress: {progress}";
+            Label = $"Construction: {_construction.Definition.Label} Progress: {progress}";
 
             return true;
         }
@@ -145,7 +145,7 @@ public class GameUserInterface
     }
 
     private Tool _currentTool = Tool.Selection;
-    private BuildingDefinition _currentBuildingSelection;
+    private ConstructionDefinition _currentBuildingSelection;
     private ItemDefinition _currentItemSelection;
 
     public void MouseClickOnMap(HexCubeCoord clickPosition)
@@ -159,7 +159,8 @@ public class GameUserInterface
                 _game.StartConstruction(clickPosition, _currentBuildingSelection);
                 break;
             case Tool.PlaceBuilding:
-                _game.SpawnBuilding(clickPosition, _currentBuildingSelection);
+                // TODO: Fix
+                // _game.SpawnBuilding(clickPosition, _currentBuildingSelection);
                 break;
             case Tool.PlaceItem:
                 _game.SpawnItem(clickPosition, _currentItemSelection);
@@ -174,17 +175,17 @@ public class GameUserInterface
         _currentTool = Tool.Selection;
     }
 
-    public void ConstructionSelected(BuildingDefinition buildingDefinition)
+    public void ConstructionSelected(ConstructionDefinition definition)
     {
         _currentTool = Tool.Construction;
-        _currentBuildingSelection = buildingDefinition;
+        _currentBuildingSelection = definition;
     }
 
-    public void PlaceBuildingSelected(BuildingDefinition buildingDefinition)
-    {
-        _currentTool = Tool.PlaceBuilding;
-        _currentBuildingSelection = buildingDefinition;
-    }
+    // public void PlaceBuildingSelected(BuildingDefinition buildingDefinition)
+    // {
+    //     _currentTool = Tool.PlaceBuilding;
+    //     _currentBuildingSelection = buildingDefinition;
+    // }
 
     public void PlaceItemSelected(ItemDefinition itemDefinition)
     {

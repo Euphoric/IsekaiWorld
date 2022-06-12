@@ -11,13 +11,13 @@ public class ConstructionEntity : IEntity
     private float _progress;
     
     public HexCubeCoord Position { get; }
-    public BuildingDefinition BuildingDefinition { get; }
+    public ConstructionDefinition Definition { get; }
 
-    public ConstructionEntity(HexCubeCoord position, BuildingDefinition buildingDefinition)
+    public ConstructionEntity(HexCubeCoord position, ConstructionDefinition definition)
     {
         Id = Guid.NewGuid();
         Position = position;
-        BuildingDefinition = buildingDefinition;
+        Definition = definition;
         
         _isDirty = true;
     }
