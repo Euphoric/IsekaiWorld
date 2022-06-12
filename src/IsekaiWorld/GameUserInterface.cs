@@ -60,6 +60,24 @@ public class GameUserInterface
             return true;
         }
     }
+    
+    private class ItemSelection : ISelection
+    {
+        private readonly ItemEntity _item;
+
+        public ItemSelection(ItemEntity item)
+        {
+            _item = item;
+        }
+
+        public string Label { get; private set; }
+
+        public bool Update()
+        {
+            Label = $"Item: {_item.Definition.Label} Count: {_item.Count}";
+            return true;
+        }
+    }
 
     private readonly GameEntity _game;
 
@@ -106,6 +124,10 @@ public class GameUserInterface
             else if (selectedEntity is ConstructionEntity selectedConstruction)
             {
                 _currentSelection = new ConstructionSelection(selectedConstruction);
+            }
+            else if (selectedEntity is ItemEntity itemEntity)
+            {
+                _currentSelection = new ItemSelection(itemEntity);
             }
             else
             {
