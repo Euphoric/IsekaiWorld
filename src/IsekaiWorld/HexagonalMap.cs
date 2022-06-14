@@ -17,7 +17,6 @@ public class HexagonalMap : Node2D
 
     private Texture _grassTexture;
     private Texture _dirtTexture;
-    private Texture _wallTexture;
     private Texture _tileTexture;
 
     public override void _Ready()
@@ -25,7 +24,6 @@ public class HexagonalMap : Node2D
         _grassTexture = ResourceLoader.Load<Texture>("res://Textures/Surface/grass.png");
         _dirtTexture = ResourceLoader.Load<Texture>("res://Textures/Surface/dirt.jpg");
         _tileTexture = ResourceLoader.Load<Texture>("res://Textures/Surface/TilePatternEven_Floor.png");
-        _wallTexture = ResourceLoader.Load<Texture>("res://Textures/Wall/wall texture.svg");
 
         _mouseoverHexagon = new HexagonNode
         {
@@ -490,14 +488,8 @@ public class HexagonalMap : Node2D
             var building = kvp.Key;
             var mesh = kvp.Value;
             
-            Texture texture = null;
-            
-            if (building == BuildingDefinitions.RockWall || building == BuildingDefinitions.StoneWall ||
-                building == BuildingDefinitions.WoodenWall)
-            {
-                texture = _wallTexture;
-            }
-            
+            Texture texture = ResourceLoader.Load<Texture>(building.TextureResource);
+
             DrawMesh(mesh, texture);
         }
     }

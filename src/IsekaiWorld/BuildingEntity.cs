@@ -67,7 +67,7 @@ public class UpdateBuildingOperation : INodeOperation
             var sprite = new Sprite();
             buildingNode.AddChild(sprite);
 
-            var texture = ResourceLoader.Load<Texture>("res://Textures/Furniture/DiningChair_south.png");
+            var texture = ResourceLoader.Load<Texture>(Entity.Definition.TextureResource);
             sprite.Texture = texture;
             sprite.Scale = Vector2.One / texture.GetSize();
             sprite.Modulate = Entity.Definition.Color;
