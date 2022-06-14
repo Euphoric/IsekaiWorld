@@ -70,7 +70,15 @@ public class UpdateBuildingOperation : INodeOperation
             var texture = ResourceLoader.Load<Texture>(Entity.Definition.TextureResource);
             sprite.Texture = texture;
             sprite.Scale = Vector2.One / texture.GetSize();
+            sprite.Scale *= 1.3f;
             sprite.Modulate = Entity.Definition.Color;
+            
+            if (Entity.Definition == BuildingDefinitions.WoodenBed)
+            {
+                sprite.Offset = new Vector2(0, texture.GetHeight() / 3f);
+                sprite.Scale *= 2;
+                sprite.Rotation = Mathf.Pi / 3 - Mathf.Pi / 6;
+            }
         }
     }
 }

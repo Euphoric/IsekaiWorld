@@ -9,6 +9,7 @@ public static class BuildingDefinitions
     public static readonly BuildingDefinition WoodenWall = new BuildingDefinition("Core.Wall.Wood", "Wooden Wall", Color.Color8(189, 116, 38),"res://Textures/Wall/wall texture.svg", true);
 
     public static readonly BuildingDefinition WoodenChair = new BuildingDefinition("Core.Furniture.Chair.Wood", "Wooden Chair", Color.Color8(189, 116, 38), "res://Textures/Furniture/DiningChair_south.png");
+    public static readonly BuildingDefinition WoodenBed = new BuildingDefinition("Core.Furniture.Bed.Wood", "Wooden Bed", Color.Color8(189, 116, 38), "res://Textures/Furniture/Bed_south.png");
 
     private static readonly Dictionary<string, BuildingDefinition> DefinitionsMap =
         new Dictionary<string, BuildingDefinition>
@@ -16,7 +17,8 @@ public static class BuildingDefinitions
             { RockWall.Id, RockWall },
             { WoodenWall.Id, WoodenWall },
             { StoneWall.Id, StoneWall },
-            { WoodenChair.Id, WoodenChair}
+            { WoodenChair.Id, WoodenChair },
+            { WoodenBed.Id, WoodenBed }
         };
 
     public static IReadOnlyList<BuildingDefinition> Definitions => DefinitionsMap.Values.ToList();
