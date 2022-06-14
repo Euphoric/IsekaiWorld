@@ -11,6 +11,9 @@ public class HexagonalMap : Node2D
     private readonly Dictionary<BuildingDefinition, ArrayMesh> _buildingMeshes =
         new Dictionary<BuildingDefinition, ArrayMesh>();
 
+    private readonly Dictionary<BuildingDefinition, Texture> _buildingTextures =
+        new Dictionary<BuildingDefinition, Texture>();
+    
     private bool _isDirty;
     private HexagonNode _mouseoverHexagon;
     private GameEntity _game;
@@ -67,6 +70,8 @@ public class HexagonalMap : Node2D
             RegenerateSurfaceMesh(surface, cells, mesh);
         }
 
+        _buildingTextures.Clear();
+        
         var connectedPositions = _game.Buildings.Select(x => x.Position).ToHashSet();
         foreach (var kvp in _game.Buildings.GroupBy(x => x.Definition))
         {
@@ -84,6 +89,7 @@ public class HexagonalMap : Node2D
             }
 
             RegenerateConnectedBuildingMesh(definition, buildings.Select(b=>b.Position).ToList(), connectedPositions, mesh);
+            _buildingTextures[definition] = ResourceLoader.Load<Texture>(definition.TextureResource);
         }
 
         Update();
@@ -485,12 +491,10 @@ public class HexagonalMap : Node2D
 
         foreach (var kvp in _buildingMeshes)
         {
-            var building = kvp.Key;
+            var definition = kvp.Key;
             var mesh = kvp.Value;
-            
-            Texture texture = ResourceLoader.Load<Texture>(building.TextureResource);
 
-            DrawMesh(mesh, texture);
+            DrawMesh(mesh, _buildingTextures[definition]);
         }
     }
 
