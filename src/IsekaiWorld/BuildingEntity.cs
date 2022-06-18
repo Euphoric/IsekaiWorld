@@ -79,11 +79,11 @@ public class UpdateBuildingOperation : INodeOperation
             var texture = ResourceLoader.Load<Texture>(textureResource);
             sprite.Texture = texture;
             sprite.Scale = Vector2.One / texture.GetSize();
-            sprite.Scale *= 1.3f;
             sprite.Modulate = Entity.Definition.Color;
 
             if (Entity.Definition == BuildingDefinitions.WoodenChair)
             {
+                sprite.Scale *= 1.3f;
                 if (Entity.Rotation == HexagonDirection.Left)
                 {
                     sprite.Scale *= new Vector2(-1, 1);
@@ -93,11 +93,21 @@ public class UpdateBuildingOperation : INodeOperation
             if (Entity.Definition == BuildingDefinitions.WoodenBed)
             {
                 buildingNode.Scale *= new Vector2(2, 1);
-
                 buildingNode.Rotation = GetRotation(Entity.Rotation);
 
+                sprite.Scale *= 1.3f;
                 sprite.Rotation = GetSpriteRotation(Entity.Rotation);
-                sprite.Scale *= GetSpriteScale(Entity.Rotation);
+                sprite.Scale *= GetBedSpriteScale(Entity.Rotation);
+            }
+
+            if (Entity.Definition == BuildingDefinitions.TableStoveFueled)
+            {
+                buildingNode.Scale *= new Vector2(1, 3);
+                buildingNode.Rotation = GetRotation(Entity.Rotation) + Mathf.Pi / 6;
+
+                sprite.Scale *= 0.8f;
+                sprite.Rotation = GetSpriteRotation(Entity.Rotation);
+                sprite.Scale *= new Vector2(2, 2);
             }
         }
     }
@@ -141,7 +151,7 @@ public class UpdateBuildingOperation : INodeOperation
         }
     }
     
-    private Vector2 GetSpriteScale(HexagonDirection entityRotation)
+    private Vector2 GetBedSpriteScale(HexagonDirection entityRotation)
     {
         switch (entityRotation)
         {

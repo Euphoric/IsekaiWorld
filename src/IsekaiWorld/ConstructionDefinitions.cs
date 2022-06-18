@@ -10,6 +10,7 @@ public static class ConstructionDefinitions
     
     public static readonly ConstructionDefinition WoodenChair = new ConstructionDefinition("Core.Furniture.Chair.Wood", "Wooden Chair", BuildingDefinitions.WoodenChair.Id, null);
     public static readonly ConstructionDefinition WoodenBed = new ConstructionDefinition("Core.Furniture.Bed.Wood", "Wooden Bed", BuildingDefinitions.WoodenBed.Id, null);
+    public static readonly ConstructionDefinition TableStoveFueled = new ConstructionDefinition("Core.Production.StoveFueled", "Fueled stove", BuildingDefinitions.TableStoveFueled.Id, null);
     
     private static readonly Dictionary<string, ConstructionDefinition> DefinitionsMap =
         new Dictionary<string, ConstructionDefinition>
@@ -18,7 +19,8 @@ public static class ConstructionDefinitions
             { StoneWall.Id, StoneWall },
             { TileFloor.Id, TileFloor },
             { WoodenChair.Id, WoodenChair },
-            { WoodenBed.Id, WoodenBed}
+            { WoodenBed.Id, WoodenBed},
+            { TableStoveFueled.Id, TableStoveFueled}
         };
     
     public static IReadOnlyList<ConstructionDefinition> Definitions => DefinitionsMap.Values.ToList();

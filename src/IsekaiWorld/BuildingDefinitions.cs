@@ -26,7 +26,16 @@ public static class BuildingDefinitions
         { HexagonDirection.TopLeft,"res://Textures/Furniture/Bed_north.png"},
         { HexagonDirection.TopRight,"res://Textures/Furniture/Bed_north.png"}
     });
-
+    public static readonly BuildingDefinition TableStoveFueled = new BuildingDefinition("Core.Production.StoveFueled", "Fueled stove", Colors.White, new Dictionary<HexagonDirection, string>
+    {
+        { HexagonDirection.Right,"res://Textures/Production/TableStoveFueled_east.png"},
+        { HexagonDirection.BottomRight,"res://Textures/Production/TableStoveFueled_south.png"},
+        { HexagonDirection.BottomLeft,"res://Textures/Production/TableStoveFueled_south.png"},
+        { HexagonDirection.Left,"res://Textures/Production/TableStoveFueled_east.png"},
+        { HexagonDirection.TopLeft,"res://Textures/Production/TableStoveFueled_north.png"},
+        { HexagonDirection.TopRight,"res://Textures/Production/TableStoveFueled_north.png"}
+    });
+    
     private static readonly Dictionary<string, BuildingDefinition> DefinitionsMap =
         new Dictionary<string, BuildingDefinition>
         {
@@ -34,7 +43,8 @@ public static class BuildingDefinitions
             { WoodenWall.Id, WoodenWall },
             { StoneWall.Id, StoneWall },
             { WoodenChair.Id, WoodenChair },
-            { WoodenBed.Id, WoodenBed }
+            { WoodenBed.Id, WoodenBed },
+            {TableStoveFueled.Id, TableStoveFueled}
         };
 
     public static IReadOnlyList<BuildingDefinition> Definitions => DefinitionsMap.Values.ToList();

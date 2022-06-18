@@ -125,6 +125,9 @@ public class ConstructionTestMapGenerator: IMapGenerator
 
             var bedPos = chairPos + direction;
             buildings.Add(new BuildingEntity(bedPos, direction, BuildingDefinitions.WoodenBed));
+            
+            var stovePos = bedPos + direction + direction;
+            buildings.Add(new BuildingEntity(stovePos, direction, BuildingDefinitions.TableStoveFueled));
         }
         
         return (map, buildings);
