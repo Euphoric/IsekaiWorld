@@ -11,6 +11,7 @@ public class ConstructionEntity : IEntity
     private float _progress;
     
     public HexCubeCoord Position { get; }
+    public ISet<HexCubeCoord> OccupiedCells => new HashSet<HexCubeCoord> { Position };
     public ConstructionDefinition Definition { get; }
 
     public ConstructionEntity(HexCubeCoord position, ConstructionDefinition definition)

@@ -7,6 +7,8 @@ public class CharacterEntity : IEntity
     private readonly GameEntity _game;
 
     public HexCubeCoord Position { get; set; }
+    public ISet<HexCubeCoord> OccupiedCells => new HashSet<HexCubeCoord> { Position };
+    
     public bool IsIdle => CurrentActivity == null;
 
     public IActivity CurrentActivity { get; private set; }

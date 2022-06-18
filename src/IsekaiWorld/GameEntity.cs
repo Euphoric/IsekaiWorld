@@ -116,7 +116,7 @@ public class GameEntity
 
     public IEnumerable<IEntity> EntitiesOn(HexCubeCoord position)
     {
-        return _entities.Where(c => c.Position == position);
+        return _entities.Where(c => c.OccupiedCells.Contains(position));
     }
 
     public void SpawnBuilding(HexCubeCoord position, BuildingDefinition buildingDefinition)

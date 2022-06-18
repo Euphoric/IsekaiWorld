@@ -18,6 +18,7 @@ public class BuildingEntity : IEntity
     }
 
     public HexCubeCoord Position { get; }
+    public ISet<HexCubeCoord> OccupiedCells => new HashSet<HexCubeCoord> { Position };
     public BuildingDefinition Definition { get; }
     public string Label => Definition.Label;
 

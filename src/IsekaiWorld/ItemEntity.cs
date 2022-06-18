@@ -17,6 +17,7 @@ public class ItemEntity : IEntity
 
     public Guid EntityId { get; }
     public HexCubeCoord Position { get; }
+    public ISet<HexCubeCoord> OccupiedCells => new HashSet<HexCubeCoord> { Position };
     public ItemDefinition Definition { get; }
     public int Count { get; private set; }
 
