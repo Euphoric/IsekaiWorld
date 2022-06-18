@@ -8,11 +8,13 @@ public class BuildingEntity : IEntity
     
     private bool _isDirty;
 
-    public BuildingEntity(HexCubeCoord position, BuildingDefinition definition)
+    public BuildingEntity(HexCubeCoord position, HexagonDirection rotation, BuildingDefinition definition)
     {
         Id = Guid.NewGuid();
         
         Position = position;
+        Rotation = rotation;
+        
         Definition = definition;
         _isDirty = true;
     }
@@ -22,6 +24,8 @@ public class BuildingEntity : IEntity
     public BuildingDefinition Definition { get; }
     public string Label => Definition.Label;
 
+    public HexagonDirection Rotation { get; }
+    
     public bool IsRemoved => false;
 
     public IEnumerable<INodeOperation> Update()
@@ -78,8 +82,14 @@ public class UpdateBuildingOperation : INodeOperation
             {
                 sprite.Offset = new Vector2(0, texture.GetHeight() / 3f);
                 sprite.Scale *= 2;
-                sprite.Rotation = Mathf.Pi / 3 - Mathf.Pi / 6;
+                sprite.Rotation = GetRotation(Entity.Rotation);
             }
         }
+    }
+
+    private float GetRotation(HexagonDirection entityRotation)
+    {
+        int rotationIndex = (int)entityRotation - 1;
+        return rotationIndex * (Mathf.Pi / 3) - Mathf.Pi / 6;
     }
 }

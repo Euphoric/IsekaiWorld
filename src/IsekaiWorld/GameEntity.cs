@@ -91,13 +91,13 @@ public class GameEntity
         _operations.Clear();
     }
 
-    public void StartConstruction(HexCubeCoord position, ConstructionDefinition construction)
+    public void StartConstruction(HexCubeCoord position, HexagonDirection rotation, ConstructionDefinition construction)
     {
         var constructionExists = _entities.OfType<ConstructionEntity>().Any(x => x.Position == position);
         var isTerrainPassable = GameMap.CellForPosition(position).Surface.IsPassable;
         if (!constructionExists && isTerrainPassable)
         {
-            var constructionEntity = new ConstructionEntity(position, construction);
+            var constructionEntity = new ConstructionEntity(position, rotation, construction);
             _entities.Add(constructionEntity);
             
             _constructionJobs.Add(new ConstructionJob(this, constructionEntity));
@@ -119,10 +119,9 @@ public class GameEntity
         return _entities.Where(c => c.OccupiedCells.Contains(position));
     }
 
-    public void SpawnBuilding(HexCubeCoord position, BuildingDefinition buildingDefinition)
+    public void SpawnBuilding(HexCubeCoord position, HexagonDirection rotation, BuildingDefinition buildingDefinition)
     {
-        _entities.Add(new BuildingEntity(position, buildingDefinition));
-        //GameMap.SetCell(position, surface);
+        _entities.Add(new BuildingEntity(position, rotation, buildingDefinition));
         //Pathfinding.SetPathing(position, surface);
 
         var stuckCharacter = _entities.OfType<CharacterEntity>().FirstOrDefault(c => c.Position == position);

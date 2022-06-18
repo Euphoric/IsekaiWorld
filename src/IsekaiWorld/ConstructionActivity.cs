@@ -50,7 +50,7 @@ public class ConstructionActivity : IActivity
                 if (construction.Definition.PlaceBuildingId != null)
                 {
                     var buildingDefinition = BuildingDefinitions.GetById(construction.Definition.PlaceBuildingId);
-                    _game.SpawnBuilding(construction.Position, buildingDefinition);
+                    _game.SpawnBuilding(construction.Position, construction.Rotation, buildingDefinition);
                 }
                 else if (construction.Definition.PlaceFloorId != null)
                 {

@@ -33,7 +33,7 @@ public class MapGenerator : IMapGenerator
 
             if (isRockWall)
             {
-                buildings.Add(new BuildingEntity(cell.Position, BuildingDefinitions.RockWall));
+                buildings.Add(new BuildingEntity(cell.Position, HexagonDirection.Left, BuildingDefinitions.RockWall));
             }
         }
         return (map, buildings);
@@ -69,35 +69,35 @@ public class WallTilingTestMapGenerator : IMapGenerator
         
         List<BuildingEntity> buildings = new List<BuildingEntity>();
         
-        buildings.Add(new BuildingEntity(new HexCubeCoord(3, 3, -6), BuildingDefinitions.StoneWall));
-        buildings.Add(new BuildingEntity(new HexCubeCoord(3, 2, -5), BuildingDefinitions.StoneWall));
-        buildings.Add(new BuildingEntity(new HexCubeCoord(3, 1, -4), BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(3, 3, -6), HexagonDirection.Left, BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(3, 2, -5), HexagonDirection.Left, BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(3, 1, -4), HexagonDirection.Left,  BuildingDefinitions.StoneWall));
         
-        buildings.Add(new BuildingEntity(new HexCubeCoord(-3, 3, 0), BuildingDefinitions.StoneWall));
-        buildings.Add(new BuildingEntity(new HexCubeCoord(-2, 3, -1), BuildingDefinitions.StoneWall));
-        buildings.Add(new BuildingEntity(new HexCubeCoord(-1, 3, -2), BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(-3, 3, 0), HexagonDirection.Left, BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(-2, 3, -1),HexagonDirection.Left,  BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(-1, 3, -2),HexagonDirection.Left,  BuildingDefinitions.StoneWall));
         
-        buildings.Add(new BuildingEntity(new HexCubeCoord(-3, 0, 3), BuildingDefinitions.StoneWall));
-        buildings.Add(new BuildingEntity(new HexCubeCoord(-2, -1, 3), BuildingDefinitions.StoneWall));
-        buildings.Add(new BuildingEntity(new HexCubeCoord(-1, -2, 3), BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(-3, 0, 3), HexagonDirection.Left, BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(-2, -1, 3),HexagonDirection.Left,  BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(-1, -2, 3),HexagonDirection.Left,  BuildingDefinitions.StoneWall));
         
-        buildings.Add(new BuildingEntity(new HexCubeCoord(1, -4, 3), BuildingDefinitions.StoneWall));
-        buildings.Add(new BuildingEntity(new HexCubeCoord(2, -5, 3), BuildingDefinitions.StoneWall));
-        buildings.Add(new BuildingEntity(new HexCubeCoord(1, -5, 4), BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(1, -4, 3),HexagonDirection.Left,  BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(2, -5, 3),HexagonDirection.Left,  BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(1, -5, 4),HexagonDirection.Left, BuildingDefinitions.StoneWall));
         
-        buildings.Add(new BuildingEntity(new HexCubeCoord(4, -3, -1), BuildingDefinitions.StoneWall));
-        buildings.Add(new BuildingEntity(new HexCubeCoord(5, -4, -1), BuildingDefinitions.StoneWall));
-        buildings.Add(new BuildingEntity(new HexCubeCoord(5, -3, -2), BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(4, -3, -1),HexagonDirection.Left,  BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(5, -4, -1),HexagonDirection.Left,  BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(5, -3, -2),HexagonDirection.Left,  BuildingDefinitions.StoneWall));
         
-        buildings.Add(new BuildingEntity(new HexCubeCoord(-7, 3, 4), BuildingDefinitions.StoneWall));
-        buildings.Add(new BuildingEntity(new HexCubeCoord(-6, 2, 4), BuildingDefinitions.StoneWall));
-        buildings.Add(new BuildingEntity(new HexCubeCoord(-8, 3, 5), BuildingDefinitions.StoneWall));
-        buildings.Add(new BuildingEntity(new HexCubeCoord(-7, 4, 3), BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(-7, 3, 4),HexagonDirection.Left, BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(-6, 2, 4),HexagonDirection.Left,  BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(-8, 3, 5),HexagonDirection.Left,  BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(-7, 4, 3),HexagonDirection.Left,  BuildingDefinitions.StoneWall));
         
-        buildings.Add(new BuildingEntity(new HexCubeCoord(-7, 7, 0), BuildingDefinitions.StoneWall));
-        buildings.Add(new BuildingEntity(new HexCubeCoord(-7, 6, 1), BuildingDefinitions.StoneWall));
-        buildings.Add(new BuildingEntity(new HexCubeCoord(-6, 7, -1), BuildingDefinitions.StoneWall));
-        buildings.Add(new BuildingEntity(new HexCubeCoord(-8, 8, 0), BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(-7, 7, 0), HexagonDirection.Left,  BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(-7, 6, 1), HexagonDirection.Left, BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(-6, 7, -1),HexagonDirection.Left,  BuildingDefinitions.StoneWall));
+        buildings.Add(new BuildingEntity(new HexCubeCoord(-8, 8, 0), HexagonDirection.Left,  BuildingDefinitions.StoneWall));
         
         return (map, buildings);
     }

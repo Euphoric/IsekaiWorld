@@ -89,6 +89,8 @@ public class GameUserInterface
         _game = game;
     }
 
+    public HexagonDirection ConstructionRotation { get; set; }
+
     public IEnumerable<INodeOperation> Update()
     {
         if (_selectedLabelDirty)
@@ -156,7 +158,7 @@ public class GameUserInterface
                 _game.UserInterface.SelectItemOn(clickPosition);
                 break;
             case Tool.Construction:
-                _game.StartConstruction(clickPosition, _currentBuildingSelection);
+                _game.StartConstruction(clickPosition, ConstructionRotation, _currentBuildingSelection);
                 break;
             case Tool.PlaceBuilding:
                 // TODO: Fix

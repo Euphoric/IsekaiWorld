@@ -80,6 +80,13 @@ margin_right = 166.0
 margin_bottom = 40.0
 text = "Place directly"
 
+[node name="RotationOptionButton" type="OptionButton" parent="UserInterface/ConstructionContainer"]
+margin_top = 44.0
+margin_right = 166.0
+margin_bottom = 64.0
+text = "Rotation"
+selected = 0
+
 [node name="PlaceItemContainer" type="GridContainer" parent="UserInterface"]
 margin_top = 31.0
 margin_right = 392.0

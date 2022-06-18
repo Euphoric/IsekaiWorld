@@ -19,7 +19,7 @@ namespace IsekaiWorld.Test
             {
                 if (cell.Position.DistanceFrom(HexCubeCoord.Zero) < 5)
                 {
-                    game.StartConstruction(cell.Position, ConstructionDefinitions.StoneWall);
+                    game.StartConstruction(cell.Position, HexagonDirection.Left, ConstructionDefinitions.StoneWall);
                 }
             }
 

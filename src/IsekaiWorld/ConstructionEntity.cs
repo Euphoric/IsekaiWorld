@@ -11,13 +11,15 @@ public class ConstructionEntity : IEntity
     private float _progress;
     
     public HexCubeCoord Position { get; }
+    public HexagonDirection Rotation { get; }
     public ISet<HexCubeCoord> OccupiedCells => new HashSet<HexCubeCoord> { Position };
     public ConstructionDefinition Definition { get; }
 
-    public ConstructionEntity(HexCubeCoord position, ConstructionDefinition definition)
+    public ConstructionEntity(HexCubeCoord position, HexagonDirection rotation, ConstructionDefinition definition)
     {
         Id = Guid.NewGuid();
         Position = position;
+        Rotation = rotation;
         Definition = definition;
         
         _isDirty = true;

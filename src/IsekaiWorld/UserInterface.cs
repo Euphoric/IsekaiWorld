@@ -1,3 +1,4 @@
+using System;
 using Godot;
 using GodotArray = Godot.Collections.Array;
 
@@ -39,6 +40,13 @@ public class UserInterface : CanvasLayer
             PlaceItemContainer.AddChild(button);            
         }
 
+        foreach (HexagonDirection rotation in Enum.GetValues(typeof(HexagonDirection)))
+        {
+            RotationOptionButton.AddItem(rotation.ToString(), (int)rotation);
+        }
+        RotationOptionButton.Selected = 0;
+        RotationOptionButton.Connect("item_selected", this, nameof(_on_rotation_selected));
+
         ConstructionContainer.Visible = false;
         PlaceItemContainer.Visible = false;
     }
@@ -46,6 +54,8 @@ public class UserInterface : CanvasLayer
     public Label ToolLabel => GetNode<Label>("ToolLabel");
     public Container ConstructionContainer => GetNode<Container>("ConstructionContainer");
     public CheckButton PlaceDirectlyButton => ConstructionContainer.GetNode<CheckButton>("PlaceDirectlyButton");
+    public OptionButton RotationOptionButton => ConstructionContainer.GetNode<OptionButton>("RotationOptionButton");
+    
     
     public Container PlaceItemContainer => GetNode<Container>("PlaceItemContainer");
     
@@ -95,5 +105,10 @@ public class UserInterface : CanvasLayer
         var itemDefinition = ItemDefinitions.GetById(itemDefinitionId);
         _game.UserInterface.PlaceItemSelected(itemDefinition);
         ToolLabel.Text = "Place item";
+    }
+
+    public void _on_rotation_selected(int index)
+    {
+        _game.UserInterface.ConstructionRotation = (HexagonDirection)index;
     }
 }
