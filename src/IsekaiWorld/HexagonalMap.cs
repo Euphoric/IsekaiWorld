@@ -71,9 +71,10 @@ public class HexagonalMap : Node2D
         }
 
         _buildingTextures.Clear();
-        
-        var connectedPositions = _game.Buildings.Select(x => x.Position).ToHashSet();
-        foreach (var kvp in _game.Buildings.GroupBy(x => x.Definition))
+
+        var wallBuildings = _game.Buildings.Where(e=>e.Definition.EdgeConnected).ToList();
+        var connectedPositions = wallBuildings.Select(x => x.Position).ToHashSet();
+        foreach (var kvp in wallBuildings.GroupBy(x => x.Definition))
         {
             var definition = kvp.Key;
             var buildings = kvp.ToList();
@@ -89,7 +90,7 @@ public class HexagonalMap : Node2D
             }
 
             RegenerateConnectedBuildingMesh(definition, buildings.Select(b=>b.Position).ToList(), connectedPositions, mesh);
-            _buildingTextures[definition] = ResourceLoader.Load<Texture>(definition.TextureResource);
+            _buildingTextures[definition] = ResourceLoader.Load<Texture>(definition.TextureResource[HexagonDirection.Right]);
         }
 
         Update();

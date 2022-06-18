@@ -20,6 +20,7 @@ public class GameNode : Node
     {
         var mapGenerator = new MapGenerator();
         //var mapGenerator = new WallTilingTestMapGenerator();
+        //var mapGenerator = new ConstructionTestMapGenerator();
         _game.Initialize(mapGenerator);
         
         var adamCharacter = _game.AddCharacter("Adam");

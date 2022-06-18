@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 public interface IMapGenerator
@@ -98,6 +100,32 @@ public class WallTilingTestMapGenerator : IMapGenerator
         buildings.Add(new BuildingEntity(new HexCubeCoord(-7, 6, 1), HexagonDirection.Left, BuildingDefinitions.StoneWall));
         buildings.Add(new BuildingEntity(new HexCubeCoord(-6, 7, -1),HexagonDirection.Left,  BuildingDefinitions.StoneWall));
         buildings.Add(new BuildingEntity(new HexCubeCoord(-8, 8, 0), HexagonDirection.Left,  BuildingDefinitions.StoneWall));
+        
+        return (map, buildings);
+    }
+}
+
+public class ConstructionTestMapGenerator: IMapGenerator
+{
+    public (HexagonalMapEntity, List<BuildingEntity>) GenerateNewMap()
+    {
+        var map = new HexagonalMapEntity(16);
+
+        foreach (var cell in map.Cells)
+        {
+            cell.Surface = SurfaceDefinitions.Grass;
+        }
+        
+        List<BuildingEntity> buildings = new List<BuildingEntity>();
+
+        foreach (HexagonDirection direction in Enum.GetValues(typeof(HexagonDirection)).Cast<HexagonDirection>())
+        {
+            var chairPos = HexCubeCoord.Zero + direction;
+            buildings.Add(new BuildingEntity(chairPos, direction, BuildingDefinitions.WoodenChair));
+
+            var bedPos = chairPos + direction;
+            buildings.Add(new BuildingEntity(bedPos, direction, BuildingDefinitions.WoodenBed));
+        }
         
         return (map, buildings);
     }

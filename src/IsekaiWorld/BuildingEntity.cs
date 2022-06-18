@@ -57,39 +57,108 @@ public class UpdateBuildingOperation : INodeOperation
 
     public void Execute(GameNode gameNode)
     {
-        var buildingNode = gameNode.MapNode.GetNodeOrNull<HexagonNode>(Entity.Id.ToString());
+        Node2D buildingNode = gameNode.MapNode.GetNodeOrNull<Node2D>(Entity.Id.ToString());
 
         if (buildingNode == null)
         {
-            buildingNode = new HexagonNode();
+            buildingNode = new Node2D();
             gameNode.MapNode.AddChild(buildingNode);
 
-            buildingNode.HexPosition = Entity.Position;
-            buildingNode.Color = Colors.Transparent;
-            buildingNode.InnerSize = 0.0f;
-            buildingNode.OuterSize = 0.0f;
+            // Line2D outline = new Line2D();
+            // buildingNode.AddChild(outline);
+            // outline.Points = new[]{new Vector2(1, 1), new Vector2(1, -1), new Vector2(-1, -1), new Vector2(-1, 1), new Vector2(1, 1)};
+            // outline.Width = 0.1f;
+            // outline.DefaultColor = Colors.Red;
+            
+            buildingNode.Position = EntityCenterPosition();
 
             var sprite = new Sprite();
             buildingNode.AddChild(sprite);
 
-            var texture = ResourceLoader.Load<Texture>(Entity.Definition.TextureResource);
+            var textureResource = Entity.Definition.TextureResource[Entity.Rotation];
+            var texture = ResourceLoader.Load<Texture>(textureResource);
             sprite.Texture = texture;
             sprite.Scale = Vector2.One / texture.GetSize();
             sprite.Scale *= 1.3f;
             sprite.Modulate = Entity.Definition.Color;
+
+            if (Entity.Definition == BuildingDefinitions.WoodenChair)
+            {
+                if (Entity.Rotation == HexagonDirection.Left)
+                {
+                    sprite.Scale *= new Vector2(-1, 1);
+                }
+            }
             
             if (Entity.Definition == BuildingDefinitions.WoodenBed)
             {
-                sprite.Offset = new Vector2(0, texture.GetHeight() / 3f);
-                sprite.Scale *= 2;
-                sprite.Rotation = GetRotation(Entity.Rotation);
+                buildingNode.Scale *= new Vector2(2, 1);
+
+                buildingNode.Rotation = GetRotation(Entity.Rotation);
+
+                sprite.Rotation = GetSpriteRotation(Entity.Rotation);
+                sprite.Scale *= GetSpriteScale(Entity.Rotation);
             }
         }
     }
 
+    private Vector2 EntityCenterPosition()
+    {
+        if (Entity.Definition == BuildingDefinitions.WoodenBed)
+        {
+            var hexA = Entity.Position;
+            var hexB = Entity.Position + Entity.Rotation;
+            return (hexA.Center(1) + hexB.Center(1)) / 2;
+        }
+        
+        return Entity.Position.Center(1);
+    }
+
     private float GetRotation(HexagonDirection entityRotation)
     {
-        int rotationIndex = (int)entityRotation - 1;
-        return rotationIndex * (Mathf.Pi / 3) - Mathf.Pi / 6;
+        int rotationIndex = (int)entityRotation;
+        return rotationIndex * (Mathf.Pi / 3);
+    }
+
+    private float GetSpriteRotation(HexagonDirection entityRotation)
+    {
+        switch (entityRotation)
+        {
+            case HexagonDirection.Right:
+                return 0;
+            case HexagonDirection.BottomRight:
+                return -Mathf.Pi / 2;
+            case HexagonDirection.BottomLeft:
+                return -Mathf.Pi / 2;
+            case HexagonDirection.Left:
+                return 0;
+            case HexagonDirection.TopLeft:
+                return Mathf.Pi / 2;
+            case HexagonDirection.TopRight:
+                return Mathf.Pi / 2;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(entityRotation), entityRotation, null);
+        }
+    }
+    
+    private Vector2 GetSpriteScale(HexagonDirection entityRotation)
+    {
+        switch (entityRotation)
+        {
+            case HexagonDirection.Right:
+                return new Vector2(1, 2);
+            case HexagonDirection.BottomRight:
+                return new Vector2(2, 1);
+            case HexagonDirection.BottomLeft:
+                return new Vector2(2, 1);
+            case HexagonDirection.Left:
+                return new Vector2(1, -2);
+            case HexagonDirection.TopLeft:
+                return new Vector2(2, 1);
+            case HexagonDirection.TopRight:
+                return new Vector2(2, 1);
+            default:
+                throw new ArgumentOutOfRangeException(nameof(entityRotation), entityRotation, null);
+        }
     }
 }
