@@ -22,20 +22,21 @@
      bordercolor="#000000"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
+     inkscape:pageopacity="0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showgrid="true"
-     inkscape:zoom="8.0000002"
-     inkscape:cx="108"
-     inkscape:cy="528.49999"
+     inkscape:zoom="2.0000001"
+     inkscape:cx="290.99999"
+     inkscape:cy="187"
      inkscape:window-width="2496"
      inkscape:window-height="1417"
      inkscape:window-x="1976"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg5">
+     inkscape:current-layer="svg5"
+     shape-rendering="auto">
     <inkscape:grid
        type="axonomgrid"
        id="grid4295"
@@ -56,17 +57,17 @@
      id="defs2" />
   <path
      style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.05833;stroke-dasharray:none;stroke-opacity:1"
-     d="m 88.90471,8.4666576 -15.581238,8.9958324 0,16.933331 -14.664695,8.466665 0,17.991664 15.581238,8.995832 15.581239,-8.995832 0,-16.933331 14.664696,-8.466665 V 17.46249 Z"
+     d="m 88.904711,9.5249908 -14.664694,8.4666652 0,16.933331 -14.664695,8.466666 0,16.93333 14.664695,8.466666 14.664694,-8.466666 0,-16.93333 14.664699,-8.466666 0,-16.933331 z"
      id="path88954"
      sodipodi:nodetypes="ccccccccccc" />
   <path
      style="fill:#c7c7c7;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
-     d="m 30.245932,126.99997 -15.581238,8.99584 0,17.99166 15.581238,8.99583 15.581239,-8.99583 0,-17.99166 z"
+     d="m 30.245932,125.41247 -16.956053,9.78959 v 19.57916 l 16.956053,9.78958 16.956054,-9.78958 v -19.57916 z"
      id="path6892-3"
      sodipodi:nodetypes="ccccccc" />
   <path
      style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.05833;stroke-dasharray:none;stroke-opacity:1"
-     d="M 15.581237,-7.8200001e-6 -1.549548e-6,8.9958242 l 0,17.9916638 L 15.581237,35.98332 30.245931,27.516655 44.910626,35.98332 60.491864,26.987488 V 8.9958242 L 44.910626,-7.8199996e-6 30.245931,8.4666576 Z"
+     d="M 15.581238,1.0583254 0.91654299,9.5249908 V 26.458322 L 15.581238,34.924987 30.245932,26.458322 44.910627,34.924987 59.575322,26.458322 V 9.5249908 L 44.910627,1.0583254 30.245932,9.5249908 Z"
      id="path86295"
      sodipodi:nodetypes="ccccccccccc" />
   <path
@@ -89,7 +90,7 @@
      sodipodi:nodetypes="ccccccccccc" />
   <path
      style="fill:#000000;fill-opacity:1;stroke-width:2;stroke-dasharray:none"
-     d="M 132.8988,-7.8200063e-6 117.31756,8.9958242 l 0,17.9916638 14.66469,8.466666 0,16.933331 15.58124,8.995832 15.58124,-8.995832 0,-17.991664 -14.6647,-8.466666 0,-16.9333308 z"
+     d="m 132.8988,1.0583254 -14.6647,8.4666654 0,16.9333312 14.6647,8.466665 0,16.933331 14.66469,8.466665 14.66469,-8.466665 0,-16.933331 -14.66469,-8.466665 0,-16.9333312 z"
      id="path3101"
      sodipodi:nodetypes="ccccccccccc" />
   <path
@@ -103,7 +104,7 @@
      sodipodi:nodetypes="ccccccccccc" />
   <path
      style="fill:#000000;fill-opacity:1;stroke-width:2;stroke-dasharray:none"
-     d="M 30.245932,59.26665 14.664694,68.262482 V 85.195813 L -4.2954797e-7,93.662479 V 111.65414 L 15.581238,120.64997 l 14.664694,-8.46666 14.664695,8.46666 15.581238,-8.99583 0,-17.991661 -14.664694,-8.466666 0,-16.933331 z"
+     d="m 30.245932,60.324983 -14.664694,8.466666 0,16.933331 -14.66469501,8.466665 v 16.933335 l 14.66469501,8.46666 14.664694,-8.46666 14.664695,8.46666 14.664695,-8.46666 0,-16.933335 L 44.910627,85.72498 V 68.791649 Z"
      id="path6891"
      sodipodi:nodetypes="ccccccccccccc" />
   <path
@@ -117,7 +118,7 @@
      sodipodi:nodetypes="ccccccccccccc" />
   <path
      style="fill:#000000;fill-opacity:1;stroke-width:2"
-     d="m 103.56941,67.733316 -15.581242,8.995832 0,17.991664 14.664692,8.466668 v 16.93333 l 15.58124,8.99583 15.58124,-8.99583 v -16.93333 l 14.66469,-8.466668 0,-17.991664 -15.58123,-8.995832 -14.6647,8.466665 z"
+     d="m 103.56941,68.791649 -14.664699,8.466665 v 16.933331 l 14.664699,8.466665 v 16.93333 l 14.66469,8.46667 14.6647,-8.46667 v -16.93333 l 14.66469,-8.466665 0,-16.933331 -14.66469,-8.466665 -14.6647,8.466665 z"
      id="path347"
      sodipodi:nodetypes="ccccccccccccc" />
   <path
