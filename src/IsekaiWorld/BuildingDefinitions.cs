@@ -8,6 +8,8 @@ public static class BuildingDefinitions
     public static readonly BuildingDefinition StoneWall = new BuildingDefinition("Core.Wall.Stone", "Stone Wall", Color.Color8(133, 133, 133), new Dictionary<HexagonDirection, string> { { HexagonDirection.Right,"res://Textures/Wall/wall texture.svg" }},true);
     public static readonly BuildingDefinition WoodenWall = new BuildingDefinition("Core.Wall.Wood", "Wooden Wall", Color.Color8(189, 116, 38), new Dictionary<HexagonDirection, string> { { HexagonDirection.Right, "res://Textures/Wall/wall texture.svg" }}, true);
 
+    public static readonly BuildingDefinition StockpileZone = new BuildingDefinition("Core.Zone.Stockpile", "Stockpile", Color.Color8(3, 252, 252, 128), new Dictionary<HexagonDirection, string> { { HexagonDirection.Right, "res://Textures/Zone/stockpile.svg" }}, true);
+    
     public static readonly BuildingDefinition WoodenChair = new BuildingDefinition("Core.Furniture.Chair.Wood", "Wooden Chair", Color.Color8(189, 116, 38), new Dictionary<HexagonDirection, string>
     {
         { HexagonDirection.Right,"res://Textures/Furniture/DiningChair_east.png"},
@@ -41,6 +43,9 @@ public static class BuildingDefinitions
         {
             { RockWall.Id, RockWall },
             { WoodenWall.Id, WoodenWall },
+            
+            {StockpileZone.Id, StockpileZone},
+            
             { StoneWall.Id, StoneWall },
             { WoodenChair.Id, WoodenChair },
             { WoodenBed.Id, WoodenBed },

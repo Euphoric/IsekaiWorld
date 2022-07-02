@@ -6,6 +6,8 @@ public static class ConstructionDefinitions
     public static readonly ConstructionDefinition StoneWall = new ConstructionDefinition("Core.Wall.Stone", "Stone wall", BuildingDefinitions.StoneWall.Id, null);
     public static readonly ConstructionDefinition WoodenWall = new ConstructionDefinition("Core.Wall.Wood", "Wooden Wall", BuildingDefinitions.WoodenWall.Id, null);
     
+    public static readonly ConstructionDefinition StockpileZone = new ConstructionDefinition("Core.Zone.Stockpile", "Stockpile", BuildingDefinitions.StockpileZone.Id, null);
+    
     public static readonly ConstructionDefinition TileFloor = new ConstructionDefinition("Core.Floor.Tile", "Tile Floor", null, SurfaceDefinitions.TileFloor.Id);
     
     public static readonly ConstructionDefinition WoodenChair = new ConstructionDefinition("Core.Furniture.Chair.Wood", "Wooden Chair", BuildingDefinitions.WoodenChair.Id, null);
@@ -17,6 +19,9 @@ public static class ConstructionDefinitions
         {
             { WoodenWall.Id, WoodenWall },
             { StoneWall.Id, StoneWall },
+            
+            {StockpileZone.Id, StockpileZone},
+            
             { TileFloor.Id, TileFloor },
             { WoodenChair.Id, WoodenChair },
             { WoodenBed.Id, WoodenBed},
