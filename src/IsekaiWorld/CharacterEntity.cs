@@ -36,7 +36,7 @@ public class CharacterEntity : IEntity
         
         if (CurrentActivity == null)
         {
-            var job = _game.GetNextJob(this);
+            var job = _game.Jobs.GetNextJob(this);
             if (job != null)
             {
                 job.StartWorking(this);

@@ -1,4 +1,4 @@
-public class ConstructionJob
+public class ConstructionJob : IJob
 {
     private readonly GameEntity _game;
     private readonly ConstructionEntity _construction;

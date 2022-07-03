@@ -6,11 +6,10 @@ public class GameEntity
     public HexagonalMapEntity GameMap { get; private set; }
     public HexagonPathfinding Pathfinding { get; private set; }
     public GameUserInterface UserInterface { get; private set; }
+    public JobSystem Jobs { get; private set; }
 
     public IReadOnlyList<ConstructionEntity> Constructions => _entities.OfType<ConstructionEntity>().ToList();
     public IReadOnlyList<BuildingEntity> Buildings => _entities.OfType<BuildingEntity>().ToList();
-
-    private readonly List<ConstructionJob> _constructionJobs = new List<ConstructionJob>();
 
     private readonly List<IActivity> _activities = new List<IActivity>();
 
@@ -28,6 +27,8 @@ public class GameEntity
         
         Pathfinding = new HexagonPathfinding();
         Pathfinding.BuildMap(GameMap);
+
+        Jobs = new JobSystem();
     }
 
     public CharacterEntity AddCharacter(string label)
@@ -116,19 +117,9 @@ public class GameEntity
         {
             var constructionEntity = new ConstructionEntity(position, rotation, construction);
             _entities.Add(constructionEntity);
-            
-            _constructionJobs.Add(new ConstructionJob(this, constructionEntity));
+
+            Jobs.Add(new ConstructionJob(this, constructionEntity));
         }
-    }
-
-    public ConstructionJob GetNextJob(CharacterEntity character)
-    {
-        var availableJobs = _constructionJobs.Where(o => !o.InProgress).ToList();
-        if (!availableJobs.Any())
-            return null;
-
-        var job = availableJobs.First();
-        return job;
     }
 
     public IEnumerable<IEntity> EntitiesOn(HexCubeCoord position)
