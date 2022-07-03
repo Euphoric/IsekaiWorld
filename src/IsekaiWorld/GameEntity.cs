@@ -23,9 +23,9 @@ public class GameEntity
     {
         UserInterface = new GameUserInterface(this);
 
-        var (map, buildings) = mapGenerator.GenerateNewMap();
+        var (map, entities) = mapGenerator.GenerateNewMap();
         GameMap = map;
-        _entities.AddRange(buildings);
+        _entities.AddRange(entities);
         
         Pathfinding = new HexagonPathfinding();
         Pathfinding.BuildMap(GameMap);
