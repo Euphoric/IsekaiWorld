@@ -18,8 +18,15 @@ public class PathfindingResult
 
 public class HexagonPathfinding
 {
+    public EntityMessaging Messaging { get; } = new EntityMessaging();
+
     private readonly Dictionary<HexCubeCoord, Node> _nodes = new Dictionary<HexCubeCoord, Node>();
     private readonly Dictionary<INode, HexCubeCoord> _nodeToHexPosition = new Dictionary<INode, HexCubeCoord>();
+
+    public HexagonPathfinding()
+    {
+        Messaging.Register<BuildingUpdated>(BuildingUpdated);
+    }
 
     public void BuildMap(HexagonalMapEntity hexagonalMapEntity)
     {
@@ -38,7 +45,7 @@ public class HexagonPathfinding
         {
             if (!cell.Surface.IsPassable)
                 continue;
-            
+
             var hex = cell.Position;
             var hexNode = _nodes[hex];
             var neighbors = hex.Neighbors();
@@ -55,19 +62,27 @@ public class HexagonPathfinding
             }
         }
     }
-    
+
     public PathfindingResult FindPath(HexCubeCoord from, HexCubeCoord to)
     {
         var fromNode = _nodes[from];
         var toNode = _nodes[to];
-        
+
         var pathFinder = new PathFinder();
         var path = pathFinder.FindPath(fromNode, toNode, Velocity.FromKilometersPerHour(1));
         var hexPath = path.Edges.Select(x => _nodeToHexPosition[x.End]);
-        return new PathfindingResult(path.Type == PathType.Complete, hexPath.ToList()) ;
+        return new PathfindingResult(path.Type == PathType.Complete, hexPath.ToList());
     }
 
-    public void SetPathing(HexCubeCoord position, SurfaceDefinition surface)
+    private void BuildingUpdated(BuildingUpdated message)
+    {
+        if (message.Definition.Impassable)
+        {
+            SetImpassable(message.Position);
+        }
+    }
+
+    private void SetImpassable(HexCubeCoord position)
     {
         var centerNode = _nodes[position];
         centerNode.Incoming.Clear();

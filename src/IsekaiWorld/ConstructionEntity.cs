@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public class ConstructionEntity : IEntity
 {
+    public EntityMessaging Messaging { get; } = new EntityMessaging();
+    
     private bool _isDirty;
     public bool IsRemoved { get; private set; }
 

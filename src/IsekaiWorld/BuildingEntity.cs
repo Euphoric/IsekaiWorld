@@ -8,6 +8,8 @@ public class BuildingEntity : IEntity
     
     private bool _isDirty;
 
+    public EntityMessaging Messaging { get; } = new EntityMessaging();
+    
     public BuildingEntity(HexCubeCoord position, HexagonDirection rotation, BuildingDefinition definition)
     {
         Id = Guid.NewGuid();
@@ -32,6 +34,8 @@ public class BuildingEntity : IEntity
     {
         if (_isDirty)
         {
+            Messaging.Broadcast(new BuildingUpdated(Position, Definition));
+
             if (Definition.EdgeConnected)
             {
                 yield return new HexagonalMapEntity.RefreshMapOperation();                
@@ -40,10 +44,22 @@ public class BuildingEntity : IEntity
             {
                 yield return new UpdateBuildingOperation(this);
             }
-            
+
             _isDirty = false;
         }
     }
+}
+
+public class BuildingUpdated : IEntityMessage
+{
+    public BuildingUpdated(HexCubeCoord position, BuildingDefinition definition)
+    {
+        Position = position;
+        Definition = definition;
+    }
+    
+    public HexCubeCoord Position { get; }
+    public BuildingDefinition Definition { get; }
 }
 
 public class UpdateBuildingOperation : INodeOperation

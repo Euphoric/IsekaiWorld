@@ -2,6 +2,8 @@ using System.Collections.Generic;
 
 public class CharacterEntity : IEntity
 {
+    public EntityMessaging Messaging { get; } = new EntityMessaging();
+    
     public bool IsRemoved => false;
     
     private readonly GameEntity _game;

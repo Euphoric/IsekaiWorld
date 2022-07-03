@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -79,6 +78,24 @@ public class GameEntity
             activity.Update(delta);
         }
         _activities.RemoveAll(x => x.IsFinished);
+
+        TransferMessages();
+    }
+
+    private void TransferMessages()
+    {
+        var allMessaging = _entities.Select(x => x.Messaging).Concat(new[] { Pathfinding.Messaging }).ToList();
+        foreach (var sender in allMessaging)
+        {
+            foreach (var message in sender.BroadcastMessages)
+            {
+                foreach (var received in allMessaging)
+                {
+                    received.Handle(message);
+                }                
+            }
+            sender.ClearBroadcast();
+        }
     }
 
     public void UpdateNodes(GameNode gameNode)
@@ -122,7 +139,6 @@ public class GameEntity
     public void SpawnBuilding(HexCubeCoord position, HexagonDirection rotation, BuildingDefinition buildingDefinition)
     {
         _entities.Add(new BuildingEntity(position, rotation, buildingDefinition));
-        //Pathfinding.SetPathing(position, surface);
 
         var stuckCharacter = _entities.OfType<CharacterEntity>().FirstOrDefault(c => c.Position == position);
         if (stuckCharacter != null)
