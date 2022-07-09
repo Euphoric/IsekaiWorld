@@ -10,4 +10,9 @@ public class ItemDefinition
         Label = label;
         TextureResource = textureResource;
     }
+
+    public override string ToString()
+    {
+        return $"[{Label}]";
+    }
 }

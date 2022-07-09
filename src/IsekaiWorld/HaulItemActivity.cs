@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 public class HaulItemActivity : IActivity
 {
@@ -60,9 +61,21 @@ public class HaulItemActivity : IActivity
                 _movement = null;
                 _isPickedUp = false;
 
-                Item.Position = DropOffPosition;
-                Item.SetHolder(_game.MapItems);
-                
+                var itemInPlace = _game.Items.FirstOrDefault(x => x.Position == DropOffPosition && x.Definition == Item.Definition);
+                if (itemInPlace == null)
+                {
+                    // place item on ground
+                    Item.Position = DropOffPosition;
+                    Item.SetHolder(_game.MapItems);
+                }
+                else
+                {
+                    // stack items together
+                    itemInPlace.AddCount(Item.Count);
+                    _game.RemoveEntity(Item);
+                    Item.SetHolder(null);
+                }
+
                 IsFinished = true;
             }
         }

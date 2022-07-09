@@ -34,7 +34,7 @@ public class ItemEntity : IEntity
             _holder = null;
         }
         _holder = holder;
-        _holder.AssignItem(this);
+        _holder?.AssignItem(this);
 
         _isDirty = true;
     }
