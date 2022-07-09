@@ -16,6 +16,8 @@ public class GameEntity
     private readonly List<INodeOperation> _operations = new List<INodeOperation>();
 
     private readonly List<IEntity> _entities = new List<IEntity>();
+
+    public MapItems MapItems { get; } = new MapItems();
     
     public void Initialize(IMapGenerator mapGenerator)
     {
@@ -172,10 +174,23 @@ public class GameEntity
         {
             var itemEntity = new ItemEntity(position, item, 1);
             _entities.Add(itemEntity);
+            itemEntity.SetHolder(MapItems);
+            
+            Jobs.Add(new HaulItemJob(this, itemEntity));
         }
         else
         {
             existingEntity.AddCount(1);
         }
+    }
+    
+    public void RemoveEntity(IEntity entity)
+    {
+        _entities.Remove(entity);
+    }
+
+    public void AddEntity(IEntity entity)
+    {
+        _entities.Add(entity);
     }
 }

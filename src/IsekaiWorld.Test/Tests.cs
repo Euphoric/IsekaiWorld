@@ -7,7 +7,7 @@ namespace IsekaiWorld.Test
     public class Tests
     {
         [Fact]
-        public void Test1()
+        public void Construction_test()
         {
             var game = new GameEntity();
             game.Initialize(new EmptyMapGenerator());

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class CharacterEntity : IEntity
+public class CharacterEntity : IEntity, IItemHolder
 {
     public EntityMessaging Messaging { get; } = new EntityMessaging();
     
@@ -50,5 +50,17 @@ public class CharacterEntity : IEntity
     public void StartActivity(IActivity activity)
     {
         CurrentActivity = activity;
+    }
+
+    private List<ItemEntity> _carriedItems = new List<ItemEntity>();
+    
+    void IItemHolder.RemoveItem(ItemEntity itemEntity)
+    {
+        _carriedItems.Remove(itemEntity);
+    }
+
+    void IItemHolder.AssignItem(ItemEntity itemEntity)
+    {
+        _carriedItems.Add(itemEntity);
     }
 }

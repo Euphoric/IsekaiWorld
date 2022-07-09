@@ -31,7 +31,7 @@ public class ConstructionActivity : IActivity
         {
             if (_movement == null)
             {
-                _movement = new MovementActivity(_game.Pathfinding, Character, Construction.Position);
+                _movement = new MovementActivity(_game.Pathfinding, Character, Construction.Position, true);
             }
 
             _movement.Update(delta);

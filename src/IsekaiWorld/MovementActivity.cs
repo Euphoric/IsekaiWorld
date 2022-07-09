@@ -8,7 +8,7 @@ public class MovementActivity : IActivity
     private float _movementTimer;
     private readonly Queue<HexCubeCoord> _movementQueue = new Queue<HexCubeCoord>();
 
-    public MovementActivity(HexagonPathfinding pathfinding, CharacterEntity charater, HexCubeCoord target)
+    public MovementActivity(HexagonPathfinding pathfinding, CharacterEntity charater, HexCubeCoord target, bool stopNextTo)
     {
         _charater = charater;
         
@@ -16,8 +16,11 @@ public class MovementActivity : IActivity
         if (pathResult.Found)
         {
             IEnumerable<HexCubeCoord> movementPath = pathResult.Path;
-            movementPath = movementPath.Take(movementPath.Count() - 1);
-            
+            if (stopNextTo)
+            {
+                movementPath = movementPath.Take(movementPath.Count() - 1);
+            }
+
             foreach (var coord in movementPath)
             {
                 _movementQueue.Enqueue(coord);            
