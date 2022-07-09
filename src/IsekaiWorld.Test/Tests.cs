@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using FluentAssertions;
 using Xunit;
 
@@ -17,19 +18,30 @@ namespace IsekaiWorld.Test
 
             foreach (var cell in game.GameMap.Cells)
             {
-                if (cell.Position.DistanceFrom(HexCubeCoord.Zero) < 5)
+                if (cell.Position.R == cell.Position.Q && cell.Position.DistanceFrom(HexCubeCoord.Zero) <= 6)
                 {
                     game.StartConstruction(cell.Position, HexagonDirection.Left, ConstructionDefinitions.StoneWall);
                 }
             }
 
-            game.UpdateUntil(()=>
+            var constructionPositions = game.Constructions.Select(x => x.Position).ToHashSet();
+            
+            bool timedOut = game.UpdateUntil(()=>
             {
                 var issues = game.CheckForIssues().ToList();
                 issues.Should().BeEmpty();
                 
                 return !game.Constructions.Any();
             }, 300);
+
+            if (timedOut)
+            {
+                throw new Exception("Didn't reach final check before timeout.");
+            }
+            
+            var buildingPositions = game.Buildings.Select(x => x.Position).ToHashSet();
+
+            buildingPositions.Should().BeEquivalentTo(constructionPositions);
         }
     }
 }
