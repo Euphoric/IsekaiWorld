@@ -35,6 +35,7 @@ public class MapGenerator : IMapGenerator
             if (isRockWall && !isNearOrigin)
             {
                 entities.Add(new BuildingEntity(cell.Position, HexagonDirection.Left, BuildingDefinitions.RockWall));
+                cell.Surface = SurfaceDefinitions.Empty;
             }
 
             if (isNearOrigin)
@@ -64,6 +65,17 @@ public class MapGenerator : IMapGenerator
             {
                 entities.Add(new BuildingEntity(cell.Position, HexagonDirection.Left, BuildingDefinitions.StockpileZone));
             }
+        }
+
+        Random treeRandom = new Random(6547);
+        var allowedTreeCells = map.Cells.Where(c => c.Surface == SurfaceDefinitions.Grass).ToList();
+        var treeCount = (int)(allowedTreeCells.Count * (1f / 6));
+        for (int i = 0; i < treeCount; i++)
+        {
+            var treeCellIndex = treeRandom.Next(0, allowedTreeCells.Count - 1);
+            var treePosition = allowedTreeCells[treeCellIndex].Position;
+            entities.Add(new BuildingEntity(treePosition, HexagonDirection.Left, BuildingDefinitions.TreeOak));
+            allowedTreeCells.RemoveAt(treeCellIndex);
         }
 
         return (map, entities);

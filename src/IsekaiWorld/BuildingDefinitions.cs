@@ -37,7 +37,10 @@ public static class BuildingDefinitions
         { HexagonDirection.TopLeft,"res://Textures/Production/TableStoveFueled_north.png"},
         { HexagonDirection.TopRight,"res://Textures/Production/TableStoveFueled_north.png"}
     });
-    
+
+    public static readonly BuildingDefinition TreeOak = new BuildingDefinition("Core.Tree.Oak", "Oak tree", Colors.White, new Dictionary<HexagonDirection, string> {
+        { HexagonDirection.Left, "res://Textures/Plant/TreeOak.png" } });
+        
     private static readonly Dictionary<string, BuildingDefinition> DefinitionsMap =
         new Dictionary<string, BuildingDefinition>
         {

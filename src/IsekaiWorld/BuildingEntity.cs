@@ -131,6 +131,12 @@ public class UpdateBuildingOperation : INodeOperation
                 sprite.Rotation = GetSpriteRotation(Entity.Rotation);
                 sprite.Scale *= new Vector2(2, 2);
             }
+
+            if (Entity.Definition == BuildingDefinitions.TreeOak)
+            {
+                buildingNode.Scale *= new Vector2(5, 5);
+                sprite.Offset = new Vector2(0, -200);
+            }
         }
     }
 
