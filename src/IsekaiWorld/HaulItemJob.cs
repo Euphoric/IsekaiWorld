@@ -11,13 +11,12 @@ public class HaulItemJob : IJob
         _game = game;
     }
     
-    public bool InProgress { get; private set; }
+    public bool InProgress { get; private set; } 
     
     public void StartWorking(CharacterEntity character)
     {
         InProgress = true;
-        var stockpile = _game.Buildings.First(x => x.Definition == BuildingDefinitions.StockpileZone);
-        
-        character.StartActivity(new HaulItemActivity(_game, character, Item, stockpile.Position));
+
+        character.StartActivity(new HaulItemActivity(_game, character, Item));
     }
 }

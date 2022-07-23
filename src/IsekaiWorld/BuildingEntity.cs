@@ -29,6 +29,7 @@ public class BuildingEntity : IEntity
     public HexagonDirection Rotation { get; }
     
     public bool IsRemoved => false;
+    public ItemDefinition ReservedForItem { get; private set; }
 
     public IEnumerable<INodeOperation> Update()
     {
@@ -47,6 +48,11 @@ public class BuildingEntity : IEntity
 
             _isDirty = false;
         }
+    }
+
+    public void ReserveForItem(ItemDefinition item)
+    {
+        ReservedForItem = item;
     }
 }
 

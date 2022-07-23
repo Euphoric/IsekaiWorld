@@ -117,13 +117,12 @@ namespace IsekaiWorld.Test
             {
                 throw new Exception("Didn't reach final check before timeout.");
             }
-
-            // TODO FIX
-            // var multipleItemsOnSamePositions =
-            //     game.Items.GroupBy(it => it.Position)
-            //         .Where(grp => grp.Count() > 1)
-            //         .ToList();
-            // multipleItemsOnSamePositions.Should().BeEmpty();
+            
+            var multipleItemsOnSamePositions =
+                game.Items.GroupBy(it => it.Position)
+                    .Where(grp => grp.Count() > 1)
+                    .ToList();
+            multipleItemsOnSamePositions.Should().BeEmpty();
             
             var totalItemCountEnd = game.Items.GroupBy(x=>x.Definition).Select(grp=> new {Definition = grp.Key, Count = grp.Sum(x => x.Count)}).ToList();
             totalItemCountEnd.Should().BeEquivalentTo(totalItemCountStart);

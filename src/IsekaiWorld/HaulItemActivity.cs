@@ -6,25 +6,31 @@ public class HaulItemActivity : IActivity
     private readonly GameEntity _game;
     public CharacterEntity Character { get; }
     public ItemEntity Item { get; }
-    public HexCubeCoord DropOffPosition { get; }
 
     private MovementActivity _movement;
 
     private bool _isPickedUp;
+    
+    private BuildingEntity _targetStockpile;
     public bool IsFinished { get; private set; }
 
-    public HaulItemActivity(GameEntity game, CharacterEntity character, ItemEntity item, HexCubeCoord dropOffPosition)
+    public HaulItemActivity(GameEntity game, CharacterEntity character, ItemEntity item)
     {
         _game = game;
         Character = character;
         Item = item;
-        DropOffPosition = dropOffPosition;
     }
 
     public void Update(float delta)
     {
         if (IsFinished)
             return;
+
+        if (_targetStockpile == null)
+        {
+            _targetStockpile = _game.Buildings.First(x => x.Definition == BuildingDefinitions.StockpileZone && (x.ReservedForItem == null || x.ReservedForItem == Item.Definition));
+            _targetStockpile.ReserveForItem(Item.Definition);
+        }
 
         if (_movement != null)
         {
@@ -53,7 +59,7 @@ public class HaulItemActivity : IActivity
             if (_movement == null)
             {
                 // move on item
-                _movement = new MovementActivity(_game.Pathfinding, Character, DropOffPosition, false);
+                _movement = new MovementActivity(_game.Pathfinding, Character, _targetStockpile.Position, false);
             }
 
             if (_movement.IsFinished)
@@ -61,11 +67,11 @@ public class HaulItemActivity : IActivity
                 _movement = null;
                 _isPickedUp = false;
 
-                var itemInPlace = _game.Items.FirstOrDefault(x => x.Position == DropOffPosition && x.Definition == Item.Definition);
+                var itemInPlace = _game.Items.FirstOrDefault(x => x.Position == _targetStockpile.Position && x.Definition == Item.Definition);
                 if (itemInPlace == null)
                 {
                     // place item on ground
-                    Item.Position = DropOffPosition;
+                    Item.Position = _targetStockpile.Position;
                     Item.SetHolder(_game.MapItems);
                 }
                 else
