@@ -127,5 +127,33 @@ namespace IsekaiWorld.Test
             var totalItemCountEnd = game.Items.GroupBy(x=>x.Definition).Select(grp=> new {Definition = grp.Key, Count = grp.Sum(x => x.Count)}).ToList();
             totalItemCountEnd.Should().BeEquivalentTo(totalItemCountStart);
         }
+
+        [Fact(Skip = "Fix items without stockpile bug.")]
+        public void Cut_trees()
+        {
+            var game = new GameEntity();
+            game.Initialize(new EmptyMapGenerator());
+
+            var character = game.AddCharacter("Test guy");
+            character.Position = HexCubeCoord.Zero;
+
+            var treePosition = new HexCubeCoord(5, -3, -2);
+            game.AddEntity(new BuildingEntity(treePosition, HexagonDirection.Left, BuildingDefinitions.TreeOak));
+            
+            game.DesignateCutWood(treePosition);
+            
+            bool timedOut = game.UpdateUntil(() =>
+            {
+                var entitiesOn = game.EntitiesOn(treePosition);
+                var treesExist = entitiesOn.OfType<BuildingEntity>().Any(b=>b.Definition == BuildingDefinitions.TreeOak);
+                var woodSpawned = entitiesOn.OfType<ItemEntity>().Any(i => i.Definition == ItemDefinitions.Wood);
+                return !treesExist && woodSpawned;
+            }, 300);
+
+            if (timedOut)
+            {
+                throw new Exception("Didn't reach final check before timeout.");
+            }
+        }
     }
 }

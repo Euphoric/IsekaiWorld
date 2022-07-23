@@ -125,9 +125,9 @@ public class GameEntity
         }
     }
 
-    public IEnumerable<IEntity> EntitiesOn(HexCubeCoord position)
+    public IReadOnlyList<IEntity> EntitiesOn(HexCubeCoord position)
     {
-        return _entities.Where(c => c.OccupiedCells.Contains(position));
+        return _entities.Where(c => c.OccupiedCells.Contains(position)).ToList();
     }
 
     public void SpawnBuilding(HexCubeCoord position, HexagonDirection rotation, BuildingDefinition buildingDefinition)
@@ -193,5 +193,14 @@ public class GameEntity
     public void AddEntity(IEntity entity)
     {
         _entities.Add(entity);
+    }
+
+    public void DesignateCutWood(HexCubeCoord position)
+    {
+        var treeEntity = Buildings.FirstOrDefault(e => e.OccupiedCells.Contains(position) && e.Definition == BuildingDefinitions.TreeOak);
+        if (treeEntity != null)
+        {
+            Jobs.Add(new CutWoodJob(this, treeEntity));
+        }
     }
 }

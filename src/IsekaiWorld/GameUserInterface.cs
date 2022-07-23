@@ -143,7 +143,8 @@ public class GameUserInterface
         Selection,
         Construction,
         PlaceBuilding,
-        PlaceItem
+        PlaceItem,
+        DesignateCutWood
     }
 
     private Tool _currentTool = Tool.Selection;
@@ -166,6 +167,9 @@ public class GameUserInterface
                 break;
             case Tool.PlaceItem:
                 _game.SpawnItem(clickPosition, _currentItemSelection);
+                break;
+            case Tool.DesignateCutWood:
+                _game.DesignateCutWood(clickPosition);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -193,6 +197,11 @@ public class GameUserInterface
     {
         _currentTool = Tool.PlaceItem;
         _currentItemSelection = itemDefinition;
+    }
+
+    public void DesignateCutWoodSelected()
+    {
+        _currentTool = Tool.DesignateCutWood;
     }
 }
 

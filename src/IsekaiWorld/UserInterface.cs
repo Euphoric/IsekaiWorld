@@ -47,15 +47,27 @@ public class UserInterface : CanvasLayer
         RotationOptionButton.Selected = 0;
         RotationOptionButton.Connect("item_selected", this, nameof(_on_rotation_selected));
 
+        {
+            var designationButton = GetNode<Button>("BottomMenu/DesignationButton");
+            designationButton.Connect("pressed", this, nameof(_on_DesignationButton_pressed));
+
+            var cutWoodButton = new Button();
+            cutWoodButton.Text = "Cut wood";
+            cutWoodButton.Connect("pressed", this, nameof(_on_CutWoodButton_pressed));
+            DesignationContainer.AddChild(cutWoodButton);
+        }
+
+
         ConstructionContainer.Visible = false;
         PlaceItemContainer.Visible = false;
+        DesignationContainer.Visible = false;
     }
 
     public Label ToolLabel => GetNode<Label>("ToolLabel");
     public Container ConstructionContainer => GetNode<Container>("ConstructionContainer");
     public CheckButton PlaceDirectlyButton => ConstructionContainer.GetNode<CheckButton>("PlaceDirectlyButton");
     public OptionButton RotationOptionButton => ConstructionContainer.GetNode<OptionButton>("RotationOptionButton");
-    
+    public Container DesignationContainer => GetNode<Container>("DesignationContainer");
     
     public Container PlaceItemContainer => GetNode<Container>("PlaceItemContainer");
     
@@ -74,7 +86,23 @@ public class UserInterface : CanvasLayer
     public void _on_ConstructionButton_pressed()
     {
         PlaceItemContainer.Visible = false;
+        DesignationContainer.Visible = false;
         ConstructionContainer.Visible = !ConstructionContainer.Visible;
+    }
+    
+    // ReSharper disable once UnusedMember.Global
+    public void _on_PlaceItemButton_pressed()
+    {
+        ConstructionContainer.Visible = false;
+        DesignationContainer.Visible = false;
+        PlaceItemContainer.Visible = !PlaceItemContainer.Visible;
+    }
+    
+    public void _on_DesignationButton_pressed()
+    {
+        ConstructionContainer.Visible = false;
+        PlaceItemContainer.Visible = false;
+        DesignationContainer.Visible = !DesignationContainer.Visible;
     }
 
     public void _on_ConstructionSelectionButton_pressed(string constructionDefinitionId)
@@ -92,14 +120,7 @@ public class UserInterface : CanvasLayer
             // ToolLabel.Text = "Place building: " + definition.Label;
         }
     }
-    
-    // ReSharper disable once UnusedMember.Global
-    public void _on_PlaceItemButton_pressed()
-    {
-        ConstructionContainer.Visible = false;
-        PlaceItemContainer.Visible = !PlaceItemContainer.Visible;
-    }
-    
+
     public void _on_PlaceItemSelectionButton_pressed(string itemDefinitionId)
     {
         var itemDefinition = ItemDefinitions.GetById(itemDefinitionId);
@@ -110,5 +131,11 @@ public class UserInterface : CanvasLayer
     public void _on_rotation_selected(int index)
     {
         _game.UserInterface.ConstructionRotation = (HexagonDirection)index;
+    }
+
+    public void _on_CutWoodButton_pressed()
+    {
+        _game.UserInterface.DesignateCutWoodSelected();
+        ToolLabel.Text = "Cut tree";
     }
 }

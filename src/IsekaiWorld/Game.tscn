@@ -37,30 +37,37 @@ margin_right = 102.0
 margin_bottom = 14.0
 text = "Debug label"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UserInterface"]
+[node name="BottomMenu" type="HBoxContainer" parent="UserInterface"]
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = -20.0
 
-[node name="SelectionButton" type="Button" parent="UserInterface/HBoxContainer"]
+[node name="SelectionButton" type="Button" parent="UserInterface/BottomMenu"]
 margin_right = 71.0
 margin_bottom = 20.0
 text = "Selection"
 
-[node name="ConstructionButton" type="Button" parent="UserInterface/HBoxContainer"]
+[node name="ConstructionButton" type="Button" parent="UserInterface/BottomMenu"]
 margin_left = 75.0
 margin_right = 168.0
 margin_bottom = 20.0
 rect_pivot_offset = Vector2( 123, 10 )
 text = "Construction"
 
-[node name="PlaceItemButton" type="Button" parent="UserInterface/HBoxContainer"]
+[node name="PlaceItemButton" type="Button" parent="UserInterface/BottomMenu"]
 margin_left = 172.0
 margin_right = 252.0
 margin_bottom = 20.0
 rect_pivot_offset = Vector2( 123, 10 )
 text = "Place item"
+
+[node name="DesignationButton" type="Button" parent="UserInterface/BottomMenu"]
+margin_left = 256.0
+margin_right = 344.0
+margin_bottom = 20.0
+rect_pivot_offset = Vector2( 123, 10 )
+text = "Designation"
 
 [node name="SelectionLabel" type="Label" parent="UserInterface"]
 anchor_top = 1.0
@@ -91,6 +98,10 @@ margin_top = 31.0
 margin_right = 392.0
 margin_bottom = 533.0
 
+[node name="DesignationContainer" type="GridContainer" parent="UserInterface"]
+margin_top = 31.0
+margin_bottom = 31.0
+
 [node name="ToolLabel" type="Label" parent="UserInterface"]
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -99,6 +110,6 @@ margin_right = 62.0
 margin_bottom = -44.0
 text = "Tool label"
 
-[connection signal="pressed" from="UserInterface/HBoxContainer/SelectionButton" to="UserInterface" method="_on_SelectionButton_pressed"]
-[connection signal="pressed" from="UserInterface/HBoxContainer/ConstructionButton" to="UserInterface" method="_on_ConstructionButton_pressed"]
-[connection signal="pressed" from="UserInterface/HBoxContainer/PlaceItemButton" to="UserInterface" method="_on_PlaceItemButton_pressed"]
+[connection signal="pressed" from="UserInterface/BottomMenu/SelectionButton" to="UserInterface" method="_on_SelectionButton_pressed"]
+[connection signal="pressed" from="UserInterface/BottomMenu/ConstructionButton" to="UserInterface" method="_on_ConstructionButton_pressed"]
+[connection signal="pressed" from="UserInterface/BottomMenu/PlaceItemButton" to="UserInterface" method="_on_PlaceItemButton_pressed"]

@@ -27,12 +27,24 @@ public class BuildingEntity : IEntity
     public string Label => Definition.Label;
 
     public HexagonDirection Rotation { get; }
-    
-    public bool IsRemoved => false;
-    public ItemDefinition ReservedForItem { get; private set; }
+
+    public bool IsRemoved { get; private set; }
 
     public IEnumerable<INodeOperation> Update()
     {
+        if (IsRemoved)
+        {
+            if (Definition.EdgeConnected)
+            {
+                yield return new HexagonalMapEntity.RefreshMapOperation();                
+            }
+            else
+            {
+                yield return new RemoveBuildingOperation(this);
+            }
+            yield break;
+        }
+        
         if (_isDirty)
         {
             Messaging.Broadcast(new BuildingUpdated(Position, Definition));
@@ -50,9 +62,16 @@ public class BuildingEntity : IEntity
         }
     }
 
+    public ItemDefinition ReservedForItem { get; private set; }
     public void ReserveForItem(ItemDefinition item)
     {
         ReservedForItem = item;
+    }
+
+    public void RemoveEntity()
+    {
+        IsRemoved = true;
+        _isDirty = true;
     }
 }
 
@@ -84,6 +103,7 @@ public class UpdateBuildingOperation : INodeOperation
         if (buildingNode == null)
         {
             buildingNode = new Node2D();
+            buildingNode.Name = Entity.Id.ToString();
             gameNode.MapNode.AddChild(buildingNode);
 
             // Line2D outline = new Line2D();
@@ -197,6 +217,26 @@ public class UpdateBuildingOperation : INodeOperation
                 return new Vector2(2, 1);
             default:
                 throw new ArgumentOutOfRangeException(nameof(entityRotation), entityRotation, null);
+        }
+    }
+}
+
+public class RemoveBuildingOperation : INodeOperation
+{
+    public BuildingEntity Entity { get; }
+
+    public RemoveBuildingOperation(BuildingEntity entity)
+    {
+        Entity = entity;
+    }
+
+    public void Execute(GameNode gameNode)
+    {
+        Node2D buildingNode = gameNode.MapNode.GetNodeOrNull<Node2D>(Entity.Id.ToString());
+
+        if (buildingNode != null)
+        {
+            buildingNode.GetParent().RemoveChild(buildingNode);
         }
     }
 }
