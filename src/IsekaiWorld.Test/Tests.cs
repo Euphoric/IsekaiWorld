@@ -9,10 +9,15 @@ namespace IsekaiWorld.Test
 {
     public class Tests
     {
+        private static GameEntity CreateGame()
+        {
+            return new GameEntity(new EntityMessaging());
+            
+        }
         [Fact]
         public void Construction_test()
         {
-            var game = new GameEntity();
+            var game = CreateGame();
             game.Initialize(new EmptyMapGenerator());
 
             var character = game.AddCharacter("Test guy");
@@ -49,7 +54,7 @@ namespace IsekaiWorld.Test
         [Fact]
         public void Items_hauling_test_simple()
         {
-            var game = new GameEntity();
+            var game = CreateGame();
             game.Initialize(new EmptyMapGenerator());
 
             var character = game.AddCharacter("Test guy");
@@ -77,7 +82,7 @@ namespace IsekaiWorld.Test
         [Fact]
         public void Items_hauling_test_stacking()
         {
-            var game = new GameEntity();
+            var game = CreateGame();
             game.Initialize(new EmptyMapGenerator());
 
             var character = game.AddCharacter("Test guy");
@@ -124,7 +129,7 @@ namespace IsekaiWorld.Test
         [Fact(Skip = "TODO: Implement hauling job when stockpile is added")]
         public void Items_hauling_add_new_stockpile()
         {
-            var game = new GameEntity();
+            var game = CreateGame();
             game.Initialize(new EmptyMapGenerator());
 
             var character = game.AddCharacter("Test guy");
@@ -166,7 +171,7 @@ namespace IsekaiWorld.Test
         [Fact]
         public void Cut_trees()
         {
-            var game = new GameEntity();
+            var game = CreateGame();
             game.Initialize(new EmptyMapGenerator());
 
             var character = game.AddCharacter("Test guy");

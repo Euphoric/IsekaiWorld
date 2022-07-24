@@ -3,14 +3,21 @@ using Godot;
 public class GameNode : Node
 {
     private  GameEntity _game;
+    private EntityMessaging _messaging;
+    private BuildingView _buildingView;
 
     public GameEntity GameEntity => _game;
     public HexagonalMap MapNode { get; private set; }
 
     public override void _EnterTree()
     {
-        _game = new GameEntity();
-
+        _messaging = new EntityMessaging();
+        _game = new GameEntity(_messaging);
+        _buildingView = new BuildingView(this);
+        
+        _messaging.Register<BuildingUpdated>(_buildingView.OnBuildingUpdated);
+        _messaging.Register<BuildingRemoved>(_buildingView.OnBuildingRemoved);
+        
         base._EnterTree();
     }
     
@@ -33,6 +40,9 @@ public class GameNode : Node
     {
         _game.Update();
         _game.UpdateNodes(this);
+        
+        _messaging.ClearBroadcast();
+        
         
         base._Process(delta);
     }

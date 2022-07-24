@@ -3,6 +3,7 @@ using System.Linq;
 
 public class GameEntity
 {
+    private readonly EntityMessaging _viewMessaging;
     public HexagonalMapEntity GameMap { get; private set; }
     public HexagonPathfinding Pathfinding { get; private set; }
     public GameUserInterface UserInterface { get; private set; }
@@ -19,6 +20,11 @@ public class GameEntity
     private readonly List<IEntity> _entities = new List<IEntity>();
 
     public MapItems MapItems { get; } = new MapItems();
+
+    public GameEntity(EntityMessaging viewMessaging)
+    {
+        _viewMessaging = viewMessaging;
+    }
     
     public void Initialize(IMapGenerator mapGenerator)
     {
@@ -88,7 +94,7 @@ public class GameEntity
 
     private void TransferMessages()
     {
-        var allMessaging = _entities.Select(x => x.Messaging).Concat(new[] { Pathfinding.Messaging }).ToList();
+        var allMessaging = _entities.Select(x => x.Messaging).Concat(new[] { Pathfinding.Messaging, _viewMessaging }).ToList();
         foreach (var sender in allMessaging)
         {
             foreach (var message in sender.BroadcastMessages)
