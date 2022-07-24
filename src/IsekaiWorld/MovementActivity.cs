@@ -28,15 +28,15 @@ public class MovementActivity : IActivity
         }
     }
     
-    public void Update(float delta)
+    public void Update()
     {
         if (_movementQueue.Any())
         {
-            _movementTimer += delta;
-            var movementDelay = 1 / 3f;
-            if (_movementTimer > movementDelay)
+            _movementTimer += 1;
+            var delayBetweenCells = 5f;
+            if (_movementTimer > delayBetweenCells)
             {
-                _movementTimer -= movementDelay;
+                _movementTimer -= delayBetweenCells;
                 _charater.Position = _movementQueue.Dequeue();
             }
         }

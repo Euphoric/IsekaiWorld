@@ -21,7 +21,7 @@ public class HaulItemActivity : IActivity
         Item = item;
     }
 
-    public void Update(float delta)
+    public void Update()
     {
         if (IsFinished)
             return;
@@ -39,7 +39,7 @@ public class HaulItemActivity : IActivity
 
         if (_movement != null)
         {
-            _movement.Update(delta);
+            _movement.Update();
         }
 
         if (!_isPickedUp)

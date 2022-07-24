@@ -17,14 +17,14 @@ public class CutTreeActivity : IActivity
         Tree = tree;
     }
 
-    public void Update(float delta)
+    public void Update()
     {
         if (IsFinished)
             return;
 
         if (_movement != null)
         {
-            _movement.Update(delta);
+            _movement.Update();
         }
         
         var canCut = Character.Position.IsNextTo(Tree.Position);

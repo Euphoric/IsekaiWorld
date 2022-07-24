@@ -34,7 +34,7 @@ public class GameNode : Node
 
     public override void _Process(float delta)
     {
-        _game.Update(delta);
+        _game.Update();
         _game.UpdateNodes(this);
         
         base._Process(delta);

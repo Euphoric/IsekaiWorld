@@ -18,7 +18,7 @@ public class ConstructionActivity : IActivity
         Construction = construction;
     }
 
-    public void Update(float delta)
+    public void Update()
     {
         if (IsFinished)
             return;
@@ -34,15 +34,15 @@ public class ConstructionActivity : IActivity
                 _movement = new MovementActivity(_game.Pathfinding, Character, Construction.Position, true);
             }
 
-            _movement.Update(delta);
+            _movement.Update();
         }
         else
         {
             _movement = null;
 
-            Construction.Progress += delta;
+            Construction.Progress += 1;
 
-            if (Construction.Progress > 3)
+            if (Construction.Progress > 60)
             {
                 IsFinished = true;
                 _game.RemoveConstruction(Construction);

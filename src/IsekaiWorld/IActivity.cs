@@ -1,5 +1,5 @@
 public interface IActivity
 {
-    void Update(float delta);
+    void Update();
     bool IsFinished { get; }
 }

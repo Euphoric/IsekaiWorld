@@ -132,7 +132,7 @@ namespace IsekaiWorld.Test
             
             game.SpawnItem(new HexCubeCoord(3, 2, -5), ItemDefinitions.Wood);
             
-            game.Update(0.1f);
+            game.Update();
             
             var stockpile = new BuildingEntity(new HexCubeCoord(1, 1, -2), HexagonDirection.Left,
                 BuildingDefinitions.StockpileZone);

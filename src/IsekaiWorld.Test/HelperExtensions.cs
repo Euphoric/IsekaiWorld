@@ -15,7 +15,7 @@ namespace IsekaiWorld.Test
                     return true;
                 }
                 time += 0.1f;
-                game.Update(0.1f);
+                game.Update();
             }
 
             return false;

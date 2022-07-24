@@ -58,7 +58,7 @@ public class GameEntity
         construction.RemoveEntity();
     }
 
-    public void Update(float delta)
+    public void Update()
     {
         foreach (var entity in _entities)
         {
@@ -79,7 +79,7 @@ public class GameEntity
         
         foreach (var activity in _activities)
         {
-            activity.Update(delta);
+            activity.Update();
         }
         _activities.RemoveAll(x => x.IsFinished);
 
