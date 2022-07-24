@@ -3,44 +3,60 @@ using System.Linq;
 
 public class MovementActivity : IActivity
 {
+    private readonly HexagonPathfinding _pathfinding;
     private readonly CharacterEntity _charater;
-    
+    private readonly HexCubeCoord _target;
+    private readonly bool _stopNextTo;
+
     private float _movementTimer;
-    private readonly Queue<HexCubeCoord> _movementQueue = new Queue<HexCubeCoord>();
+    private Queue<HexCubeCoord> _movementQueue;
 
     public MovementActivity(HexagonPathfinding pathfinding, CharacterEntity charater, HexCubeCoord target, bool stopNextTo)
     {
+        _pathfinding = pathfinding;
         _charater = charater;
-        
-        var pathResult = pathfinding.FindPath(charater.Position, target);
-        if (pathResult.Found)
-        {
-            IEnumerable<HexCubeCoord> movementPath = pathResult.Path;
-            if (stopNextTo)
-            {
-                movementPath = movementPath.Take(movementPath.Count() - 1);
-            }
-
-            foreach (var coord in movementPath)
-            {
-                _movementQueue.Enqueue(coord);            
-            }
-        }
+        _target = target;
+        _stopNextTo = stopNextTo;
     }
     
     public void Update()
     {
-        if (_movementQueue.Any())
+        if (_movementQueue == null)
+        {
+            _movementQueue = new Queue<HexCubeCoord>();
+            var pathResult = _pathfinding.FindPath(_charater.Position, _target);
+            if (pathResult.Found)
+            {
+                IEnumerable<HexCubeCoord> movementPath = pathResult.Path;
+                if (_stopNextTo)
+                {
+                    movementPath = movementPath.Take(movementPath.Count() - 1);
+                }
+
+                foreach (var coord in movementPath)
+                {
+                    _movementQueue.Enqueue(coord);
+                }
+            }
+        }
+
+        if (_movementQueue != null && _movementQueue.Any())
         {
             _movementTimer += 1;
             var delayBetweenCells = 5f;
             if (_movementTimer > delayBetweenCells)
             {
                 _movementTimer -= delayBetweenCells;
-                _charater.Position = _movementQueue.Dequeue();
+                var nextPosition = _movementQueue.Dequeue();
+                var isNextCellPassable = _pathfinding.IsPassable(nextPosition);
+                if (!isNextCellPassable)
+                {
+                    // TODO: Reload path
+                }
+                _charater.Position = nextPosition;
             }
         }
     }
 
-    public bool IsFinished => !_movementQueue.Any();
+    public bool IsFinished => _movementQueue != null && !_movementQueue.Any();
 }
