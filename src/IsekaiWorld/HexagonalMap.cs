@@ -5,6 +5,8 @@ using Godot;
 
 public class HexagonalMap : Node2D
 {
+    public EntityMessaging Messaging = new EntityMessaging();
+    
     private readonly Dictionary<SurfaceDefinition, ArrayMesh> _surfaceMeshes =
         new Dictionary<SurfaceDefinition, ArrayMesh>();
 
@@ -520,6 +522,8 @@ public class HexagonalMap : Node2D
         var hex = HexCubeCoord.FromPosition(position, 1);
         _mouseoverHexagon.HexPosition = hex;
 
+        Messaging.HandleMessages(MessageHandler);
+        
         if (_isDirty)
         {
             RefreshGameMap();
@@ -527,5 +531,27 @@ public class HexagonalMap : Node2D
         }
 
         base._Process(delta);
+    }
+
+    private void MessageHandler(IEntityMessage message)
+    {
+        switch (message)
+        {
+            case BuildingUpdated bu:
+                if (bu.Definition.EdgeConnected)
+                {
+                    _isDirty = true;
+                }
+
+                break;
+            case BuildingRemoved br:
+                if (br.Definition.EdgeConnected)
+                {
+                    _isDirty = true;
+                }
+
+                break;
+        }
+        
     }
 }

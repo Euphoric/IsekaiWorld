@@ -80,11 +80,6 @@ public class GameEntity
             _operations.Add(operation);
         }
 
-        foreach (var operation in GameMap.Update())
-        {
-            _operations.Add(operation);
-        }
-        
         foreach (var activity in _activities)
         {
             activity.Update();

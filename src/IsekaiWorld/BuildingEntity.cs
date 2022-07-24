@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 public class BuildingEntity : IEntity
@@ -35,25 +36,15 @@ public class BuildingEntity : IEntity
         if (IsRemoved)
         {
             Messaging.Broadcast(new BuildingRemoved(Position, Definition, Id.ToString(), Rotation));
-            
-            if (Definition.EdgeConnected)
-            {
-                yield return new HexagonalMapEntity.RefreshMapOperation();                
-            }
-            yield break;
         }
-        
-        if (_isDirty)
+        else if (_isDirty)
         {
             Messaging.Broadcast(new BuildingUpdated(Position, Definition, Id.ToString(), Rotation));
 
-            if (Definition.EdgeConnected)
-            {
-                yield return new HexagonalMapEntity.RefreshMapOperation();                
-            }
-
             _isDirty = false;
         }
+        
+        return Enumerable.Empty<INodeOperation>();
     }
 
     public ItemDefinition ReservedForItem { get; private set; }

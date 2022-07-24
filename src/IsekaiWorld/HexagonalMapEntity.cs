@@ -13,12 +13,10 @@ public class HexagonalMapEntity
         _cellsByPosition = Cells.ToDictionary(c => c.Position, c => c);
     }
 
-    private IReadOnlyDictionary<HexCubeCoord, MapCell> _cellsByPosition;
+    private readonly IReadOnlyDictionary<HexCubeCoord, MapCell> _cellsByPosition;
     public IReadOnlyList<HexCubeCoord> Hexes { get; }
     public IReadOnlyList<MapCell> Cells { get; }
 
-    private bool _mapChangeDirty = true; 
-    
     private static IEnumerable<HexCubeCoord> MapCoordinates(int size)
     {
         for (int r = -size; r <= size; r++)
@@ -34,14 +32,6 @@ public class HexagonalMapEntity
         }
     }
 
-    public void SetCell(HexCubeCoord position, SurfaceDefinition surface)
-    {
-        var cell = CellForPosition(position);
-        cell.Surface = surface;
-
-        _mapChangeDirty = true;
-    }
-
     public bool IsWithinMap(HexCubeCoord hexCubeCoord)
     {
         return hexCubeCoord.DistanceFrom(HexCubeCoord.Zero) <= Size;
@@ -50,22 +40,5 @@ public class HexagonalMapEntity
     public MapCell CellForPosition(HexCubeCoord position)
     {
         return _cellsByPosition[position];
-    }
-
-    public IEnumerable<INodeOperation> Update()
-    {
-        if (_mapChangeDirty)
-        {
-            yield return new RefreshMapOperation();
-            _mapChangeDirty = false;
-        }
-    }
-    
-    public class RefreshMapOperation : INodeOperation
-    {
-        public void Execute(GameNode gameNode)
-        {
-            gameNode.MapNode.InvalidateMap();
-        }
     }
 }

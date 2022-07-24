@@ -30,6 +30,7 @@ public class GameNode : Node
         eveCharacter.Position = new HexCubeCoord(1, -1, 0);
 
         MapNode = GetNode<HexagonalMap>("Map/HexagonalMap");
+        _game.Messaging.Register(MapNode.Messaging);
     }
 
     public override void _Process(float delta)
