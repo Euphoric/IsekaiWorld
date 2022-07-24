@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 
 public class CharacterEntity : IEntity, IItemHolder
 {
+    public Guid Id { get; }
     public EntityMessaging Messaging { get; } = new EntityMessaging();
     
     public bool IsRemoved => false;
@@ -18,6 +20,8 @@ public class CharacterEntity : IEntity, IItemHolder
 
     public CharacterEntity(GameEntity game, string label)
     {
+        Id = Guid.NewGuid();
+        
         Label = label;
         _game = game;
     }

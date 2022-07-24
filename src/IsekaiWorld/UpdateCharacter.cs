@@ -9,7 +9,7 @@ public class UpdateCharacter : INodeOperation
 
     public void Execute(GameNode gameNode)
     {
-        var node = gameNode.GetEntityNode<HexagonNode>(_characterEntity);
+        var node = gameNode.MapNode.GetNode<HexagonNode>(_characterEntity.Id.ToString());
         node.HexPosition = _characterEntity.Position;
     }
 }

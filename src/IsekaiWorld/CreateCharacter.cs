@@ -13,11 +13,11 @@ public class CreateCharacter : INodeOperation
     {
         var characterHexagon = new HexagonNode
         {
+            Name = _character.Id.ToString(),
             HexPosition = HexCubeCoord.Zero,
             Color = Colors.Blue
         };
-        var mapNode = gameNode.GetEntityNode<HexagonalMap>(gameNode.GameEntity.GameMap);
+        var mapNode = gameNode.MapNode;
         mapNode.AddChild(characterHexagon);
-        gameNode.AddNodeReference(_character, characterHexagon);
     }
 }

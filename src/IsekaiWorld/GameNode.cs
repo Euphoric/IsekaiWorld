@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Godot;
 
 public class GameNode : Node
@@ -29,7 +27,6 @@ public class GameNode : Node
         eveCharacter.Position = new HexCubeCoord(1, -1, 0);
 
         MapNode = GetNode<HexagonalMap>("Map/HexagonalMap");
-        AddNodeReference(_game.GameMap, MapNode);
     }
 
     public override void _Process(float delta)
@@ -38,24 +35,5 @@ public class GameNode : Node
         _game.UpdateNodes(this);
         
         base._Process(delta);
-    }
-    
-    private readonly Dictionary<object, Node> _nodeMappings = new Dictionary<object, Node>();
-
-    public void AddNodeReference(object entity, Node node)
-    {
-        _nodeMappings.Add(entity, node);
-    }
-
-    public void RemoveNodeFor(object entity)
-    {
-        var nodeToRemove = _nodeMappings[entity];
-        nodeToRemove.GetParent().RemoveChild(nodeToRemove);
-    }
-
-    public TNode GetEntityNode<TNode>(object entity)
-        where TNode : Node
-    {
-        return (TNode)_nodeMappings[entity];
     }
 }
