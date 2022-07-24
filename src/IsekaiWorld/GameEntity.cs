@@ -60,11 +60,6 @@ public class GameEntity
         _activities.Add(activity);
     }
 
-    public void RemoveConstruction(ConstructionEntity construction)
-    {
-        construction.RemoveEntity();
-    }
-
     public void Update()
     {
         Pathfinding.Update();

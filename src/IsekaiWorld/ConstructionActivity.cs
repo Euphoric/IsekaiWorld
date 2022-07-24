@@ -40,12 +40,12 @@ public class ConstructionActivity : IActivity
         {
             _movement = null;
 
-            Construction.Progress += 1;
+            Construction.AddProgress(1);
 
-            if (Construction.Progress > 60)
+            if (Construction.IsFinished)
             {
                 IsFinished = true;
-                _game.RemoveConstruction(Construction);
+                Construction.RemoveEntity();
                 ConstructionEntity construction = Construction;
                 if (construction.Definition.PlaceBuildingId != null)
                 {

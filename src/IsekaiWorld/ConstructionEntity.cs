@@ -30,15 +30,16 @@ public class ConstructionEntity : IEntity
     public float Progress
     {
         get => _progress;
-        set
+        private set
         {
             _progress = value;
             _isDirty = true;
         }
     }
 
-    public float CompleteProgress => 3;
+    public float CompleteProgress => 60;
     public float ProgressRelative => Progress / CompleteProgress;
+    public bool IsFinished => Progress >= CompleteProgress;
 
     public IEnumerable<INodeOperation> Update()
     {
@@ -59,5 +60,10 @@ public class ConstructionEntity : IEntity
     {
         IsRemoved = true;
         _isDirty = true;
+    }
+
+    public void AddProgress(float progress)
+    {
+        Progress += progress;
     }
 }
