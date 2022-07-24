@@ -3,12 +3,12 @@ using System.Linq;
 
 public class GameEntity
 {
-    private readonly EntityMessaging _viewMessaging;
     public HexagonalMapEntity GameMap { get; private set; }
     public HexagonPathfinding Pathfinding { get; private set; }
     public GameUserInterface UserInterface { get; private set; }
     public JobSystem Jobs { get; private set; }
-
+    public MessagingHub Messaging { get; }
+    
     public IReadOnlyList<ConstructionEntity> Constructions => _entities.OfType<ConstructionEntity>().ToList();
     public IReadOnlyList<BuildingEntity> Buildings => _entities.OfType<BuildingEntity>().ToList();
     public IReadOnlyList<ItemEntity> Items => _entities.OfType<ItemEntity>().ToList();
@@ -21,22 +21,23 @@ public class GameEntity
 
     public MapItems MapItems { get; } = new MapItems();
 
-    public GameEntity(EntityMessaging viewMessaging)
+    public GameEntity()
     {
-        _viewMessaging = viewMessaging;
+        Messaging = new MessagingHub();
     }
-    
+
     public void Initialize(IMapGenerator mapGenerator)
     {
         UserInterface = new GameUserInterface(this);
 
         var (map, entities) = mapGenerator.GenerateNewMap();
         GameMap = map;
-        _entities.AddRange(entities);
-        
+        entities.ForEach(AddEntity);
+
         Pathfinding = new HexagonPathfinding();
         Pathfinding.BuildMap(GameMap);
-
+        Messaging.Register(Pathfinding.Messaging);
+        
         Jobs = new JobSystem();
     }
 
@@ -47,7 +48,7 @@ public class GameEntity
             Position = HexCubeCoord.Zero,
         };
 
-        _entities.Add(characterEntity);
+        AddEntity(characterEntity);
 
         _operations.Add(characterEntity.Initialize());
 
@@ -66,13 +67,14 @@ public class GameEntity
 
     public void Update()
     {
+        Pathfinding.Update();
         foreach (var entity in _entities)
         {
             var operations = entity.Update();
             _operations.AddRange(operations);
         }
-        _entities.RemoveAll(ent => ent.IsRemoved);
-
+        _entities.Where(ent => ent.IsRemoved).ToList().ForEach(RemoveEntity);
+        
         foreach (var operation in UserInterface.Update())
         {
             _operations.Add(operation);
@@ -88,24 +90,6 @@ public class GameEntity
             activity.Update();
         }
         _activities.RemoveAll(x => x.IsFinished);
-
-        TransferMessages();
-    }
-
-    private void TransferMessages()
-    {
-        var allMessaging = _entities.Select(x => x.Messaging).Concat(new[] { Pathfinding.Messaging, _viewMessaging }).ToList();
-        foreach (var sender in allMessaging)
-        {
-            foreach (var message in sender.BroadcastMessages)
-            {
-                foreach (var received in allMessaging)
-                {
-                    received.Handle(message);
-                }                
-            }
-            sender.ClearBroadcast();
-        }
     }
 
     public void UpdateNodes(GameNode gameNode)
@@ -125,7 +109,7 @@ public class GameEntity
         if (!constructionExists && isTerrainPassable)
         {
             var constructionEntity = new ConstructionEntity(position, rotation, construction);
-            _entities.Add(constructionEntity);
+            AddEntity(constructionEntity);
 
             Jobs.Add(new ConstructionJob(this, constructionEntity));
         }
@@ -138,7 +122,7 @@ public class GameEntity
 
     public void SpawnBuilding(HexCubeCoord position, HexagonDirection rotation, BuildingDefinition buildingDefinition)
     {
-        _entities.Add(new BuildingEntity(position, rotation, buildingDefinition));
+        AddEntity(new BuildingEntity(position, rotation, buildingDefinition));
 
         var stuckCharacter = _entities.OfType<CharacterEntity>().FirstOrDefault(c => c.Position == position);
         if (stuckCharacter != null)
@@ -181,7 +165,7 @@ public class GameEntity
         {
             var itemEntity = new ItemEntity(position, item, 1);
             itemEntity.SetHolder(MapItems);
-            _entities.Add(itemEntity);
+            AddEntity(itemEntity);
 
             Jobs.Add(new HaulItemJob(this, itemEntity));
         }
@@ -191,14 +175,16 @@ public class GameEntity
         }
     }
     
-    public void RemoveEntity(IEntity entity)
-    {
-        _entities.Remove(entity);
-    }
-
     public void AddEntity(IEntity entity)
     {
         _entities.Add(entity);
+        Messaging.Register(entity.Messaging);
+    }
+    
+    public void RemoveEntity(IEntity entity)
+    {
+        _entities.Remove(entity);
+        Messaging.Unregister(entity.Messaging);
     }
 
     public void DesignateCutWood(HexCubeCoord position)

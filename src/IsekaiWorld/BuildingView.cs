@@ -3,14 +3,34 @@ using Godot;
 
 public class BuildingView
 {
+    public EntityMessaging Messaging { get; }
     private readonly GameNode _gameNode;
 
     public BuildingView(GameNode gameNode)
     {
         _gameNode = gameNode;
+        Messaging = new EntityMessaging();
     }
 
-    public void OnBuildingUpdated(BuildingUpdated message)
+    public void Update()
+    {
+        Messaging.HandleMessages(MessageHandler);
+    }
+
+    private void MessageHandler(IEntityMessage message)
+    {
+        switch (message)
+        {
+            case BuildingUpdated buildingUpdated:
+                OnBuildingUpdated(buildingUpdated);
+                break;
+            case BuildingRemoved buildingRemoved:
+                OnBuildingRemoved(buildingRemoved);
+                break;
+        }
+    }
+
+    private void OnBuildingUpdated(BuildingUpdated message)
     {
         if (message.Definition.EdgeConnected)
             return;
@@ -136,7 +156,7 @@ public class BuildingView
         }
     }
 
-    public void OnBuildingRemoved(BuildingRemoved message)
+    private void OnBuildingRemoved(BuildingRemoved message)
     {
         if (message.Definition.EdgeConnected)
             return;

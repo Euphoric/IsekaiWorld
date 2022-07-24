@@ -23,9 +23,19 @@ public class HexagonPathfinding
     private readonly Dictionary<HexCubeCoord, Node> _nodes = new Dictionary<HexCubeCoord, Node>();
     private readonly Dictionary<INode, HexCubeCoord> _nodeToHexPosition = new Dictionary<INode, HexCubeCoord>();
 
-    public HexagonPathfinding()
+    public void Update()
     {
-        Messaging.Register<BuildingUpdated>(BuildingUpdated);
+        Messaging.HandleMessages(MessageHandler);
+    }
+    
+    private void MessageHandler(IEntityMessage message)
+    {
+        switch (message)
+        {
+            case BuildingUpdated buildingUpdated:
+                OnBuildingUpdated(buildingUpdated);
+                break;
+        }
     }
 
     public void BuildMap(HexagonalMapEntity hexagonalMapEntity)
@@ -74,7 +84,7 @@ public class HexagonPathfinding
         return new PathfindingResult(path.Type == PathType.Complete, hexPath.ToList());
     }
 
-    private void BuildingUpdated(BuildingUpdated message)
+    private void OnBuildingUpdated(BuildingUpdated message)
     {
         if (message.Definition.Impassable)
         {

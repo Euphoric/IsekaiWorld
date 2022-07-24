@@ -11,7 +11,7 @@ namespace IsekaiWorld.Test
     {
         private static GameEntity CreateGame()
         {
-            return new GameEntity(new EntityMessaging());
+            return new GameEntity();
             
         }
         [Fact]

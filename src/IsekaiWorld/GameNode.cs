@@ -3,7 +3,6 @@ using Godot;
 public class GameNode : Node
 {
     private  GameEntity _game;
-    private EntityMessaging _messaging;
     private BuildingView _buildingView;
 
     public GameEntity GameEntity => _game;
@@ -11,13 +10,10 @@ public class GameNode : Node
 
     public override void _EnterTree()
     {
-        _messaging = new EntityMessaging();
-        _game = new GameEntity(_messaging);
+        _game = new GameEntity();
         _buildingView = new BuildingView(this);
-        
-        _messaging.Register<BuildingUpdated>(_buildingView.OnBuildingUpdated);
-        _messaging.Register<BuildingRemoved>(_buildingView.OnBuildingRemoved);
-        
+        _game.Messaging.Register(_buildingView.Messaging);
+
         base._EnterTree();
     }
     
@@ -40,9 +36,7 @@ public class GameNode : Node
     {
         _game.Update();
         _game.UpdateNodes(this);
-        
-        _messaging.ClearBroadcast();
-        
+        _buildingView.Update();
         
         base._Process(delta);
     }

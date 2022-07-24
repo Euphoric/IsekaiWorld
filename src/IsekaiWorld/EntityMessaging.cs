@@ -1,35 +1,49 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 public class EntityMessaging
 {
-    private readonly List<IEntityMessage> _broadcastMessages = new List<IEntityMessage>();
-    public IReadOnlyList<IEntityMessage> BroadcastMessages => _broadcastMessages;
-
-    private readonly Dictionary<Type, Action<IEntityMessage>> _handlers = new Dictionary<Type, Action<IEntityMessage>>();
+    private MessagingHub _messagingHub;
+    private readonly List<IEntityMessage> _receivedMessages = new List<IEntityMessage>();
 
     public void Broadcast(IEntityMessage message)
     {
-        _broadcastMessages.Add(message);
+        _messagingHub.Broadcast(message);
     }
 
-    public void Register<TMessage>(Action<TMessage> messageHandler)
-        where TMessage : IEntityMessage
+    public void RegisterHub(MessagingHub messagingHub)
     {
-        _handlers[typeof(TMessage)] = obj => messageHandler((TMessage)obj);
-    }
-
-    public void ClearBroadcast()
-    {
-        _broadcastMessages.Clear();
-    }
-
-    public void Handle(IEntityMessage message)
-    {
-        if (_handlers.TryGetValue(message.GetType(), out var action))
+        if (_messagingHub != null)
         {
-            action(message);
+            throw new InvalidOperationException("Cannot register new messaging hub");
         }
+
+        _messagingHub = messagingHub;
+    }
+
+    public void UnregisterHub(MessagingHub messagingHub)
+    {
+        if (_messagingHub != messagingHub)
+        {
+            throw new InvalidOperationException("Cannot unregister different messaging hub");
+        }
+
+        _messagingHub = null;
+    }
+
+    public void Receive(IEntityMessage message)
+    {
+        _receivedMessages.Add(message);
+    }
+
+    public void HandleMessages(Action<IEntityMessage> messageHandler)
+    {
+        foreach (var message in _receivedMessages)
+        {
+            messageHandler(message);
+        }
+        _receivedMessages.Clear();
     }
 }
 
