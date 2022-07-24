@@ -28,7 +28,12 @@ public class HaulItemActivity : IActivity
 
         if (_targetStockpile == null)
         {
-            _targetStockpile = _game.Buildings.First(x => x.Definition == BuildingDefinitions.StockpileZone && (x.ReservedForItem == null || x.ReservedForItem == Item.Definition));
+            _targetStockpile = _game.Buildings.FirstOrDefault(x => x.Definition == BuildingDefinitions.StockpileZone && (x.ReservedForItem == null || x.ReservedForItem == Item.Definition));
+            if (_targetStockpile == null)
+            {
+                IsFinished = true;
+                return;
+            }
             _targetStockpile.ReserveForItem(Item.Definition);
         }
 

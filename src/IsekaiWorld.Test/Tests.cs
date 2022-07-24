@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using FluentAssertions;
 using Xunit;
 
@@ -63,10 +65,8 @@ namespace IsekaiWorld.Test
                 var issues = game.CheckForIssues().ToList();
                 issues.Should().BeEmpty();
 
-                var itemInStockpile = game.Items.FirstOrDefault(item => item.Position == stockpile.Position);
-
-                return itemInStockpile != null;
-            }, 300);
+                return !ItemsOutsideStockpiles(game).Any();
+            });
 
             if (timedOut)
             {
@@ -103,15 +103,8 @@ namespace IsekaiWorld.Test
                 var issues = game.CheckForIssues().ToList();
                 issues.Should().BeEmpty();
 
-                var stockpilePositions =
-                    game.Buildings
-                        .Where(b => b.Definition == BuildingDefinitions.StockpileZone)
-                        .Select(x => x.Position).ToHashSet();
-
-                var itemsOutsideStockpiles = game.Items.Where(it => !stockpilePositions.Contains(it.Position)).ToList();
-
-                return !itemsOutsideStockpiles.Any();
-            }, 300);
+                return !ItemsOutsideStockpiles(game).Any();
+            });
 
             if (timedOut)
             {
@@ -128,7 +121,49 @@ namespace IsekaiWorld.Test
             totalItemCountEnd.Should().BeEquivalentTo(totalItemCountStart);
         }
 
-        [Fact(Skip = "Fix items without stockpile bug.")]
+        [Fact(Skip = "TODO: Implement hauling job when stockpile is added")]
+        public void Items_hauling_add_new_stockpile()
+        {
+            var game = new GameEntity();
+            game.Initialize(new EmptyMapGenerator());
+
+            var character = game.AddCharacter("Test guy");
+            character.Position = HexCubeCoord.Zero;
+            
+            game.SpawnItem(new HexCubeCoord(3, 2, -5), ItemDefinitions.Wood);
+            
+            game.Update(0.1f);
+            
+            var stockpile = new BuildingEntity(new HexCubeCoord(1, 1, -2), HexagonDirection.Left,
+                BuildingDefinitions.StockpileZone);
+            game.AddEntity(stockpile);
+            
+            bool timedOut = game.UpdateUntil(() =>
+            {
+                var issues = game.CheckForIssues().ToList();
+                issues.Should().BeEmpty();
+
+                return !ItemsOutsideStockpiles(game).Any();
+            });
+
+            if (timedOut)
+            {
+                throw new Exception("Didn't reach final check before timeout.");
+            }
+        }
+
+        private static List<ItemEntity> ItemsOutsideStockpiles(GameEntity game)
+        {
+            var stockpilePositions =
+                game.Buildings
+                    .Where(b => b.Definition == BuildingDefinitions.StockpileZone)
+                    .Select(x => x.Position).ToHashSet();
+
+            var itemsOutsideStockpiles = game.Items.Where(it => !stockpilePositions.Contains(it.Position)).ToList();
+            return itemsOutsideStockpiles;
+        }
+
+        [Fact]
         public void Cut_trees()
         {
             var game = new GameEntity();

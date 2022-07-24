@@ -174,9 +174,9 @@ public class GameEntity
         if (spawnNewEntity)
         {
             var itemEntity = new ItemEntity(position, item, 1);
-            _entities.Add(itemEntity);
             itemEntity.SetHolder(MapItems);
-            
+            _entities.Add(itemEntity);
+
             Jobs.Add(new HaulItemJob(this, itemEntity));
         }
         else
