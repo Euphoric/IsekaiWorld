@@ -32,6 +32,11 @@ public class HexagonalMapEntity
         }
     }
 
+    public void SetCellSurface(HexCubeCoord position, SurfaceDefinition surface)
+    {
+        _cellsByPosition[position].Surface = surface;
+    }
+    
     public bool IsWithinMap(HexCubeCoord hexCubeCoord)
     {
         return hexCubeCoord.DistanceFrom(HexCubeCoord.Zero) <= Size;

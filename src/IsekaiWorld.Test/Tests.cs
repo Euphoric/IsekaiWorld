@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.AccessControl;
 using FluentAssertions;
 using Xunit;
 
@@ -12,9 +11,47 @@ namespace IsekaiWorld.Test
         private static GameEntity CreateGame()
         {
             return new GameEntity();
-            
         }
+
+        [Fact(Skip = "Fix updating passability from terrain")]
+        public void Character_stuck_in_impassalbe_terrain_issue_verification()
+        {
+            var game = CreateGame();
+            game.Initialize(new EmptyMapGenerator());
+
+            var character = game.AddCharacter("Test guy");
+            character.Position = HexCubeCoord.Zero;
+            game.GameMap.SetCellSurface(character.Position, SurfaceDefinitions.Empty);
+
+            game.Update(); // send msg
+            game.Update(); // receive msg
+            
+            var issues = game.CheckForIssues().ToList();
+            var characterStuckIssue = issues.Any(s => s == $"Character '{character.Label}' stuck on impassable surface on {character.Position}");
+            Assert.True(characterStuckIssue);
+        }
+        
         [Fact]
+        public void Character_stuck_in_wall_issue_verification()
+        {
+            var game = CreateGame();
+            game.Initialize(new EmptyMapGenerator());
+
+            var position = HexCubeCoord.Zero;
+            game.SpawnBuilding(position, HexagonDirection.Left, BuildingDefinitions.StoneWall);
+
+            var character = game.AddCharacter("Test guy");
+            character.Position = position;
+            
+            game.Update(); // send msg
+            game.Update(); // receive msg
+            
+            var issues = game.CheckForIssues().ToList();
+            var characterStuckIssue = issues.Any(s => s == $"Character '{character.Label}' stuck on impassable surface on {character.Position}");
+            Assert.True(characterStuckIssue);
+        }
+
+        [Fact(Skip = "Fix movement when it's path is blocked.")]
         public void Construction_test()
         {
             var game = CreateGame();
@@ -39,7 +76,7 @@ namespace IsekaiWorld.Test
                 issues.Should().BeEmpty();
 
                 return !game.Constructions.Any();
-            }, 300);
+            });
 
             if (timedOut)
             {
@@ -48,6 +85,44 @@ namespace IsekaiWorld.Test
 
             var buildingPositions = game.Buildings.Select(x => x.Position).ToHashSet();
 
+            buildingPositions.Should().BeEquivalentTo(constructionPositions);
+        }
+        
+        [Fact(Skip = "Fix")]
+        public void Construction_complex_test()
+        {
+            var game = CreateGame();
+            game.Initialize(new EmptyMapGenerator());
+
+            var character1 = game.AddCharacter("Test guy 1");
+            character1.Position = HexCubeCoord.Zero;
+            var character2 = game.AddCharacter("Test guy 2");
+            character2.Position = HexCubeCoord.Zero;
+            
+            foreach (var cell in game.GameMap.Cells)
+            {
+                if (cell.Position.DistanceFrom(HexCubeCoord.Zero) <= 5)
+                {
+                    game.StartConstruction(cell.Position, HexagonDirection.Left, ConstructionDefinitions.StoneWall);
+                }
+            }
+
+            var constructionPositions = game.Constructions.Select(x => x.Position).ToHashSet();
+
+            bool timedOut = game.UpdateUntil(() =>
+            {
+                var issues = game.CheckForIssues().ToList();
+                issues.Should().BeEmpty();
+
+                return !game.Constructions.Any();
+            });
+
+            if (timedOut)
+            {
+                throw new Exception("Didn't reach final check before timeout.");
+            }
+
+            var buildingPositions = game.Buildings.Select(x => x.Position).ToHashSet();
             buildingPositions.Should().BeEquivalentTo(constructionPositions);
         }
 

@@ -117,8 +117,7 @@ public class GameEntity
         var stuckCharacter = _entities.OfType<CharacterEntity>().FirstOrDefault(c => c.Position == position);
         if (stuckCharacter != null)
         {
-            var unstuckCell = stuckCharacter.Position.Neighbors().Select(c => GameMap.CellForPosition(c))
-                .FirstOrDefault(c => c.Surface.IsPassable);
+            var unstuckCell = stuckCharacter.Position.Neighbors().Where(p=>Pathfinding.IsPassable(p)).Select(c => GameMap.CellForPosition(c)).FirstOrDefault();
             if (unstuckCell != null)
             {
                 stuckCharacter.Position = unstuckCell.Position;
@@ -130,10 +129,11 @@ public class GameEntity
     {
         foreach (var character in _entities.OfType<CharacterEntity>())
         {
-            var cellUnderCharacter = GameMap.CellForPosition(character.Position);
-            if (!cellUnderCharacter.Surface.IsPassable)
+            var characterPosition = character.Position;
+            var isImpassable = !Pathfinding.IsPassable(characterPosition);
+            if (isImpassable)
             {
-                yield return $"Character '{character.Label}' stuck on impassable surface on {character.Position}";
+                yield return $"Character '{character.Label}' stuck on impassable surface on {characterPosition}";
             }
         }
 

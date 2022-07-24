@@ -98,4 +98,10 @@ public class HexagonPathfinding
         centerNode.Incoming.Clear();
         centerNode.Outgoing.Clear();
     }
+
+    public bool IsPassable(HexCubeCoord position)
+    {
+        var centerNode = _nodes[position];
+        return centerNode.Outgoing.Any();
+    }
 }
