@@ -11,16 +11,27 @@ public class MovementActivity : IActivity
     private float _movementTimer;
     private Queue<HexCubeCoord> _movementQueue;
 
-    public MovementActivity(HexagonPathfinding pathfinding, CharacterEntity charater, HexCubeCoord target, bool stopNextTo)
+    public MovementActivity(HexagonPathfinding pathfinding, CharacterEntity charater, HexCubeCoord target,
+        bool stopNextTo)
     {
         _pathfinding = pathfinding;
         _charater = charater;
         _target = target;
         _stopNextTo = stopNextTo;
     }
-    
+
     public void Update()
     {
+        if (_movementQueue != null && _movementQueue.Any())
+        {
+            var nextPosition = _movementQueue.Peek();
+            var isNextCellPassable = _pathfinding.IsPassable(nextPosition);
+            if (!isNextCellPassable)
+            {
+                _movementQueue = null;
+            }
+        }
+
         if (_movementQueue == null)
         {
             _movementQueue = new Queue<HexCubeCoord>();
@@ -48,11 +59,6 @@ public class MovementActivity : IActivity
             {
                 _movementTimer -= delayBetweenCells;
                 var nextPosition = _movementQueue.Dequeue();
-                var isNextCellPassable = _pathfinding.IsPassable(nextPosition);
-                if (!isNextCellPassable)
-                {
-                    // TODO: Reload path
-                }
                 _charater.Position = nextPosition;
             }
         }

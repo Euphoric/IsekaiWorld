@@ -51,7 +51,7 @@ namespace IsekaiWorld.Test
             Assert.True(characterStuckIssue);
         }
 
-        [Fact(Skip = "Fix movement when it's path is blocked.")]
+        [Fact]
         public void Construction_test()
         {
             var game = CreateGame();
@@ -263,11 +263,68 @@ namespace IsekaiWorld.Test
                 var treesExist = entitiesOn.OfType<BuildingEntity>().Any(b=>b.Definition == BuildingDefinitions.TreeOak);
                 var woodSpawned = entitiesOn.OfType<ItemEntity>().Any(i => i.Definition == ItemDefinitions.Wood);
                 return !treesExist && woodSpawned;
-            }, 300);
+            });
 
             if (timedOut)
             {
                 throw new Exception("Didn't reach final check before timeout.");
+            }
+        }
+        
+        
+        [Fact]
+        public void Movement_blocked_by_construction_reroutes()
+        {
+            var game = CreateGame();
+            game.Initialize(new EmptyMapGenerator());
+
+            foreach (var cell in game.GameMap.Cells)
+            {
+                if (cell.Position.DistanceFrom(HexCubeCoord.Zero) == 6)
+                {
+                    game.SpawnBuilding(cell.Position, HexagonDirection.Left, BuildingDefinitions.StoneWall);
+                }
+            }
+
+            var character = game.AddCharacter("Test guy");
+            character.Position = HexCubeCoord.Zero + HexagonDirection.Left + HexagonDirection.Left;
+
+            var target = HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right;
+            
+                
+            character.StartActivity(new MovementActivity(game.Pathfinding, character, target, false));
+            game.RunActivity(character.CurrentActivity);
+
+            var checkpoint = HexCubeCoord.Zero + HexagonDirection.Left;
+
+            {
+                bool timedOut = game.UpdateUntil(() =>
+                {
+                    var issues = game.CheckForIssues().ToList();
+                    issues.Should().BeEmpty();
+                    
+                    return character.Position == checkpoint;
+                });
+                if (timedOut)
+                {
+                    throw new Exception("Didn't reach final check before timeout.");
+                }
+            }
+            
+            game.SpawnBuilding(HexCubeCoord.Zero, HexagonDirection.Left, BuildingDefinitions.StoneWall);
+
+            {
+                bool timedOut = game.UpdateUntil(() =>
+                {
+                    var issues = game.CheckForIssues().ToList();
+                    issues.Should().BeEmpty();
+                    
+                    return character.Position == target;
+                });
+                if (timedOut)
+                {
+                    throw new Exception("Didn't reach final check before timeout.");
+                }
             }
         }
     }
