@@ -50,8 +50,6 @@ public class GameEntity
 
         AddEntity(characterEntity);
 
-        _operations.Add(characterEntity.Initialize());
-
         return characterEntity;
     }
 

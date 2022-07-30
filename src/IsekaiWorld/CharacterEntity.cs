@@ -18,21 +18,25 @@ public class CharacterEntity : IEntity, IItemHolder
     public IActivity CurrentActivity { get; private set; }
     public string Label { get; private set; }
 
+    private bool _initialized;
+    
     public CharacterEntity(GameEntity game, string label)
     {
         Id = Guid.NewGuid();
         
         Label = label;
         _game = game;
-    }
-    
-    public INodeOperation Initialize()
-    {
-        return new CreateCharacter(this);
+        _initialized = false;
     }
 
     public IEnumerable<INodeOperation> Update()
     {
+        if (!_initialized)
+        {
+            yield return new CreateCharacter(this);
+            _initialized = true;
+        }
+        
         if (CurrentActivity != null && CurrentActivity.IsFinished)
         {
             CurrentActivity = null;
@@ -57,7 +61,7 @@ public class CharacterEntity : IEntity, IItemHolder
     }
 
     private List<ItemEntity> _carriedItems = new List<ItemEntity>();
-    
+
     void IItemHolder.RemoveItem(ItemEntity itemEntity)
     {
         _carriedItems.Remove(itemEntity);
