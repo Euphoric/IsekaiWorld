@@ -8,6 +8,7 @@ public class GameEntity
     public GameUserInterface UserInterface { get; private set; }
     public JobSystem Jobs { get; }
     public HaulJobGiver HaulJobGiver { get; }
+    public CutWoodJobGiver CutWoodJobGiver { get; }
     public MessagingHub Messaging { get; }
 
     public IReadOnlyList<ConstructionEntity> Constructions => _entities.OfType<ConstructionEntity>().ToList();
@@ -24,7 +25,9 @@ public class GameEntity
     {
         Messaging = new MessagingHub();
         HaulJobGiver = new HaulJobGiver(this);
-        Jobs = new JobSystem(new[] { HaulJobGiver });
+        var constructionJobGiver = new ConstructionJobGiver(this);
+        CutWoodJobGiver = new CutWoodJobGiver(this);
+        Jobs = new JobSystem(new IJobGiver[] { HaulJobGiver, constructionJobGiver, CutWoodJobGiver });
     }
 
     public void Initialize(IMapGenerator mapGenerator)
@@ -87,8 +90,6 @@ public class GameEntity
         {
             var constructionEntity = new ConstructionEntity(position, rotation, construction);
             AddEntity(constructionEntity);
-
-            Jobs.Add(new ConstructionJob(this, constructionEntity));
         }
     }
 
@@ -171,7 +172,7 @@ public class GameEntity
             e.OccupiedCells.Contains(position) && e.Definition == BuildingDefinitions.TreeOak);
         if (treeEntity != null)
         {
-            Jobs.Add(new CutWoodJob(this, treeEntity));
+            CutWoodJobGiver.CutTree(treeEntity);
         }
     }
 }
