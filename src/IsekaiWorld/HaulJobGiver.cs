@@ -16,9 +16,13 @@ public class HaulJobGiver : IJobGiver
         var itemToHaul = _itemsToHaul.FirstOrDefault();
         if (itemToHaul == null) 
             return false;
-
+        
+        var targetStockpile = _game.Buildings.FirstOrDefault(x => x.Definition == BuildingDefinitions.StockpileZone && (x.ReservedForItem == null || x.ReservedForItem == itemToHaul.Definition));
+        if (targetStockpile == null) 
+            return false;
+        
         _itemsToHaul.Remove(itemToHaul);
-        character.StartActivity(new HaulItemActivity(_game, character, itemToHaul));
+        character.StartActivity(new HaulItemActivity(_game, character, itemToHaul, targetStockpile));
         return true;
 
     }

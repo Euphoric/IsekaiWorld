@@ -11,12 +11,13 @@ public class HaulItemActivity : IActivity
 
     private bool _isPickedUp;
     
-    private BuildingEntity _targetStockpile;
+    private readonly BuildingEntity _targetStockpile;
     public bool IsFinished { get; private set; }
 
-    public HaulItemActivity(GameEntity game, CharacterEntity character, ItemEntity item)
+    public HaulItemActivity(GameEntity game, CharacterEntity character, ItemEntity item, BuildingEntity targetStockpile)
     {
         _game = game;
+        _targetStockpile = targetStockpile;
         Character = character;
         Item = item;
     }
@@ -25,17 +26,8 @@ public class HaulItemActivity : IActivity
     {
         if (IsFinished)
             return;
-
-        if (_targetStockpile == null)
-        {
-            _targetStockpile = _game.Buildings.FirstOrDefault(x => x.Definition == BuildingDefinitions.StockpileZone && (x.ReservedForItem == null || x.ReservedForItem == Item.Definition));
-            if (_targetStockpile == null)
-            {
-                IsFinished = true;
-                return;
-            }
-            _targetStockpile.ReserveForItem(Item.Definition);
-        }
+        
+        _targetStockpile.ReserveForItem(Item.Definition);
 
         if (_movement != null)
         {

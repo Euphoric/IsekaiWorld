@@ -201,7 +201,7 @@ namespace IsekaiWorld.Test
             totalItemCountEnd.Should().BeEquivalentTo(totalItemCountStart);
         }
 
-        [Fact(Skip = "TODO: Implement hauling job when stockpile is added")]
+        [Fact]
         public void Items_hauling_add_new_stockpile()
         {
             var game = CreateGame();
@@ -211,24 +211,29 @@ namespace IsekaiWorld.Test
             character.Position = HexCubeCoord.Zero;
             
             game.SpawnItem(new HexCubeCoord(3, 2, -5), ItemDefinitions.Wood);
-            
-            game.Update();
-            
+
+            // wait for game to stabilize (or wait for pawn to not have a valid job)
+            for (int i = 0; i < 100; i++)
+            {
+                game.Update();   
+            }
+
             var stockpile = new BuildingEntity(new HexCubeCoord(1, 1, -2), HexagonDirection.Left,
                 BuildingDefinitions.StockpileZone);
             game.AddEntity(stockpile);
-            
-            bool timedOut = game.UpdateUntil(() =>
-            {
-                var issues = game.CheckForIssues().ToList();
-                issues.Should().BeEmpty();
 
-                return !ItemsOutsideStockpiles(game).Any();
-            });
-
-            if (timedOut)
             {
-                throw new Exception("Didn't reach final check before timeout.");
+                bool timedOut = game.UpdateUntil(() =>
+                {
+                    var issues = game.CheckForIssues().ToList();
+                    issues.Should().BeEmpty();
+
+                    return !ItemsOutsideStockpiles(game).Any();
+                });
+                if (timedOut)
+                {
+                    throw new Exception("Didn't reach final check before timeout.");
+                }
             }
         }
 
