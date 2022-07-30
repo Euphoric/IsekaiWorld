@@ -293,7 +293,6 @@ namespace IsekaiWorld.Test
             
                 
             character.StartActivity(new MovementActivity(game.Pathfinding, character, target, false));
-            game.RunActivity(character.CurrentActivity);
 
             var checkpoint = HexCubeCoord.Zero + HexagonDirection.Left;
 

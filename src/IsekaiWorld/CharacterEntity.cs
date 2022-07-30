@@ -37,6 +37,8 @@ public class CharacterEntity : IEntity, IItemHolder
             _initialized = true;
         }
         
+        CurrentActivity?.Update();
+        
         if (CurrentActivity != null && CurrentActivity.IsFinished)
         {
             CurrentActivity = null;
@@ -44,12 +46,7 @@ public class CharacterEntity : IEntity, IItemHolder
         
         if (CurrentActivity == null)
         {
-            var job = _game.Jobs.GetNextJob(this);
-            if (job != null)
-            {
-                job.StartWorking(this);
-                _game.RunActivity(CurrentActivity);
-            }
+            _game.Jobs.SetJobActivity(this);
         }
 
         yield return new UpdateCharacter(this);

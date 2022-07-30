@@ -12,8 +12,6 @@ public class GameEntity
     public IReadOnlyList<ConstructionEntity> Constructions => _entities.OfType<ConstructionEntity>().ToList();
     public IReadOnlyList<BuildingEntity> Buildings => _entities.OfType<BuildingEntity>().ToList();
     public IReadOnlyList<ItemEntity> Items => _entities.OfType<ItemEntity>().ToList();
-    
-    private readonly List<IActivity> _activities = new List<IActivity>();
 
     private readonly List<INodeOperation> _operations = new List<INodeOperation>();
 
@@ -53,15 +51,10 @@ public class GameEntity
         return characterEntity;
     }
 
-    public void RunActivity(IActivity activity)
-    {
-        _activities.Add(activity);
-    }
-
     public void Update()
     {
         Pathfinding.Update();
-        foreach (var entity in _entities)
+        foreach (var entity in _entities.ToList())
         {
             var operations = entity.Update();
             _operations.AddRange(operations);
@@ -72,12 +65,6 @@ public class GameEntity
         {
             _operations.Add(operation);
         }
-
-        foreach (var activity in _activities)
-        {
-            activity.Update();
-        }
-        _activities.RemoveAll(x => x.IsFinished);
     }
 
     public void UpdateNodes(GameNode gameNode)
