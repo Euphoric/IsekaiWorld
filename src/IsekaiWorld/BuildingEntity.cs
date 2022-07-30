@@ -6,7 +6,8 @@ using Godot;
 public class BuildingEntity : IEntity
 {
     public Guid Id { get; }
-    
+
+    private bool _toRemove;
     private bool _isDirty;
 
     public EntityMessaging Messaging { get; } = new EntityMessaging();
@@ -33,9 +34,10 @@ public class BuildingEntity : IEntity
 
     public IEnumerable<INodeOperation> Update()
     {
-        if (IsRemoved)
+        if (_toRemove)
         {
             Messaging.Broadcast(new BuildingRemoved(Position, Definition, Id.ToString(), Rotation));
+            IsRemoved = true;
         }
         else if (_isDirty)
         {
@@ -55,7 +57,7 @@ public class BuildingEntity : IEntity
 
     public void RemoveEntity()
     {
-        IsRemoved = true;
+        _toRemove = true;
         _isDirty = true;
     }
 }
