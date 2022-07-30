@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+[Obsolete("Use IJobGiver")]
 public interface IJob
 {
     Boolean InProgress { get; }
@@ -9,8 +10,20 @@ public interface IJob
     void StartWorking(CharacterEntity character);
 }
 
-public class JobSystem
+public interface IJobGiver
 {
+    bool SetJobActivity(CharacterEntity character);
+}
+
+public class JobSystem : IJobGiver
+{
+    private readonly IReadOnlyList<IJobGiver> _jobGivers;
+
+    public JobSystem(IReadOnlyList<IJobGiver> jobGivers)
+    {
+        _jobGivers = jobGivers;
+    }
+
     private readonly List<IJob> _jobs = new List<IJob>();
 
     public void Add(IJob job)
@@ -18,12 +31,21 @@ public class JobSystem
         _jobs.Add(job);
     }
 
-    public void SetJobActivity(CharacterEntity character)
+    public bool SetJobActivity(CharacterEntity character)
     {
+        foreach (var jobGiver in _jobGivers)
+        {
+            if (jobGiver.SetJobActivity(character))
+                return true;
+        }
+
         var availableJobs = _jobs.Where(o => !o.InProgress).ToList();
         if (availableJobs.Any())
         {
             availableJobs.First().StartWorking(character);
+            return true;
         }
+
+        return false;
     }
 }
