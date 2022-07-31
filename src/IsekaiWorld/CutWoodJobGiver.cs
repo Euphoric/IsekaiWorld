@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,6 +12,7 @@ public class CutWoodJobGiver : IJobGiver
         _game = game;
     }
 
+    [Obsolete("Implement 'trees to cut' from finding designated trees.")]
     public void CutTree(BuildingEntity tree)
     {
         _treesToCut.Add(tree);

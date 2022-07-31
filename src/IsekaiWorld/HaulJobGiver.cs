@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -27,6 +28,7 @@ public class HaulJobGiver : IJobGiver
 
     }
 
+    [Obsolete("Implement 'items to haul' from analyzing game state.")]
     public void HaulItem(ItemEntity item)
     {
         _itemsToHaul.Add(item);
