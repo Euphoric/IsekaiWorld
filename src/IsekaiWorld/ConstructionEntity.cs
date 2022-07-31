@@ -38,7 +38,7 @@ public class ConstructionEntity : IEntity
         }
     }
 
-    public float CompleteProgress => 60;
+    public float CompleteProgress => Definition.WorkRequired;
     public float ProgressRelative => Progress / CompleteProgress;
     public bool IsFinished => Progress >= CompleteProgress;
 

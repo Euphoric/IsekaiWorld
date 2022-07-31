@@ -3,16 +3,16 @@ using System.Linq;
 
 public static class ConstructionDefinitions
 {
-    public static readonly ConstructionDefinition StoneWall = new ConstructionDefinition("Core.Wall.Stone", "Stone wall", BuildingDefinitions.StoneWall.Id, null);
-    public static readonly ConstructionDefinition WoodenWall = new ConstructionDefinition("Core.Wall.Wood", "Wooden Wall", BuildingDefinitions.WoodenWall.Id, null);
+    public static readonly ConstructionDefinition StoneWall = new ConstructionDefinition("Core.Wall.Stone", "Stone wall", BuildingDefinitions.StoneWall.Id, null, 120);
+    public static readonly ConstructionDefinition WoodenWall = new ConstructionDefinition("Core.Wall.Wood", "Wooden Wall", BuildingDefinitions.WoodenWall.Id, null, 60);
     
-    public static readonly ConstructionDefinition StockpileZone = new ConstructionDefinition("Core.Zone.Stockpile", "Stockpile", BuildingDefinitions.StockpileZone.Id, null);
+    public static readonly ConstructionDefinition StockpileZone = new ConstructionDefinition("Core.Zone.Stockpile", "Stockpile", BuildingDefinitions.StockpileZone.Id, null, 0);
     
-    public static readonly ConstructionDefinition TileFloor = new ConstructionDefinition("Core.Floor.Tile", "Tile Floor", null, SurfaceDefinitions.TileFloor.Id);
+    public static readonly ConstructionDefinition TileFloor = new ConstructionDefinition("Core.Floor.Tile", "Tile Floor", null, SurfaceDefinitions.TileFloor.Id, 60);
     
-    public static readonly ConstructionDefinition WoodenChair = new ConstructionDefinition("Core.Furniture.Chair.Wood", "Wooden Chair", BuildingDefinitions.WoodenChair.Id, null);
-    public static readonly ConstructionDefinition WoodenBed = new ConstructionDefinition("Core.Furniture.Bed.Wood", "Wooden Bed", BuildingDefinitions.WoodenBed.Id, null);
-    public static readonly ConstructionDefinition TableStoveFueled = new ConstructionDefinition("Core.Production.StoveFueled", "Fueled stove", BuildingDefinitions.TableStoveFueled.Id, null);
+    public static readonly ConstructionDefinition WoodenChair = new ConstructionDefinition("Core.Furniture.Chair.Wood", "Wooden Chair", BuildingDefinitions.WoodenChair.Id, null, 120);
+    public static readonly ConstructionDefinition WoodenBed = new ConstructionDefinition("Core.Furniture.Bed.Wood", "Wooden Bed", BuildingDefinitions.WoodenBed.Id, null, 120);
+    public static readonly ConstructionDefinition TableStoveFueled = new ConstructionDefinition("Core.Production.StoveFueled", "Fueled stove", BuildingDefinitions.TableStoveFueled.Id, null, 120);
     
     private static readonly Dictionary<string, ConstructionDefinition> DefinitionsMap =
         new Dictionary<string, ConstructionDefinition>
