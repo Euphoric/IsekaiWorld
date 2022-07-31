@@ -27,6 +27,12 @@ public class BuildingView
             case BuildingRemoved buildingRemoved:
                 OnBuildingRemoved(buildingRemoved);
                 break;
+            case ConstructionUpdated constructionUpdated:
+                Execute(constructionUpdated);
+                break;
+            case ConstructionRemoved constructionRemoved:
+                Execute(constructionRemoved);
+                break;
         }
     }
 
@@ -166,5 +172,33 @@ public class BuildingView
         {
             buildingNode.GetParent().RemoveChild(buildingNode);
         }
+    }
+
+    private void Execute(ConstructionUpdated constructionUpdated)
+    {
+        var nodeName = constructionUpdated.Id;
+        var constructioNode = _gameNode.MapNode.GetNodeOrNull<HexagonNode>(nodeName);
+        if (constructioNode == null)
+        {
+            var constructionNode = new HexagonNode
+            {
+                Name = nodeName, 
+                Color = Colors.MediumPurple,
+            };
+            
+            constructionNode.HexPosition = constructionUpdated.Position;
+            _gameNode.MapNode.AddChild(constructionNode);
+        }
+        else
+        {
+            var percentProgress = constructionUpdated.ProgressRelative;
+            constructioNode.InnerSize = Mathf.Min(Mathf.Max((1 - percentProgress)*0.9f, 0), 0.9f);            
+        }
+    }
+
+    private void Execute(ConstructionRemoved constructionRemoved)
+    {
+        var constructionNode = _gameNode.MapNode.GetNodeOrNull<HexagonNode>(constructionRemoved.Id);
+        _gameNode.MapNode.RemoveChild(constructionNode);
     }
 }

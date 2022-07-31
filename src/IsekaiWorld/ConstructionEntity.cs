@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class ConstructionEntity : IEntity
 {
@@ -45,15 +46,17 @@ public class ConstructionEntity : IEntity
     {
         if (IsRemoved)
         {
-            yield return new RemoveConstruction(this);
-            yield break;
+            Messaging.Broadcast(new ConstructionRemoved(Id.ToString()));
+            return Enumerable.Empty<INodeOperation>();
         }
         
         if (_isDirty)
         {
-            yield return new UpdateConstruction(this);
+            Messaging.Broadcast(new ConstructionUpdated(Id.ToString(), Position, ProgressRelative));
             _isDirty = false;
         }
+        
+        return Enumerable.Empty<INodeOperation>();
     }
 
     public void RemoveEntity()
@@ -66,4 +69,28 @@ public class ConstructionEntity : IEntity
     {
         Progress += progress;
     }
+}
+
+public class ConstructionUpdated : IEntityMessage
+{
+    public ConstructionUpdated(string id, HexCubeCoord position, float progressRelative)
+    {
+        Id = id;
+        Position = position;
+        ProgressRelative = progressRelative;
+    }
+
+    public String Id { get; }
+    public HexCubeCoord Position { get; }
+    public float ProgressRelative { get; }
+}
+
+public class ConstructionRemoved : IEntityMessage
+{
+    public ConstructionRemoved(string id)
+    {
+        Id = id;
+    }
+
+    public String Id { get; }
 }
