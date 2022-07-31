@@ -28,10 +28,10 @@ public class BuildingView
                 OnBuildingRemoved(buildingRemoved);
                 break;
             case ConstructionUpdated constructionUpdated:
-                Execute(constructionUpdated);
+                OnConstructionUpdated(constructionUpdated);
                 break;
             case ConstructionRemoved constructionRemoved:
-                Execute(constructionRemoved);
+                OnConstructionRemoved(constructionRemoved);
                 break;
         }
     }
@@ -174,7 +174,7 @@ public class BuildingView
         }
     }
 
-    private void Execute(ConstructionUpdated constructionUpdated)
+    private void OnConstructionUpdated(ConstructionUpdated constructionUpdated)
     {
         var nodeName = constructionUpdated.Id;
         var constructioNode = _gameNode.MapNode.GetNodeOrNull<HexagonNode>(nodeName);
@@ -196,7 +196,7 @@ public class BuildingView
         }
     }
 
-    private void Execute(ConstructionRemoved constructionRemoved)
+    private void OnConstructionRemoved(ConstructionRemoved constructionRemoved)
     {
         var constructionNode = _gameNode.MapNode.GetNodeOrNull<HexagonNode>(constructionRemoved.Id);
         _gameNode.MapNode.RemoveChild(constructionNode);
