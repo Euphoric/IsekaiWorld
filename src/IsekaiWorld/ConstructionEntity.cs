@@ -41,6 +41,7 @@ public class ConstructionEntity : IEntity
     public float CompleteProgress => Definition.WorkRequired;
     public float ProgressRelative => Progress / CompleteProgress;
     public bool IsFinished => Progress >= CompleteProgress;
+    public bool MaterialsDelivered { get; set; }
 
     public IEnumerable<INodeOperation> Update()
     {

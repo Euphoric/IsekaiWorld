@@ -331,5 +331,68 @@ namespace IsekaiWorld.Test
                 }
             }
         }
+        
+        [Fact]
+        public void Construction_with_resources_test()
+        {
+            var game = CreateGame();
+            game.Initialize(new EmptyMapGenerator());
+
+            var character = game.AddCharacter("Test guy");
+            character.Position = HexCubeCoord.Zero;
+            
+            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right,  HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
+            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood);
+
+            bool timedOut = game.UpdateUntil(() =>
+            {
+                var issues = game.CheckForIssues().ToList();
+                issues.Should().BeEmpty();
+
+                return !game.Constructions.Any();
+            });
+            if (timedOut)
+            {
+                throw new Exception("Didn't reach final check before timeout.");
+            }
+
+            var remainingItems = game.Items.Any();
+            remainingItems.Should().BeFalse();
+        }
+        
+        [Fact]
+        public void Construction_new_resource_spawned()
+        {
+            var game = CreateGame();
+            game.Initialize(new EmptyMapGenerator());
+
+            var character = game.AddCharacter("Test guy");
+            character.Position = HexCubeCoord.Zero;
+            
+            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right,  HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
+
+            // wait for game to stabilize (or wait for pawn to not have a valid job)
+            for (int i = 0; i < 100; i++)
+            {
+                game.Update();   
+            }
+            
+            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood);
+            
+            bool timedOut = game.UpdateUntil(() =>
+            {
+                var issues = game.CheckForIssues().ToList();
+                issues.Should().BeEmpty();
+
+                return !game.Constructions.Any();
+            });
+            if (timedOut)
+            {
+                throw new Exception("Didn't reach final check before timeout.");
+            }
+
+            var remainingItems = game.Items.Any();
+            remainingItems.Should().BeFalse();
+        }
     }
 }

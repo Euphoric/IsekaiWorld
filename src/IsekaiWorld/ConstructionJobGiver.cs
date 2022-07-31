@@ -14,8 +14,20 @@ public class ConstructionJobGiver : IJobGiver
         var construction = _game.Constructions.FirstOrDefault();
         if (construction == null)
             return false;
-        
-        character.StartActivity(new ConstructionActivity(_game, character, construction));
-        return true;
+
+        if (construction.Definition.Material != null && !construction.MaterialsDelivered)
+        {
+            var itemToDeliver = _game.Items.FirstOrDefault(x => x.Definition == construction.Definition.Material);
+            if (itemToDeliver == null)
+                return false;
+            
+            character.StartActivity(new DeliverItemActivity(_game, character, itemToDeliver, construction));
+            return true;
+        }
+        else
+        {
+            character.StartActivity(new ConstructionActivity(_game, character, construction));
+            return true;
+        }
     }
 }

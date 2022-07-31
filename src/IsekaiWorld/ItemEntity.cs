@@ -11,8 +11,8 @@ public class ItemEntity : IEntity
 {
     public EntityMessaging Messaging { get; } = new EntityMessaging();
     
-    public bool IsRemoved => false;
-    
+    public bool IsRemoved { get; private set; }
+
     private bool _isDirty = true;
 
     private IItemHolder _holder;
@@ -75,5 +75,10 @@ public class ItemEntity : IEntity
                 yield return new RemoveItemOperation(this);
             }
         }
+    }
+
+    public void Remove()
+    {
+        IsRemoved = true;
     }
 }

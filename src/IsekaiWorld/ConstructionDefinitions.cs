@@ -3,8 +3,10 @@ using System.Linq;
 
 public static class ConstructionDefinitions
 {
+    public static readonly ConstructionDefinition TestWoodenWall = new ConstructionDefinition("Test.Wall.Stone", "Wooden wall", BuildingDefinitions.WoodenWall.Id, null, 60, ItemDefinitions.Wood); 
+    
     public static readonly ConstructionDefinition StoneWall = new ConstructionDefinition("Core.Wall.Stone", "Stone wall", BuildingDefinitions.StoneWall.Id, null, 120);
-    public static readonly ConstructionDefinition WoodenWall = new ConstructionDefinition("Core.Wall.Wood", "Wooden Wall", BuildingDefinitions.WoodenWall.Id, null, 60);
+    public static readonly ConstructionDefinition WoodenWall = new ConstructionDefinition("Core.Wall.Wood", "Wooden Wall", BuildingDefinitions.WoodenWall.Id, null, 60, ItemDefinitions.Wood);
     
     public static readonly ConstructionDefinition StockpileZone = new ConstructionDefinition("Core.Zone.Stockpile", "Stockpile", BuildingDefinitions.StockpileZone.Id, null, 0);
     
