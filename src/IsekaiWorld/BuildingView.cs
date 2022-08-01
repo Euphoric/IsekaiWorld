@@ -76,12 +76,14 @@ public class BuildingView
             
             if (message.Definition == BuildingDefinitions.WoodenBed)
             {
-                buildingNode.Scale *= new Vector2(2, 1);
-                buildingNode.Rotation = GetRotation(message.Rotation);
-
                 sprite.Scale *= 1.3f;
-                sprite.Rotation = GetSpriteRotation(message.Rotation);
-                sprite.Scale *= GetBedSpriteScale(message.Rotation);
+                sprite.Scale *= 2;
+                sprite.Scale *= new Vector2(1, texture.GetHeight() / (float)texture.GetWidth());
+                if (message.Rotation == HexagonDirection.Left || message.Rotation == HexagonDirection.BottomLeft || message.Rotation == HexagonDirection.TopLeft)
+                {
+                    sprite.Rotation = 0;
+                    sprite.Scale *= new Vector2(-1, 1);
+                }
             }
 
             if (message.Definition == BuildingDefinitions.TableStoveFueled)
@@ -136,27 +138,6 @@ public class BuildingView
                 return Mathf.Pi / 2;
             case HexagonDirection.TopRight:
                 return Mathf.Pi / 2;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(entityRotation), entityRotation, null);
-        }
-    }
-    
-    private Vector2 GetBedSpriteScale(HexagonDirection entityRotation)
-    {
-        switch (entityRotation)
-        {
-            case HexagonDirection.Right:
-                return new Vector2(1, 2);
-            case HexagonDirection.BottomRight:
-                return new Vector2(2, 1);
-            case HexagonDirection.BottomLeft:
-                return new Vector2(2, 1);
-            case HexagonDirection.Left:
-                return new Vector2(1, -2);
-            case HexagonDirection.TopLeft:
-                return new Vector2(2, 1);
-            case HexagonDirection.TopRight:
-                return new Vector2(2, 1);
             default:
                 throw new ArgumentOutOfRangeException(nameof(entityRotation), entityRotation, null);
         }

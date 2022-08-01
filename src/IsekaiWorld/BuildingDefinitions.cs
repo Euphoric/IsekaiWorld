@@ -22,11 +22,11 @@ public static class BuildingDefinitions
     public static readonly BuildingDefinition WoodenBed = new BuildingDefinition("Core.Furniture.Bed.Wood", "Wooden Bed", Color.Color8(189, 116, 38), new Dictionary<HexagonDirection, string>
     {
         { HexagonDirection.Right,"res://Textures/Furniture/Bed_east.png"},
-        { HexagonDirection.BottomRight,"res://Textures/Furniture/Bed_south.png"},
-        { HexagonDirection.BottomLeft,"res://Textures/Furniture/Bed_south.png"},
+        { HexagonDirection.BottomRight,"res://Textures/Furniture/Bed_bottomright.png"},
+        { HexagonDirection.BottomLeft,"res://Textures/Furniture/Bed_bottomright.png"},
         { HexagonDirection.Left,"res://Textures/Furniture/Bed_east.png"},
-        { HexagonDirection.TopLeft,"res://Textures/Furniture/Bed_north.png"},
-        { HexagonDirection.TopRight,"res://Textures/Furniture/Bed_north.png"}
+        { HexagonDirection.TopLeft,"res://Textures/Furniture/Bed_topright.png"},
+        { HexagonDirection.TopRight,"res://Textures/Furniture/Bed_topright.png"}
     });
     public static readonly BuildingDefinition TableStoveFueled = new BuildingDefinition("Core.Production.StoveFueled", "Fueled stove", Colors.White, new Dictionary<HexagonDirection, string>
     {
