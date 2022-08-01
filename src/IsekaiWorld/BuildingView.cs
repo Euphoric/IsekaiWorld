@@ -68,7 +68,8 @@ public class BuildingView
             if (message.Definition == BuildingDefinitions.WoodenChair)
             {
                 sprite.Scale *= 1.3f;
-                if (message.Rotation == HexagonDirection.Left)
+                sprite.Scale *= new Vector2(1, texture.GetHeight() / (float)texture.GetWidth());
+                if (message.Rotation == HexagonDirection.Left  || message.Rotation == HexagonDirection.BottomLeft || message.Rotation == HexagonDirection.TopLeft)
                 {
                     sprite.Scale *= new Vector2(-1, 1);
                 }

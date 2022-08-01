@@ -13,11 +13,11 @@ public static class BuildingDefinitions
     public static readonly BuildingDefinition WoodenChair = new BuildingDefinition("Core.Furniture.Chair.Wood", "Wooden Chair", Color.Color8(189, 116, 38), new Dictionary<HexagonDirection, string>
     {
         { HexagonDirection.Right,"res://Textures/Furniture/DiningChair_east.png"},
-        { HexagonDirection.BottomRight,"res://Textures/Furniture/DiningChair_south.png"},
-        { HexagonDirection.BottomLeft,"res://Textures/Furniture/DiningChair_south.png"},
+        { HexagonDirection.BottomRight,"res://Textures/Furniture/DiningChair_bottomright.png"},
+        { HexagonDirection.BottomLeft,"res://Textures/Furniture/DiningChair_bottomright.png"},
         { HexagonDirection.Left,"res://Textures/Furniture/DiningChair_east.png"},
-        { HexagonDirection.TopLeft,"res://Textures/Furniture/DiningChair_north.png"},
-        { HexagonDirection.TopRight,"res://Textures/Furniture/DiningChair_north.png"}
+        { HexagonDirection.TopLeft,"res://Textures/Furniture/DiningChair_topright.png"},
+        { HexagonDirection.TopRight,"res://Textures/Furniture/DiningChair_topright.png"}
     });
     public static readonly BuildingDefinition WoodenBed = new BuildingDefinition("Core.Furniture.Bed.Wood", "Wooden Bed", Color.Color8(189, 116, 38), new Dictionary<HexagonDirection, string>
     {
