@@ -77,7 +77,13 @@ public class MapGenerator : IMapGenerator
             entities.Add(new BuildingEntity(treePosition, HexagonDirection.Left, BuildingDefinitions.TreeOak));
             allowedTreeCells.RemoveAt(treeCellIndex);
         }
+        
+        entities.Add(new BuildingEntity(new HexCubeCoord(3, -5, 2), HexagonDirection.TopRight, BuildingDefinitions.WoodenChair));
+        entities.Add(new BuildingEntity(new HexCubeCoord(4, -5, 1), HexagonDirection.BottomRight, BuildingDefinitions.WoodenBed));
 
+        entities.Add(new BuildingEntity(new HexCubeCoord(-3, 5, -2), HexagonDirection.BottomLeft, BuildingDefinitions.WoodenChair));
+        entities.Add(new BuildingEntity(new HexCubeCoord(-4, 5, -1), HexagonDirection.TopLeft, BuildingDefinitions.WoodenBed));
+        
         return (map, entities);
     }
 }
