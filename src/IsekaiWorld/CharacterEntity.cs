@@ -49,6 +49,7 @@ public class CharacterEntity : IEntity, IItemHolder
             _game.Jobs.SetJobActivity(this);
         }
 
+        Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Position));
         yield return new UpdateCharacter(this);
     }
 
@@ -67,5 +68,17 @@ public class CharacterEntity : IEntity, IItemHolder
     void IItemHolder.AssignItem(ItemEntity itemEntity)
     {
         _carriedItems.Add(itemEntity);
+    }
+}
+
+public class CharacterUpdated : IEntityMessage
+{
+    public string Id { get; }
+    public HexCubeCoord Position { get; }
+
+    public CharacterUpdated(String id, HexCubeCoord position)
+    {
+        Id = id;
+        Position = position;
     }
 }

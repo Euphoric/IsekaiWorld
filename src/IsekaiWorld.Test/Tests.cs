@@ -159,7 +159,7 @@ namespace IsekaiWorld.Test
             var totalItemCountStart = game.Items.GroupBy(x => x.Definition)
                 .Select(grp => new { Definition = grp.Key, Count = grp.Sum(x => x.Count) }).ToList();
 
-            game.UpdateUntil(NoItemsOutsideStockpile);
+            game.UpdateUntil(NoItemsOutsideStockpile, maxSteps: 5000);
 
             var multipleItemsOnSamePositions =
                 game.Items.GroupBy(it => it.Position)
