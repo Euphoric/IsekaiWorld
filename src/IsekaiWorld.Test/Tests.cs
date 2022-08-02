@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Xunit;
@@ -25,12 +24,13 @@ namespace IsekaiWorld.Test
 
             game.Update(); // send msg
             game.Update(); // receive msg
-            
+
             var issues = game.CheckForIssues().ToList();
-            var characterStuckIssue = issues.Any(s => s == $"Character '{character.Label}' stuck on impassable surface on {character.Position}");
+            var characterStuckIssue = issues.Any(s =>
+                s == $"Character '{character.Label}' stuck on impassable surface on {character.Position}");
             Assert.True(characterStuckIssue);
         }
-        
+
         [Fact]
         public void Character_stuck_in_wall_issue_verification()
         {
@@ -42,12 +42,13 @@ namespace IsekaiWorld.Test
 
             var character = game.AddCharacter("Test guy");
             character.Position = position;
-            
+
             game.Update(); // send msg
             game.Update(); // receive msg
-            
+
             var issues = game.CheckForIssues().ToList();
-            var characterStuckIssue = issues.Any(s => s == $"Character '{character.Label}' stuck on impassable surface on {character.Position}");
+            var characterStuckIssue = issues.Any(s =>
+                s == $"Character '{character.Label}' stuck on impassable surface on {character.Position}");
             Assert.True(characterStuckIssue);
         }
 
@@ -70,24 +71,13 @@ namespace IsekaiWorld.Test
 
             var constructionPositions = game.Constructions.Select(x => x.Position).ToHashSet();
 
-            bool timedOut = game.UpdateUntil(() =>
-            {
-                var issues = game.CheckForIssues().ToList();
-                issues.Should().BeEmpty();
-
-                return !game.Constructions.Any();
-            });
-
-            if (timedOut)
-            {
-                throw new Exception("Didn't reach final check before timeout.");
-            }
+            game.UpdateUntil(NoActiveConstructions);
 
             var buildingPositions = game.Buildings.Select(x => x.Position).ToHashSet();
 
             buildingPositions.Should().BeEquivalentTo(constructionPositions);
         }
-        
+
         [Fact(Skip = "Fix")]
         public void Construction_complex_test()
         {
@@ -98,7 +88,7 @@ namespace IsekaiWorld.Test
             character1.Position = HexCubeCoord.Zero;
             var character2 = game.AddCharacter("Test guy 2");
             character2.Position = HexCubeCoord.Zero;
-            
+
             foreach (var cell in game.GameMap.Cells)
             {
                 if (cell.Position.DistanceFrom(HexCubeCoord.Zero) <= 5)
@@ -109,21 +99,15 @@ namespace IsekaiWorld.Test
 
             var constructionPositions = game.Constructions.Select(x => x.Position).ToHashSet();
 
-            bool timedOut = game.UpdateUntil(() =>
-            {
-                var issues = game.CheckForIssues().ToList();
-                issues.Should().BeEmpty();
-
-                return !game.Constructions.Any();
-            });
-
-            if (timedOut)
-            {
-                throw new Exception("Didn't reach final check before timeout.");
-            }
+            game.UpdateUntil(NoActiveConstructions);
 
             var buildingPositions = game.Buildings.Select(x => x.Position).ToHashSet();
             buildingPositions.Should().BeEquivalentTo(constructionPositions);
+        }
+
+        private bool NoActiveConstructions(GameTestStep gts)
+        {
+            return !gts.Game.Constructions.Any();
         }
 
         [Fact]
@@ -140,18 +124,12 @@ namespace IsekaiWorld.Test
             game.AddEntity(stockpile);
             game.SpawnItem(new HexCubeCoord(-1, -1, 2), ItemDefinitions.Wood);
 
-            bool timedOut = game.UpdateUntil(() =>
-            {
-                var issues = game.CheckForIssues().ToList();
-                issues.Should().BeEmpty();
+            game.UpdateUntil(NoItemsOutsideStockpile);
+        }
 
-                return !ItemsOutsideStockpiles(game).Any();
-            });
-
-            if (timedOut)
-            {
-                throw new Exception("Didn't reach final check before timeout.");
-            }
+        private bool NoItemsOutsideStockpile(GameTestStep gts)
+        {
+            return !ItemsOutsideStockpiles(gts.Game).Any();
         }
 
         [Fact]
@@ -163,9 +141,11 @@ namespace IsekaiWorld.Test
             var character = game.AddCharacter("Test guy");
             character.Position = HexCubeCoord.Zero;
 
-            game.AddEntity(new BuildingEntity(new HexCubeCoord(0, 0, 0), HexagonDirection.Left, BuildingDefinitions.StockpileZone));
-            game.AddEntity(new BuildingEntity(new HexCubeCoord(1, 0, -1), HexagonDirection.Left, BuildingDefinitions.StockpileZone));
-            
+            game.AddEntity(new BuildingEntity(new HexCubeCoord(0, 0, 0), HexagonDirection.Left,
+                BuildingDefinitions.StockpileZone));
+            game.AddEntity(new BuildingEntity(new HexCubeCoord(1, 0, -1), HexagonDirection.Left,
+                BuildingDefinitions.StockpileZone));
+
             foreach (var mapCell in game.GameMap.Cells)
             {
                 var zeroDistance = mapCell.Position.DistanceFrom(HexCubeCoord.Zero);
@@ -176,28 +156,19 @@ namespace IsekaiWorld.Test
                 }
             }
 
-            var totalItemCountStart = game.Items.GroupBy(x=>x.Definition).Select(grp=> new {Definition = grp.Key, Count = grp.Sum(x => x.Count)}).ToList();
-            
-            bool timedOut = game.UpdateUntil(() =>
-            {
-                var issues = game.CheckForIssues().ToList();
-                issues.Should().BeEmpty();
+            var totalItemCountStart = game.Items.GroupBy(x => x.Definition)
+                .Select(grp => new { Definition = grp.Key, Count = grp.Sum(x => x.Count) }).ToList();
 
-                return !ItemsOutsideStockpiles(game).Any();
-            });
+            game.UpdateUntil(NoItemsOutsideStockpile);
 
-            if (timedOut)
-            {
-                throw new Exception("Didn't reach final check before timeout.");
-            }
-            
             var multipleItemsOnSamePositions =
                 game.Items.GroupBy(it => it.Position)
                     .Where(grp => grp.Count() > 1)
                     .ToList();
             multipleItemsOnSamePositions.Should().BeEmpty();
-            
-            var totalItemCountEnd = game.Items.GroupBy(x=>x.Definition).Select(grp=> new {Definition = grp.Key, Count = grp.Sum(x => x.Count)}).ToList();
+
+            var totalItemCountEnd = game.Items.GroupBy(x => x.Definition)
+                .Select(grp => new { Definition = grp.Key, Count = grp.Sum(x => x.Count) }).ToList();
             totalItemCountEnd.Should().BeEquivalentTo(totalItemCountStart);
         }
 
@@ -209,32 +180,19 @@ namespace IsekaiWorld.Test
 
             var character = game.AddCharacter("Test guy");
             character.Position = HexCubeCoord.Zero;
-            
+
             game.SpawnItem(new HexCubeCoord(3, 2, -5), ItemDefinitions.Wood);
 
             // wait for game to stabilize (or wait for pawn to not have a valid job)
             for (int i = 0; i < 100; i++)
             {
-                game.Update();   
+                game.Update();
             }
 
-            var stockpile = new BuildingEntity(new HexCubeCoord(1, 1, -2), HexagonDirection.Left,
-                BuildingDefinitions.StockpileZone);
+            var stockpile = new BuildingEntity(new HexCubeCoord(1, 1, -2), HexagonDirection.Left, BuildingDefinitions.StockpileZone);
             game.AddEntity(stockpile);
 
-            {
-                bool timedOut = game.UpdateUntil(() =>
-                {
-                    var issues = game.CheckForIssues().ToList();
-                    issues.Should().BeEmpty();
-
-                    return !ItemsOutsideStockpiles(game).Any();
-                });
-                if (timedOut)
-                {
-                    throw new Exception("Didn't reach final check before timeout.");
-                }
-            }
+            game.UpdateUntil(NoItemsOutsideStockpile);
         }
 
         private static List<ItemEntity> ItemsOutsideStockpiles(GameEntity game)
@@ -244,8 +202,7 @@ namespace IsekaiWorld.Test
                     .Where(b => b.Definition == BuildingDefinitions.StockpileZone)
                     .Select(x => x.Position).ToHashSet();
 
-            var itemsOutsideStockpiles = game.Items.Where(it => !stockpilePositions.Contains(it.Position)).ToList();
-            return itemsOutsideStockpiles;
+            return game.Items.Where(it => !stockpilePositions.Contains(it.Position)).ToList();
         }
 
         [Fact]
@@ -259,24 +216,19 @@ namespace IsekaiWorld.Test
 
             var treePosition = new HexCubeCoord(5, -3, -2);
             game.AddEntity(new BuildingEntity(treePosition, HexagonDirection.Left, BuildingDefinitions.TreeOak));
-            
+
             game.DesignateCutWood(treePosition);
-            
-            bool timedOut = game.UpdateUntil(() =>
+
+            game.UpdateUntil(gts =>
             {
                 var entitiesOn = game.EntitiesOn(treePosition);
-                var treesExist = entitiesOn.OfType<BuildingEntity>().Any(b=>b.Definition == BuildingDefinitions.TreeOak);
+                var treesExist = entitiesOn.OfType<BuildingEntity>()
+                    .Any(b => b.Definition == BuildingDefinitions.TreeOak);
                 var woodSpawned = entitiesOn.OfType<ItemEntity>().Any(i => i.Definition == ItemDefinitions.Wood);
                 return !treesExist && woodSpawned;
             });
-
-            if (timedOut)
-            {
-                throw new Exception("Didn't reach final check before timeout.");
-            }
         }
-        
-        
+
         [Fact]
         public void Movement_blocked_by_construction_reroutes()
         {
@@ -295,43 +247,19 @@ namespace IsekaiWorld.Test
             character.Position = HexCubeCoord.Zero + HexagonDirection.Left + HexagonDirection.Left;
 
             var target = HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right;
-            
-                
+
             character.StartActivity(new MovementActivity(game.Pathfinding, character, target, false));
 
             var checkpoint = HexCubeCoord.Zero + HexagonDirection.Left;
 
-            {
-                bool timedOut = game.UpdateUntil(() =>
-                {
-                    var issues = game.CheckForIssues().ToList();
-                    issues.Should().BeEmpty();
-                    
-                    return character.Position == checkpoint;
-                });
-                if (timedOut)
-                {
-                    throw new Exception("Didn't reach final check before timeout.");
-                }
-            }
-            
+            game.UpdateUntil(character.Reaches(checkpoint));
+
             game.SpawnBuilding(HexCubeCoord.Zero, HexagonDirection.Left, BuildingDefinitions.StoneWall);
 
-            {
-                bool timedOut = game.UpdateUntil(() =>
-                {
-                    var issues = game.CheckForIssues().ToList();
-                    issues.Should().BeEmpty();
-                    
-                    return character.Position == target;
-                });
-                if (timedOut)
-                {
-                    throw new Exception("Didn't reach final check before timeout.");
-                }
-            }
+            game.UpdateUntil(character.Reaches(target));
         }
-        
+
+
         [Fact]
         public void Construction_with_resources_test()
         {
@@ -340,26 +268,16 @@ namespace IsekaiWorld.Test
 
             var character = game.AddCharacter("Test guy");
             character.Position = HexCubeCoord.Zero;
-            
-            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right,  HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
+
+            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
             game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood);
 
-            bool timedOut = game.UpdateUntil(() =>
-            {
-                var issues = game.CheckForIssues().ToList();
-                issues.Should().BeEmpty();
-
-                return !game.Constructions.Any();
-            });
-            if (timedOut)
-            {
-                throw new Exception("Didn't reach final check before timeout.");
-            }
+            game.UpdateUntil(NoActiveConstructions);
 
             var remainingItems = game.Items.Any();
             remainingItems.Should().BeFalse();
         }
-        
+
         [Fact]
         public void Construction_new_resource_spawned()
         {
@@ -368,28 +286,18 @@ namespace IsekaiWorld.Test
 
             var character = game.AddCharacter("Test guy");
             character.Position = HexCubeCoord.Zero;
-            
-            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right,  HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
+
+            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
 
             // wait for game to stabilize (or wait for pawn to not have a valid job)
             for (int i = 0; i < 100; i++)
             {
-                game.Update();   
+                game.Update();
             }
-            
-            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood);
-            
-            bool timedOut = game.UpdateUntil(() =>
-            {
-                var issues = game.CheckForIssues().ToList();
-                issues.Should().BeEmpty();
 
-                return !game.Constructions.Any();
-            });
-            if (timedOut)
-            {
-                throw new Exception("Didn't reach final check before timeout.");
-            }
+            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood);
+
+            game.UpdateUntil(NoActiveConstructions);
 
             var remainingItems = game.Items.Any();
             remainingItems.Should().BeFalse();
