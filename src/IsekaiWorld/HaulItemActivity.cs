@@ -74,8 +74,7 @@ public class HaulItemActivity : IActivity
                 {
                     // stack items together
                     itemInPlace.AddCount(Item.Count);
-                    _game.RemoveEntity(Item);
-                    Item.SetHolder(null);
+                    Item.Remove();
                 }
 
                 IsFinished = true;

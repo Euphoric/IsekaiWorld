@@ -11,7 +11,8 @@ public interface IItemHolder
 public class ItemEntity : IEntity
 {
     public EntityMessaging Messaging { get; } = new EntityMessaging();
-    
+
+    private bool _toRemove;
     public bool IsRemoved { get; private set; }
 
     private bool _isDirty = true;
@@ -64,6 +65,16 @@ public class ItemEntity : IEntity
 
     public IEnumerable<INodeOperation> Update()
     {
+        if (IsRemoved)
+        {
+            return Enumerable.Empty<INodeOperation>();
+        }
+
+        if (_toRemove)
+        {
+            IsRemoved = true;
+        }
+
         if (_isDirty)
         {
             _isDirty = false;
@@ -82,7 +93,7 @@ public class ItemEntity : IEntity
 
     public void Remove()
     {
-        IsRemoved = true;
+        _toRemove = true;
     }
 }
 
