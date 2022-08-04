@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public interface IItemHolder
 {
@@ -68,17 +69,45 @@ public class ItemEntity : IEntity
             _isDirty = false;
             if (_holder is MapItems)
             {
-                yield return new UpdateItemOperation(this);
+                Messaging.Broadcast(new ItemUpdated(EntityId.ToString(), Definition, Count, Position));
             }
             else
             {
-                yield return new RemoveItemOperation(this);
+                Messaging.Broadcast(new ItemPickedUp(EntityId.ToString()));
             }
         }
+
+        return Enumerable.Empty<INodeOperation>();
     }
 
     public void Remove()
     {
         IsRemoved = true;
     }
+}
+
+public class ItemUpdated : IEntityMessage
+{
+    public ItemUpdated(string entityId, ItemDefinition definition, int count, HexCubeCoord position)
+    {
+        EntityId = entityId;
+        Definition = definition;
+        Count = count;
+        Position = position;
+    }
+
+    public String EntityId { get; }
+    public ItemDefinition Definition { get; }
+    public int Count { get; }
+    public HexCubeCoord Position { get; }
+}
+
+public class ItemPickedUp : IEntityMessage
+{
+    public ItemPickedUp(string entityId)
+    {
+        EntityId = entityId;
+    }
+
+    public String EntityId { get; }
 }
