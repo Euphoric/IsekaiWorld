@@ -33,7 +33,7 @@ public class CutTreeActivity : IActivity
             _movement = null;
 
             Tree.RemoveEntity();
-            _game.SpawnItem(Tree.Position, ItemDefinitions.Wood);
+            _game.SpawnItem(Tree.Position, ItemDefinitions.Wood, 5);
             
             IsFinished = true;
         }

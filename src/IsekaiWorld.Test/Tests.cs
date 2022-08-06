@@ -122,7 +122,7 @@ namespace IsekaiWorld.Test
             var stockpile = new BuildingEntity(new HexCubeCoord(1, 1, -2), HexagonDirection.Left,
                 BuildingDefinitions.StockpileZone);
             game.AddEntity(stockpile);
-            game.SpawnItem(new HexCubeCoord(-1, -1, 2), ItemDefinitions.Wood);
+            game.SpawnItem(new HexCubeCoord(-1, -1, 2), ItemDefinitions.Wood, 1);
 
             game.UpdateUntil(NoItemsOutsideStockpile);
         }
@@ -152,7 +152,7 @@ namespace IsekaiWorld.Test
                 var typeDivide = mapCell.Position.R >= 0;
                 if (3 <= zeroDistance && zeroDistance <= 5)
                 {
-                    game.SpawnItem(mapCell.Position, typeDivide ? ItemDefinitions.Wood : ItemDefinitions.Grains);
+                    game.SpawnItem(mapCell.Position, typeDivide ? ItemDefinitions.Wood : ItemDefinitions.Grains, 1);
                 }
             }
 
@@ -181,7 +181,7 @@ namespace IsekaiWorld.Test
             var character = game.AddCharacter("Test guy");
             character.Position = HexCubeCoord.Zero;
 
-            game.SpawnItem(new HexCubeCoord(3, 2, -5), ItemDefinitions.Wood);
+            game.SpawnItem(new HexCubeCoord(3, 2, -5), ItemDefinitions.Wood, 1);
 
             // wait for game to stabilize (or wait for pawn to not have a valid job)
             for (int i = 0; i < 100; i++)
@@ -273,9 +273,9 @@ namespace IsekaiWorld.Test
             game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
             game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
             
-            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood);
-            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left + HexagonDirection.Left, ItemDefinitions.Wood);
-            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left + HexagonDirection.Left + HexagonDirection.Left, ItemDefinitions.Wood);
+            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood, 1);
+            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left + HexagonDirection.Left, ItemDefinitions.Wood, 1);
+            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left + HexagonDirection.Left + HexagonDirection.Left, ItemDefinitions.Wood, 1);
             
             game.UpdateUntil(NoActiveConstructions);
 
@@ -300,7 +300,7 @@ namespace IsekaiWorld.Test
                 game.Update();
             }
 
-            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood);
+            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood, 1);
 
             game.UpdateUntil(NoActiveConstructions);
 
@@ -321,10 +321,8 @@ namespace IsekaiWorld.Test
             game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
             game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
             
-            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood);
-            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood);
-            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood);
-            
+            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood, 3);
+
             game.UpdateUntil(NoActiveConstructions);
 
             var remainingItems = game.Items.Any();

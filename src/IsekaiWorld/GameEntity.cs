@@ -136,21 +136,21 @@ public class GameEntity
         }
     }
 
-    public void SpawnItem(HexCubeCoord position, ItemDefinition item)
+    public void SpawnItem(HexCubeCoord position, ItemDefinition item, int count)
     {
         var existingEntity = _entities.OfType<ItemEntity>()
             .FirstOrDefault(i => i.Position == position && i.Definition == item);
         var spawnNewEntity = existingEntity == null;
         if (spawnNewEntity)
         {
-            var itemEntity = new ItemEntity(position, item, 1);
+            var itemEntity = new ItemEntity(position, item, count);
             itemEntity.SetHolder(MapItems);
             AddEntity(itemEntity);
             HaulJobGiver.HaulItem(itemEntity);
         }
         else
         {
-            existingEntity.AddCount(1);
+            existingEntity.AddCount(count);
         }
     }
 

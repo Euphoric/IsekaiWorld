@@ -166,7 +166,7 @@ public class GameUserInterface
                 // _game.SpawnBuilding(clickPosition, _currentBuildingSelection);
                 break;
             case Tool.PlaceItem:
-                _game.SpawnItem(clickPosition, _currentItemSelection);
+                _game.SpawnItem(clickPosition, _currentItemSelection, 1);
                 break;
             case Tool.DesignateCutWood:
                 _game.DesignateCutWood(clickPosition);
