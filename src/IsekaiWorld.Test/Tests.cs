@@ -270,8 +270,13 @@ namespace IsekaiWorld.Test
             character.Position = HexCubeCoord.Zero;
 
             game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
+            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
+            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
+            
             game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood);
-
+            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left + HexagonDirection.Left, ItemDefinitions.Wood);
+            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left + HexagonDirection.Left + HexagonDirection.Left, ItemDefinitions.Wood);
+            
             game.UpdateUntil(NoActiveConstructions);
 
             var remainingItems = game.Items.Any();
@@ -297,6 +302,29 @@ namespace IsekaiWorld.Test
 
             game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood);
 
+            game.UpdateUntil(NoActiveConstructions);
+
+            var remainingItems = game.Items.Any();
+            remainingItems.Should().BeFalse();
+        }
+        
+        [Fact]
+        public void Multiple_constructions_from_single_item_stack()
+        {
+            var game = CreateGame();
+            game.Initialize(new EmptyMapGenerator());
+
+            var character = game.AddCharacter("Test guy");
+            character.Position = HexCubeCoord.Zero;
+
+            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
+            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
+            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
+            
+            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood);
+            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood);
+            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood);
+            
             game.UpdateUntil(NoActiveConstructions);
 
             var remainingItems = game.Items.Any();

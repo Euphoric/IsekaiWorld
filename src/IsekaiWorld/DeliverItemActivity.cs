@@ -6,8 +6,8 @@ public class DeliverItemActivity : IActivity
     private readonly CharacterEntity _character;
     private readonly ItemEntity _item;
     private readonly ConstructionEntity _construction;
-
-    private bool _isPickedUp;
+    
+    private ItemEntity _carriedItem;
     private MovementActivity _movement;
     
     public DeliverItemActivity(GameEntity game, CharacterEntity character, ItemEntity item, ConstructionEntity construction)
@@ -30,7 +30,7 @@ public class DeliverItemActivity : IActivity
             _movement.Update();
         }
         
-        if (!_isPickedUp)
+        if (_carriedItem == null)
         {
             if (_movement == null)
             {
@@ -42,9 +42,19 @@ public class DeliverItemActivity : IActivity
             {
                 _movement = null;
 
-                _item.SetHolder(_character);
-                
-                _isPickedUp = true;
+                if (_item.Count > 1)
+                {
+                    _item.AddCount(-1);
+                    var splitStack = new ItemEntity(_character.Position, _item.Definition, 1);
+                    _game.AddEntity(splitStack);
+                    splitStack.SetHolder(_character);
+                    _carriedItem = splitStack;
+                }
+                else
+                {
+                    _item.SetHolder(_character);
+                    _carriedItem = _item;
+                }
             }
         }
         else
@@ -58,10 +68,10 @@ public class DeliverItemActivity : IActivity
             if (_movement.IsFinished)
             {
                 _movement = null;
-                _isPickedUp = false;
-
-                _item.Remove();
-
+                
+                _carriedItem.Remove();
+                _carriedItem = null;
+                
                 _construction.MaterialsDelivered = true;
 
                 IsFinished = true;
