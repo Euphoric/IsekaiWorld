@@ -1,0 +1,31 @@
+Construction
+Construction materials of different type, made from different materials and heaving different properties
+ - Light material
+  - Made from (either):
+   - Some Timber
+   - Few stone (slow)
+   - Little steel
+  - Easy to build, weak, flammable
+ - Heavy material
+  - Made from (either)
+   - Lots of timber (slow)
+   - Some stone
+   - Some Steel
+   - Concrete?
+  - Slow to build, hard, heavy, not flammable
+ - Composite material
+  - Made from (either)
+   - Some Plastics
+   - Lots of steel
+  - Super-slow to build, hard but light, somewhat flammable
+ - Sophisticated materials
+  - Made from (either)
+   - Lots of plastics
+   - Precious metals
+   - Components
+  - Used as as additive to some constructions
+
+Components
+ - Mechanical components
+ - Electronic components
+ - Sophisticated components
