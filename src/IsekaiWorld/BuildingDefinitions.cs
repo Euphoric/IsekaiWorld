@@ -37,7 +37,16 @@ public static class BuildingDefinitions
         { HexagonDirection.TopLeft,"res://Textures/Production/TableStoveFueled_north.png"},
         { HexagonDirection.TopRight,"res://Textures/Production/TableStoveFueled_north.png"}
     });
-
+    public static readonly BuildingDefinition CraftingDesk = new BuildingDefinition("Core.Production.CraftingDesk", "Crafting desk", Colors.SaddleBrown, new Dictionary<HexagonDirection, string>
+    {
+        { HexagonDirection.Right,"res://Textures/Placeholder/Wide_right.svg"},
+        { HexagonDirection.BottomRight,"res://Textures/Placeholder/Wide_bottomright.svg"},
+        { HexagonDirection.BottomLeft,"res://Textures/Placeholder/Wide_bottomleft.svg"},
+        { HexagonDirection.Left,"res://Textures/Placeholder/Wide_left.svg"},
+        { HexagonDirection.TopLeft,"res://Textures/Placeholder/Wide_topleft.svg"},
+        { HexagonDirection.TopRight,"res://Textures/Placeholder/Wide_topright.svg"}
+    });
+    
     public static readonly BuildingDefinition TreeOak = new BuildingDefinition("Core.Tree.Oak", "Oak tree", Colors.White, new Dictionary<HexagonDirection, string> {
         { HexagonDirection.Left, "res://Textures/Plant/TreeOak.png" } });
         
@@ -52,7 +61,8 @@ public static class BuildingDefinitions
             { StoneWall.Id, StoneWall },
             { WoodenChair.Id, WoodenChair },
             { WoodenBed.Id, WoodenBed },
-            {TableStoveFueled.Id, TableStoveFueled}
+            {TableStoveFueled.Id, TableStoveFueled},
+            {CraftingDesk.Id, CraftingDesk}
         };
 
     public static IReadOnlyList<BuildingDefinition> Definitions => DefinitionsMap.Values.ToList();

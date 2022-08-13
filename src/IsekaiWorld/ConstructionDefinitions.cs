@@ -16,6 +16,8 @@ public static class ConstructionDefinitions
     public static readonly ConstructionDefinition WoodenBed = new ConstructionDefinition("Core.Furniture.Bed.Wood", "Wooden Bed", BuildingDefinitions.WoodenBed.Id, null, 120, ItemDefinitions.Wood);
     public static readonly ConstructionDefinition TableStoveFueled = new ConstructionDefinition("Core.Production.StoveFueled", "Fueled stove", BuildingDefinitions.TableStoveFueled.Id, null, 120);
     
+    public static readonly ConstructionDefinition CraftingDesk = new ConstructionDefinition("Core.Production.CraftingDesk", "Crafting desk", BuildingDefinitions.CraftingDesk.Id, null, 0);
+    
     private static readonly Dictionary<string, ConstructionDefinition> DefinitionsMap =
         new Dictionary<string, ConstructionDefinition>
         {
@@ -27,7 +29,8 @@ public static class ConstructionDefinitions
             { TileFloor.Id, TileFloor },
             { WoodenChair.Id, WoodenChair },
             { WoodenBed.Id, WoodenBed},
-            { TableStoveFueled.Id, TableStoveFueled}
+            { TableStoveFueled.Id, TableStoveFueled},
+            { CraftingDesk.Id, CraftingDesk}
         };
     
     public static IReadOnlyList<ConstructionDefinition> Definitions => DefinitionsMap.Values.ToList();

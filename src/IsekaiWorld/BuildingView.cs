@@ -62,11 +62,11 @@ public class BuildingView
             var textureResource = message.Definition.TextureResource[message.Rotation];
             var texture = ResourceLoader.Load<Texture>(textureResource);
             sprite.Texture = texture;
-            sprite.Scale = Vector2.One / texture.GetSize();
             sprite.Modulate = message.Definition.Color;
 
             if (message.Definition == BuildingDefinitions.WoodenChair)
             {
+                sprite.Scale = Vector2.One / texture.GetSize();
                 sprite.Scale *= 1.3f;
                 sprite.Scale *= new Vector2(1, texture.GetHeight() / (float)texture.GetWidth());
                 if (message.Rotation == HexagonDirection.Left  || message.Rotation == HexagonDirection.BottomLeft || message.Rotation == HexagonDirection.TopLeft)
@@ -77,6 +77,7 @@ public class BuildingView
             
             if (message.Definition == BuildingDefinitions.WoodenBed)
             {
+                sprite.Scale = Vector2.One / texture.GetSize();
                 sprite.Scale *= 1.3f;
                 sprite.Scale *= 2;
                 sprite.Scale *= new Vector2(1, texture.GetHeight() / (float)texture.GetWidth());
@@ -89,6 +90,8 @@ public class BuildingView
 
             if (message.Definition == BuildingDefinitions.TableStoveFueled)
             {
+                sprite.Scale = Vector2.One / texture.GetSize();
+                
                 buildingNode.Scale *= new Vector2(1, 3);
                 buildingNode.Rotation = GetRotation(message.Rotation) + Mathf.Pi / 6;
 
@@ -99,21 +102,33 @@ public class BuildingView
 
             if (message.Definition == BuildingDefinitions.TreeOak)
             {
+                sprite.Scale = Vector2.One / texture.GetSize();
+                
                 buildingNode.Scale *= new Vector2(5, 5);
                 sprite.Offset = new Vector2(0, -200);
+            }
+
+            if (message.Definition == BuildingDefinitions.CraftingDesk)
+            {
+                var spriteScale = new Vector2(64 * Mathf.Sqrt(3) * 2, 64 * 2);
+                var textureScale = 4;
+                
+                var spriteInTextureScale = spriteScale * textureScale;
+
+                sprite.Scale = (new Vector2(1*Mathf.Sqrt(3), 1)*2) / spriteInTextureScale;
             }
         }
     }
 
     private Vector2 EntityCenterPosition(BuildingUpdated message)
     {
-        if (message.Definition == BuildingDefinitions.WoodenBed)
+        if (message.Definition == BuildingDefinitions.WoodenBed || message.Definition == BuildingDefinitions.CraftingDesk)
         {
             var hexA = message.Position;
             var hexB = message.Position + message.Rotation;
             return (hexA.Center(1) + hexB.Center(1)) / 2;
         }
-        
+
         return message.Position.Center(1);
     }
 
