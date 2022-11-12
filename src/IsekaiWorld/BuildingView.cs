@@ -56,11 +56,11 @@ public class BuildingView
             
             buildingNode.Position = EntityCenterPosition(message);
 
-            var sprite = new Sprite();
+            var sprite = new Sprite2D();
             buildingNode.AddChild(sprite);
 
             var textureResource = message.Definition.TextureResource[message.Rotation];
-            var texture = ResourceLoader.Load<Texture>(textureResource);
+            var texture = ResourceLoader.Load<Texture2D>(textureResource);
             sprite.Texture = texture;
             sprite.Modulate = message.Definition.Color;
 

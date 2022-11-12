@@ -354,3 +354,4 @@ MigrationBackup/
 
 # Godot mono runtime folder
 **/.mono
+**/.godot

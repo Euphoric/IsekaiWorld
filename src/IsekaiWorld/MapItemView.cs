@@ -37,10 +37,10 @@ public class MapItemView
         var existingNode = mapNode.GetNodeOrNull<HexagonNode>(itemUpdated.EntityId);
         if (existingNode == null)
         {
-            var texture = ResourceLoader.Load<Texture>(itemUpdated.Definition.TextureResource);
+            var texture = ResourceLoader.Load<Texture2D>(itemUpdated.Definition.TextureResource);
             var size = texture.GetSize();
 
-            var sprite = new Sprite
+            var sprite = new Sprite2D
             {
                 Position = Vector2.Zero,
                 Texture = texture,
@@ -50,8 +50,8 @@ public class MapItemView
             var label = new Label();
             label.Name = "CountLabel";
             label.Text = itemUpdated.Count.ToString();
-            label.Align = Label.AlignEnum.Center;
-            label.RectScale = Vector2.One / 25f;
+            label.HorizontalAlignment = HorizontalAlignment.Center;
+            label.Scale = Vector2.One / 25f;
 
             var itemNode = new HexagonNode
             {

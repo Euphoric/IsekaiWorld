@@ -1,6 +1,6 @@
-﻿using Godot;
+using Godot;
 
-public class HexagonNode : Node2D
+public partial class HexagonNode : Node2D
 {
     private HexCubeCoord _hexPosition;
     private ArrayMesh _hexesMesh;
@@ -56,7 +56,7 @@ public class HexagonNode : Node2D
         RebuildMesh();
     }
 
-    public override void _Process(float delta)
+    public override void _Process(double delta)
     {
         if (_isDirty)
             RebuildMesh();
@@ -92,10 +92,10 @@ public class HexagonNode : Node2D
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 1
         };
         var arrays = new Godot.Collections.Array();
-        arrays.Resize((int)ArrayMesh.ArrayType.Max);
-        arrays[(int)ArrayMesh.ArrayType.Vertex] = points;
-        arrays[(int)ArrayMesh.ArrayType.Index] = indices;
-        arrays[(int)ArrayMesh.ArrayType.Color] = colors;
+        arrays.Resize((int)Mesh.ArrayType.Max);
+        arrays[(int)Mesh.ArrayType.Vertex] = Variant.CreateFrom(points);
+        arrays[(int)Mesh.ArrayType.Index] = Variant.CreateFrom(indices);
+        arrays[(int)Mesh.ArrayType.Color] = Variant.CreateFrom(colors);
         _hexesMesh.AddSurfaceFromArrays(Mesh.PrimitiveType.TriangleStrip, arrays);
         
         _isDirty = false;

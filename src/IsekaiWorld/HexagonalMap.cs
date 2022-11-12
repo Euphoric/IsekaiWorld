@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class HexagonalMap : Node2D
+public partial class HexagonalMap : Node2D
 {
     public EntityMessaging Messaging = new EntityMessaging();
     
@@ -13,22 +13,27 @@ public class HexagonalMap : Node2D
     private readonly Dictionary<BuildingDefinition, ArrayMesh> _buildingMeshes =
         new Dictionary<BuildingDefinition, ArrayMesh>();
 
-    private readonly Dictionary<BuildingDefinition, Texture> _buildingTextures =
-        new Dictionary<BuildingDefinition, Texture>();
+    private readonly Dictionary<BuildingDefinition, Texture2D> _buildingTextures =
+        new Dictionary<BuildingDefinition, Texture2D>();
     
     private bool _isDirty;
     private HexagonNode _mouseoverHexagon;
     private GameEntity _game;
 
-    private Texture _grassTexture;
-    private Texture _dirtTexture;
-    private Texture _tileTexture;
+    private Texture2D _grassTexture;
+    private Texture2D _dirtTexture;
+    private Texture2D _tileTexture;
 
+    public HexagonalMap()
+    {
+        TextureRepeat = TextureRepeatEnum.Enabled;
+    }
+    
     public override void _Ready()
     {
-        _grassTexture = ResourceLoader.Load<Texture>("res://Textures/Surface/grass.png");
-        _dirtTexture = ResourceLoader.Load<Texture>("res://Textures/Surface/dirt.jpg");
-        _tileTexture = ResourceLoader.Load<Texture>("res://Textures/Surface/TilePatternEven_Floor.png");
+        _grassTexture = ResourceLoader.Load<Texture2D>("res://Textures/Surface/grass.png");
+        _dirtTexture = ResourceLoader.Load<Texture2D>("res://Textures/Surface/dirt.jpg");
+        _tileTexture = ResourceLoader.Load<Texture2D>("res://Textures/Surface/TilePatternEven_Floor.png");
 
         _mouseoverHexagon = new HexagonNode
         {
@@ -92,10 +97,10 @@ public class HexagonalMap : Node2D
             }
 
             RegenerateConnectedBuildingMesh(definition, buildings.Select(b=>b.Position).ToList(), connectedPositions, mesh);
-            _buildingTextures[definition] = ResourceLoader.Load<Texture>(definition.TextureResource[HexagonDirection.Right]);
+            _buildingTextures[definition] = ResourceLoader.Load<Texture2D>(definition.TextureResource[HexagonDirection.Right]);
         }
-
-        Update();
+        
+        QueueRedraw();
     }
 
     private void RegenerateSurfaceMesh(SurfaceDefinition surface, List<MapCell> cells, ArrayMesh mesh)
@@ -165,10 +170,10 @@ public class HexagonalMap : Node2D
         }
 
         var arrays = new Godot.Collections.Array();
-        arrays.Resize((int)ArrayMesh.ArrayType.Max);
-        arrays[(int)ArrayMesh.ArrayType.Vertex] = vertices_;
-        arrays[(int)ArrayMesh.ArrayType.TexUv] = textureUv;
-        arrays[(int)ArrayMesh.ArrayType.Color] = colors___;
+        arrays.Resize((int)Mesh.ArrayType.Max);
+        arrays[(int)Mesh.ArrayType.Vertex] = Variant.CreateFrom(vertices_);
+        arrays[(int)Mesh.ArrayType.TexUv] = Variant.CreateFrom(textureUv);
+        arrays[(int)Mesh.ArrayType.Color] = Variant.CreateFrom(colors___);
 
         mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
     }
@@ -454,10 +459,10 @@ public class HexagonalMap : Node2D
         }
 
         var arrays = new Godot.Collections.Array();
-        arrays.Resize((int)ArrayMesh.ArrayType.Max);
-        arrays[(int)ArrayMesh.ArrayType.Vertex] = vertices_;
-        arrays[(int)ArrayMesh.ArrayType.TexUv] = textureUv;
-        arrays[(int)ArrayMesh.ArrayType.Color] = colors___;
+        arrays.Resize((int)Mesh.ArrayType.Max);
+        arrays[(int)Mesh.ArrayType.Vertex] = Variant.CreateFrom(vertices_);
+        arrays[(int)Mesh.ArrayType.TexUv] = Variant.CreateFrom(textureUv);
+        arrays[(int)Mesh.ArrayType.Color] = Variant.CreateFrom(colors___);
 
         mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
     }
@@ -474,7 +479,7 @@ public class HexagonalMap : Node2D
             var surface = pair.Key;
             var mesh = pair.Value;
 
-            Texture texture = null;
+            Texture2D texture = null;
 
             if (surface == SurfaceDefinitions.Grass)
             {
@@ -488,7 +493,7 @@ public class HexagonalMap : Node2D
             {
                 texture = _tileTexture;
             }
-
+            
             DrawMesh(mesh, texture);
         }
 
@@ -505,7 +510,7 @@ public class HexagonalMap : Node2D
     {
         if (@event is InputEventMouseButton mouseButton)
         {
-            if (mouseButton.ButtonIndex == (int)ButtonList.Left && mouseButton.Pressed)
+            if (mouseButton.ButtonIndex == MouseButton.Left && mouseButton.Pressed)
             {
                 var clickPosition = _mouseoverHexagon.HexPosition;
                 _game.UserInterface.MouseClickOnMap(clickPosition);
@@ -515,7 +520,7 @@ public class HexagonalMap : Node2D
         base._Input(@event);
     }
 
-    public override void _Process(float delta)
+    public override void _Process(double delta)
     {
         var position = GetLocalMousePosition();
 

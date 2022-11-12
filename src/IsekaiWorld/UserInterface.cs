@@ -2,7 +2,7 @@ using System;
 using Godot;
 using GodotArray = Godot.Collections.Array;
 
-public class UserInterface : CanvasLayer
+public partial class UserInterface : CanvasLayer
 {
     private GameEntity _game;
 
@@ -24,8 +24,7 @@ public class UserInterface : CanvasLayer
             {
                 Text = definition.Label,
             };
-            var binds = new GodotArray { definition.Id };
-            button.Connect("pressed", this, nameof(_on_ConstructionSelectionButton_pressed), binds); 
+            button.Pressed += () => _on_ConstructionSelectionButton_pressed(definition.Id); 
             ConstructionContainer.AddChild(button);            
         }
         
@@ -35,8 +34,7 @@ public class UserInterface : CanvasLayer
             {
                 Text = definition.Label,
             };
-            string itemId = definition.Id;
-            button.Connect("pressed", this, nameof(_on_PlaceItemSelectionButton_pressed), new GodotArray { itemId }); 
+            button.Pressed += () => _on_PlaceItemSelectionButton_pressed(definition.Id);
             PlaceItemContainer.AddChild(button);            
         }
 
@@ -45,15 +43,15 @@ public class UserInterface : CanvasLayer
             RotationOptionButton.AddItem(rotation.ToString(), (int)rotation);
         }
         RotationOptionButton.Selected = 0;
-        RotationOptionButton.Connect("item_selected", this, nameof(_on_rotation_selected));
+        RotationOptionButton.ItemSelected += _on_rotation_selected;
 
         {
             var designationButton = GetNode<Button>("BottomMenu/DesignationButton");
-            designationButton.Connect("pressed", this, nameof(_on_DesignationButton_pressed));
+            designationButton.Pressed += _on_DesignationButton_pressed;
 
             var cutWoodButton = new Button();
             cutWoodButton.Text = "Cut wood";
-            cutWoodButton.Connect("pressed", this, nameof(_on_CutWoodButton_pressed));
+            cutWoodButton.Pressed += _on_CutWoodButton_pressed;
             DesignationContainer.AddChild(cutWoodButton);
         }
 
@@ -108,7 +106,7 @@ public class UserInterface : CanvasLayer
     public void _on_ConstructionSelectionButton_pressed(string constructionDefinitionId)
     {
         var definition = ConstructionDefinitions.GetById(constructionDefinitionId);
-        if (!PlaceDirectlyButton.Pressed)
+        if (!PlaceDirectlyButton.ButtonPressed)
         {
             _game.UserInterface.ConstructionSelected(definition);
             ToolLabel.Text = "Construction: " + definition.Label;
@@ -128,7 +126,7 @@ public class UserInterface : CanvasLayer
         ToolLabel.Text = "Place item";
     }
 
-    public void _on_rotation_selected(int index)
+    public void _on_rotation_selected(long index)
     {
         _game.UserInterface.ConstructionRotation = (HexagonDirection)index;
     }

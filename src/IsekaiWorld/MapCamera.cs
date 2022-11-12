@@ -1,29 +1,31 @@
 using Godot;
 using System;
 
-public class MapCamera : Camera2D
+public partial class MapCamera : Camera2D
 {
     public override void _Ready()
     {
-        Zoom = Vector2.One / 16f;
+        Zoom = Vector2.One * 4f;
     }
 
     public override void _Input(InputEvent @event)
     {
         if (Input.IsActionPressed("zoom_in"))
         {
-            Zoom = Zoom * (0.95f);
+            Zoom *= 0.95f;
         }
         if (Input.IsActionPressed("zoom_out"))
         {
-            Zoom = Zoom * (1 / (0.95f));
+            Zoom *= 1 / 0.95f;
         }
         
         base._Input(@event);
+        
+        UpdateLabel();
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(float delta)
+    public override void _Process(double delta)
     {
         var velocity = Vector2.Zero;
         if (Input.IsActionPressed("move_right"))
@@ -46,9 +48,16 @@ public class MapCamera : Camera2D
             velocity -= Vector2.Down;
         }
 
-        float speed = 500;
-        Position += velocity * speed * delta * Zoom;
+        float speed = 400;
+        Position += velocity * speed * (float)delta * (Vector2.One / Zoom);
 
+        base._Process(delta);
+        
+        UpdateLabel();
+    }
+
+    private void UpdateLabel()
+    {
         var label = GetNode<Label>("/root/GameNode/UserInterface/Container/DebugLabel");
         label.Text = Position + " / " + Zoom;
     }

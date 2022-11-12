@@ -1,113 +1,128 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=6 format=3 uid="uid://bifs0rinylo1w"]
 
-[ext_resource path="res://HexagonalMap.cs" type="Script" id=1]
-[ext_resource path="res://MapCamera.cs" type="Script" id=2]
-[ext_resource path="res://FPSLabel.cs" type="Script" id=3]
-[ext_resource path="res://GameNode.cs" type="Script" id=4]
-[ext_resource path="res://UserInterface.cs" type="Script" id=5]
+[ext_resource type="Script" path="res://HexagonalMap.cs" id="1"]
+[ext_resource type="Script" path="res://MapCamera.cs" id="2"]
+[ext_resource type="Script" path="res://FPSLabel.cs" id="3"]
+[ext_resource type="Script" path="res://GameNode.cs" id="4"]
+[ext_resource type="Script" path="res://UserInterface.cs" id="5"]
 
 [node name="GameNode" type="Node"]
-script = ExtResource( 4 )
+script = ExtResource("4")
 
 [node name="MapCamera" type="Camera2D" parent="."]
 current = true
-script = ExtResource( 2 )
+script = ExtResource("2")
 
 [node name="Map" type="Node2D" parent="."]
 
 [node name="HexagonalMap" type="Node2D" parent="Map"]
-script = ExtResource( 1 )
+script = ExtResource("1")
 
 [node name="UserInterface" type="CanvasLayer" parent="."]
-script = ExtResource( 5 )
+script = ExtResource("5")
 
 [node name="Container" type="HBoxContainer" parent="UserInterface"]
-margin_right = 153.0
-margin_bottom = 14.0
+offset_right = 153.0
+offset_bottom = 14.0
 
 [node name="FPSLabel" type="Label" parent="UserInterface/Container"]
-margin_right = 22.0
-margin_bottom = 14.0
+layout_mode = 2
+offset_right = 28.0
+offset_bottom = 26.0
 text = "FPS"
-script = ExtResource( 3 )
+script = ExtResource("3")
 
 [node name="DebugLabel" type="Label" parent="UserInterface/Container"]
-margin_left = 26.0
-margin_right = 102.0
-margin_bottom = 14.0
+layout_mode = 2
+offset_left = 32.0
+offset_right = 124.0
+offset_bottom = 26.0
 text = "Debug label"
 
 [node name="BottomMenu" type="HBoxContainer" parent="UserInterface"]
+anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = -20.0
+offset_top = -20.0
+grow_horizontal = 2
+grow_vertical = 0
 
 [node name="SelectionButton" type="Button" parent="UserInterface/BottomMenu"]
-margin_right = 71.0
-margin_bottom = 20.0
+layout_mode = 2
+offset_right = 79.0
+offset_bottom = 31.0
 text = "Selection"
 
 [node name="ConstructionButton" type="Button" parent="UserInterface/BottomMenu"]
-margin_left = 75.0
-margin_right = 168.0
-margin_bottom = 20.0
-rect_pivot_offset = Vector2( 123, 10 )
+layout_mode = 2
+offset_left = 83.0
+offset_right = 191.0
+offset_bottom = 31.0
+pivot_offset = Vector2(123, 10)
 text = "Construction"
 
 [node name="PlaceItemButton" type="Button" parent="UserInterface/BottomMenu"]
-margin_left = 172.0
-margin_right = 252.0
-margin_bottom = 20.0
-rect_pivot_offset = Vector2( 123, 10 )
+layout_mode = 2
+offset_left = 195.0
+offset_right = 284.0
+offset_bottom = 31.0
+pivot_offset = Vector2(123, 10)
 text = "Place item"
 
 [node name="DesignationButton" type="Button" parent="UserInterface/BottomMenu"]
-margin_left = 256.0
-margin_right = 344.0
-margin_bottom = 20.0
-rect_pivot_offset = Vector2( 123, 10 )
+layout_mode = 2
+offset_left = 288.0
+offset_right = 389.0
+offset_bottom = 31.0
+pivot_offset = Vector2(123, 10)
 text = "Designation"
 
 [node name="SelectionLabel" type="Label" parent="UserInterface"]
+anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = -40.0
-margin_bottom = -20.0
+offset_top = -40.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
 text = "Selection label"
 
 [node name="ConstructionContainer" type="GridContainer" parent="UserInterface"]
-margin_top = 37.0
-margin_right = 418.0
-margin_bottom = 527.0
+offset_top = 37.0
+offset_right = 418.0
+offset_bottom = 527.0
 
 [node name="PlaceDirectlyButton" type="CheckButton" parent="UserInterface/ConstructionContainer"]
-margin_right = 166.0
-margin_bottom = 40.0
+layout_mode = 2
+offset_right = 151.0
+offset_bottom = 31.0
 text = "Place directly"
 
 [node name="RotationOptionButton" type="OptionButton" parent="UserInterface/ConstructionContainer"]
-margin_top = 44.0
-margin_right = 166.0
-margin_bottom = 64.0
-text = "Rotation"
+layout_mode = 2
+offset_top = 35.0
+offset_right = 151.0
+offset_bottom = 55.0
 
 [node name="PlaceItemContainer" type="GridContainer" parent="UserInterface"]
-margin_top = 31.0
-margin_right = 392.0
-margin_bottom = 533.0
+offset_top = 31.0
+offset_right = 392.0
+offset_bottom = 533.0
 
 [node name="DesignationContainer" type="GridContainer" parent="UserInterface"]
-margin_top = 31.0
-margin_bottom = 31.0
+offset_top = 31.0
+offset_bottom = 31.0
 
 [node name="ToolLabel" type="Label" parent="UserInterface"]
+anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-margin_top = -58.0
-margin_right = 62.0
-margin_bottom = -44.0
+offset_top = -58.0
+offset_right = 62.0
+offset_bottom = -44.0
+grow_vertical = 0
 text = "Tool label"
 
 [connection signal="pressed" from="UserInterface/BottomMenu/SelectionButton" to="UserInterface" method="_on_SelectionButton_pressed"]
