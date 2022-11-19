@@ -118,6 +118,15 @@ public class BuildingView
                 sprite.Scale = (new Vector2(1*Mathf.Sqrt(3), 1)*2) / spriteInTextureScale;
             }
         }
+
+        if (message.Designation != null)
+        {
+            var designationNode = new Sprite2D();
+            var texture = ResourceLoader.Load<Texture2D>("Textures/Designation/CutPlant.png");
+            designationNode.Texture = texture;
+            designationNode.Scale = Vector2.One / texture.GetSize() * 0.25f;
+            buildingNode.AddChild(designationNode);
+        }
     }
 
     private Vector2 EntityCenterPosition(BuildingUpdated message)

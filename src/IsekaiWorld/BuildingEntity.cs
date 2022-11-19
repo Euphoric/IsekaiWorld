@@ -41,7 +41,7 @@ public class BuildingEntity : IEntity
         }
         else if (_isDirty)
         {
-            Messaging.Broadcast(new BuildingUpdated(Position, Definition, Id.ToString(), Rotation));
+            Messaging.Broadcast(new BuildingUpdated(Position, Definition, Id.ToString(), Rotation, Designation));
 
             _isDirty = false;
         }
@@ -50,6 +50,8 @@ public class BuildingEntity : IEntity
     }
 
     public ItemDefinition ReservedForItem { get; private set; }
+    public string Designation { get; set; }
+
     public void ReserveForItem(ItemDefinition item)
     {
         ReservedForItem = item;
@@ -60,22 +62,30 @@ public class BuildingEntity : IEntity
         _toRemove = true;
         _isDirty = true;
     }
+
+    public void Designate(string designation)
+    {
+        Designation = designation;
+        _isDirty = true;
+    }
 }
 
 public class BuildingUpdated : IEntityMessage
 {
-    public BuildingUpdated(HexCubeCoord position, BuildingDefinition definition, string entityId, HexagonDirection rotation)
+    public BuildingUpdated(HexCubeCoord position, BuildingDefinition definition, string entityId, HexagonDirection rotation, string designation)
     {
         Position = position;
         Definition = definition;
         EntityId = entityId;
         Rotation = rotation;
+        Designation = designation;
     }
     
     public HexCubeCoord Position { get; }
     public BuildingDefinition Definition { get; }
     public String EntityId { get; }
     public HexagonDirection Rotation { get; }
+    public string Designation { get; }
 }
 
 public class BuildingRemoved : IEntityMessage

@@ -219,7 +219,7 @@ namespace IsekaiWorld.Test
 
             game.DesignateCutWood(treePosition);
 
-            game.UpdateUntil(gts =>
+            game.UpdateUntil(_ =>
             {
                 var entitiesOn = game.EntitiesOn(treePosition);
                 var treesExist = entitiesOn.OfType<BuildingEntity>()

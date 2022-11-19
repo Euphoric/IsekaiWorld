@@ -170,9 +170,10 @@ public class GameEntity
     {
         var treeEntity = Buildings.FirstOrDefault(e =>
             e.OccupiedCells.Contains(position) && e.Definition == BuildingDefinitions.TreeOak);
+
         if (treeEntity != null)
         {
-            CutWoodJobGiver.CutTree(treeEntity);
+            treeEntity.Designate("CutWood");
         }
     }
 }
