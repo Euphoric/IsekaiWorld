@@ -98,9 +98,10 @@ public class GameEntity
         return _entities.Where(c => c.OccupiedCells.Contains(position)).ToList();
     }
 
-    public void SpawnBuilding(HexCubeCoord position, HexagonDirection rotation, BuildingDefinition buildingDefinition)
+    public BuildingEntity SpawnBuilding(HexCubeCoord position, HexagonDirection rotation, BuildingDefinition buildingDefinition)
     {
-        AddEntity(new BuildingEntity(position, rotation, buildingDefinition));
+        var buildingEntity = new BuildingEntity(position, rotation, buildingDefinition);
+        AddEntity(buildingEntity);
 
         var stuckCharacter = _entities.OfType<CharacterEntity>().FirstOrDefault(c => c.Position == position);
         if (stuckCharacter != null)
@@ -112,6 +113,8 @@ public class GameEntity
                 stuckCharacter.Position = unstuckCell.Position;
             }
         }
+
+        return buildingEntity;
     }
 
     public IEnumerable<string> CheckForIssues()
@@ -140,8 +143,7 @@ public class GameEntity
     {
         var existingEntity = _entities.OfType<ItemEntity>()
             .FirstOrDefault(i => i.Position == position && i.Definition == item);
-        var spawnNewEntity = existingEntity == null;
-        if (spawnNewEntity)
+        if (existingEntity == null)
         {
             var itemEntity = new ItemEntity(position, item, count);
             itemEntity.SetHolder(MapItems);
@@ -168,20 +170,10 @@ public class GameEntity
 
     public void Designate(HexCubeCoord position, DesignationDefinition designation)
     {
-        if (designation == DesignationDefinitions.CutWood)
+        var buildingsOnPosition = EntitiesOn(position).OfType<BuildingEntity>();
+        foreach (var building in buildingsOnPosition)
         {
-            var treeEntity = Buildings.FirstOrDefault(e =>
-                e.OccupiedCells.Contains(position) && e.Definition == BuildingDefinitions.TreeOak);
-
-            treeEntity?.Designate(designation);
-        }
-        else if (designation == DesignationDefinitions.Deconstruct)
-        {
-            var buildingEntity = Buildings
-                .Where(e => e.OccupiedCells.Contains(position))
-                .FirstOrDefault(e => e.Definition == BuildingDefinitions.WoodenWall);
-
-            buildingEntity?.Designate(designation);
+            building.TryDesignate(designation);            
         }
     }
 }

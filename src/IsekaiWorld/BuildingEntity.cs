@@ -62,8 +62,11 @@ public class BuildingEntity : IEntity
         _isDirty = true;
     }
 
-    public void Designate(DesignationDefinition designation)
+    public void TryDesignate(DesignationDefinition designation)
     {
+        if (!Definition.AllowedDesignations.Contains(designation)) 
+            return;
+        
         Designation = designation;
         _isDirty = true;
     }

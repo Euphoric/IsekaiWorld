@@ -9,8 +9,9 @@ public class BuildingDefinition
     public bool EdgeConnected { get; }
     public IReadOnlyDictionary<HexagonDirection, string> TextureResource { get; }
     public bool Impassable { get; }
-    
-    public BuildingDefinition(string id, string label, Color color, Dictionary<HexagonDirection, string> textureResource, bool edgeConnected = false, bool impassable = false)
+    public IReadOnlySet<DesignationDefinition> AllowedDesignations { get; }
+
+    public BuildingDefinition(string id, string label, Color color, Dictionary<HexagonDirection, string> textureResource, bool edgeConnected = false, bool impassable = false, IReadOnlySet<DesignationDefinition>? allowedDesignations = null)
     {
         Id = id;
         Label = label;
@@ -18,5 +19,6 @@ public class BuildingDefinition
         TextureResource = textureResource;
         EdgeConnected = edgeConnected;
         Impassable = impassable;
+        AllowedDesignations = allowedDesignations ?? new HashSet<DesignationDefinition>();
     }
 }

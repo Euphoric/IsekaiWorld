@@ -214,14 +214,16 @@ namespace IsekaiWorld.Test
             var character = game.AddCharacter("Test guy");
             character.Position = HexCubeCoord.Zero;
 
-            var treePosition = new HexCubeCoord(5, -3, -2);
-            game.AddEntity(new BuildingEntity(treePosition, HexagonDirection.Left, BuildingDefinitions.TreeOak));
+            var tree = new BuildingEntity(new HexCubeCoord(5, -3, -2), HexagonDirection.Left, BuildingDefinitions.TreeOak);
+            game.AddEntity(tree);
 
-            game.Designate(treePosition, DesignationDefinitions.CutWood);
-
+            game.Designate(tree.Position, DesignationDefinitions.CutWood);
+            
+            tree.Designation.Should().Be(DesignationDefinitions.CutWood);
+            
             game.UpdateUntil(_ =>
             {
-                var entitiesOn = game.EntitiesOn(treePosition);
+                var entitiesOn = game.EntitiesOn(tree.Position);
                 var treesExist = entitiesOn.OfType<BuildingEntity>()
                     .Any(b => b.Definition == BuildingDefinitions.TreeOak);
                 var woodSpawned = entitiesOn.OfType<ItemEntity>().Any(i => i.Definition == ItemDefinitions.Wood);
@@ -338,14 +340,34 @@ namespace IsekaiWorld.Test
             var character = game.AddCharacter("Test guy");
             character.Position = HexCubeCoord.Zero;
 
-            var buildingPosition = new HexCubeCoord(1, 1, -2);
-            game.SpawnBuilding(buildingPosition, HexagonDirection.Left, BuildingDefinitions.WoodenWall);
+            var building = game.SpawnBuilding(new HexCubeCoord(1, 1, -2), HexagonDirection.Left, BuildingDefinitions.WoodenWall);
             
-            game.Designate(buildingPosition, DesignationDefinitions.Deconstruct);
-
+            game.Designate(building.Position, DesignationDefinitions.Deconstruct);
+            
+            building.Designation.Should().Be(DesignationDefinitions.Deconstruct);
+            
             game.UpdateUntil(_=>character.CurrentActivity is DeconstructActivity);
             
-            game.UpdateUntil(gts => !gts.Game.EntitiesOn(buildingPosition).Any());
+            game.UpdateUntil(gts => !gts.Game.EntitiesOn(building.Position).Any());
+        }
+
+        [Fact]
+        public void Can_designate_only_specific_entities()
+        {
+            var game = CreateGame();
+            game.Initialize(new EmptyMapGenerator());
+
+            var building = game.SpawnBuilding(new HexCubeCoord(1, 1, -2), HexagonDirection.Left, BuildingDefinitions.WoodenWall);
+            var tree = new BuildingEntity(new HexCubeCoord(5, -3, -2), HexagonDirection.Left, BuildingDefinitions.TreeOak);
+            game.AddEntity(tree);
+            
+            game.Designate(building.Position, DesignationDefinitions.CutWood);
+            
+            building.Designation.Should().BeNull();
+
+            game.Designate(tree.Position, DesignationDefinitions.Deconstruct);
+
+            tree.Designation.Should().BeNull();
         }
     }
 }
