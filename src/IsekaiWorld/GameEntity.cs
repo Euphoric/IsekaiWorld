@@ -148,7 +148,6 @@ public class GameEntity
             var itemEntity = new ItemEntity(position, item, count);
             itemEntity.SetHolder(MapItems);
             AddEntity(itemEntity);
-            HaulJobGiver.HaulItem(itemEntity);
         }
         else
         {

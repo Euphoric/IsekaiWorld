@@ -15,7 +15,7 @@ public class CharacterEntity : IEntity, IItemHolder
     
     public bool IsIdle => CurrentActivity == null;
 
-    public IActivity CurrentActivity { get; private set; }
+    public IActivity? CurrentActivity { get; private set; }
     public string Label { get; private set; }
 
     private bool _initialized;
@@ -37,16 +37,16 @@ public class CharacterEntity : IEntity, IItemHolder
             _initialized = true;
         }
         
+        if (CurrentActivity == null)
+        {
+            _game.Jobs.SetJobActivity(this);
+        }
+        
         CurrentActivity?.Update();
         
         if (CurrentActivity != null && CurrentActivity.IsFinished)
         {
             CurrentActivity = null;
-        }
-        
-        if (CurrentActivity == null)
-        {
-            _game.Jobs.SetJobActivity(this);
         }
 
         Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Position));
@@ -58,7 +58,7 @@ public class CharacterEntity : IEntity, IItemHolder
         CurrentActivity = activity;
     }
 
-    private List<ItemEntity> _carriedItems = new List<ItemEntity>();
+    private List<ItemEntity> _carriedItems = new();
 
     void IItemHolder.RemoveItem(ItemEntity itemEntity)
     {

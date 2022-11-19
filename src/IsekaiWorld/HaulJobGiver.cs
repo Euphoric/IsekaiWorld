@@ -1,11 +1,10 @@
 using System;
-using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 public class HaulJobGiver : IJobGiver
 {
     private readonly GameEntity _game;
-    private readonly List<ItemEntity> _itemsToHaul = new List<ItemEntity>();
 
     public HaulJobGiver(GameEntity game)
     {
@@ -14,7 +13,10 @@ public class HaulJobGiver : IJobGiver
 
     public bool SetJobActivity(CharacterEntity character)
     {
-        var itemToHaul = _itemsToHaul.FirstOrDefault();
+        var stockpilePositions = _game.Buildings.Where(x => x.Definition == BuildingDefinitions.StockpileZone)
+            .SelectMany(x => x.OccupiedCells).Distinct().ToImmutableHashSet();
+
+        var itemToHaul = _game.Items.FirstOrDefault(it => !stockpilePositions.Contains(it.Position));
         if (itemToHaul == null) 
             return false;
         
@@ -22,15 +24,7 @@ public class HaulJobGiver : IJobGiver
         if (targetStockpile == null) 
             return false;
         
-        _itemsToHaul.Remove(itemToHaul);
         character.StartActivity(new HaulItemActivity(_game, character, itemToHaul, targetStockpile));
         return true;
-
-    }
-
-    [Obsolete("Implement 'items to haul' from analyzing game state.")]
-    public void HaulItem(ItemEntity item)
-    {
-        _itemsToHaul.Add(item);
     }
 }

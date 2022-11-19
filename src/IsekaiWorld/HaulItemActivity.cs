@@ -6,7 +6,7 @@ public class HaulItemActivity : IActivity
     public CharacterEntity Character { get; }
     public ItemEntity Item { get; }
 
-    private MovementActivity _movement;
+    private MovementActivity? _movement;
 
     private bool _isPickedUp;
     
@@ -28,18 +28,12 @@ public class HaulItemActivity : IActivity
         
         _targetStockpile.ReserveForItem(Item.Definition);
 
-        if (_movement != null)
-        {
-            _movement.Update();
-        }
+        _movement?.Update();
 
         if (!_isPickedUp)
         {
-            if (_movement == null)
-            {
-                // move on item
-                _movement = new MovementActivity(_game.Pathfinding, Character, Item.Position, false);
-            }
+            // move on item
+            _movement ??= new MovementActivity(_game.Pathfinding, Character, Item.Position, false);
 
             if (_movement.IsFinished)
             {
@@ -52,11 +46,8 @@ public class HaulItemActivity : IActivity
         }
         else
         {
-            if (_movement == null)
-            {
-                // move on item
-                _movement = new MovementActivity(_game.Pathfinding, Character, _targetStockpile.Position, false);
-            }
+            // move on item
+            _movement ??= new MovementActivity(_game.Pathfinding, Character, _targetStockpile.Position, false);
 
             if (_movement.IsFinished)
             {

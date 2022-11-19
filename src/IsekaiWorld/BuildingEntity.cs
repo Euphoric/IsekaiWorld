@@ -9,7 +9,7 @@ public class BuildingEntity : IEntity
     private bool _toRemove;
     private bool _isDirty;
 
-    public EntityMessaging Messaging { get; } = new EntityMessaging();
+    public EntityMessaging Messaging { get; } = new();
     
     public BuildingEntity(HexCubeCoord position, HexagonDirection rotation, BuildingDefinition definition)
     {
@@ -48,7 +48,7 @@ public class BuildingEntity : IEntity
         return Enumerable.Empty<INodeOperation>();
     }
 
-    public ItemDefinition ReservedForItem { get; private set; }
+    public ItemDefinition? ReservedForItem { get; private set; }
     public DesignationDefinition? Designation { get; set; }
 
     public void ReserveForItem(ItemDefinition item)
