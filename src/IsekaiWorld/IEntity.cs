@@ -8,5 +8,5 @@ public interface IEntity
 
     ISet<HexCubeCoord> OccupiedCells { get; }
 
-    IEnumerable<INodeOperation> Update();
+    void Update();
 }

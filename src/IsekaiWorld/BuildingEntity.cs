@@ -31,7 +31,7 @@ public class BuildingEntity : IEntity
 
     public bool IsRemoved { get; private set; }
 
-    public IEnumerable<INodeOperation> Update()
+    public void Update()
     {
         if (_toRemove)
         {
@@ -44,8 +44,6 @@ public class BuildingEntity : IEntity
 
             _isDirty = false;
         }
-        
-        return Enumerable.Empty<INodeOperation>();
     }
 
     public ItemDefinition? ReservedForItem { get; private set; }

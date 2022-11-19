@@ -50,8 +50,6 @@ public partial class GameNode : Node
 	{
 		_game.Update();
 		
-		_game.UpdateNodes(this);
-		
 		_characterView.Update();
 		_buildingView.Update();
 		_mapItemView.Update();

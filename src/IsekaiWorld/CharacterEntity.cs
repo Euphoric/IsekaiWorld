@@ -30,7 +30,7 @@ public class CharacterEntity : IEntity, IItemHolder
         _initialized = false;
     }
 
-    public IEnumerable<INodeOperation> Update()
+    public void Update()
     {
         if (!_initialized)
         {
@@ -51,7 +51,6 @@ public class CharacterEntity : IEntity, IItemHolder
         }
 
         Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Position));
-        return Enumerable.Empty<INodeOperation>();
     }
 
     public void StartActivity(IActivity activity)

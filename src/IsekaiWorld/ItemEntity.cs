@@ -63,11 +63,11 @@ public class ItemEntity : IEntity
         _isDirty = true;
     }
 
-    public IEnumerable<INodeOperation> Update()
+    public void Update()
     {
         if (IsRemoved)
         {
-            return Enumerable.Empty<INodeOperation>();
+            return;
         }
 
         if (_toRemove)
@@ -87,8 +87,6 @@ public class ItemEntity : IEntity
                 Messaging.Broadcast(new ItemPickedUp(EntityId.ToString()));
             }
         }
-
-        return Enumerable.Empty<INodeOperation>();
     }
 
     public void Remove()

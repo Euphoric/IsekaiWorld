@@ -15,8 +15,6 @@ public class GameEntity
     public IReadOnlyList<BuildingEntity> Buildings => _entities.OfType<BuildingEntity>().ToList();
     public IReadOnlyList<ItemEntity> Items => _entities.OfType<ItemEntity>().ToList();
 
-    private readonly List<INodeOperation> _operations = new();
-
     private readonly List<IEntity> _entities = new();
 
     public MapItems MapItems { get; } = new();
@@ -62,27 +60,12 @@ public class GameEntity
         Pathfinding.Update();
         foreach (var entity in _entities.ToList())
         {
-            var operations = entity.Update();
-            _operations.AddRange(operations);
+            entity.Update();
         }
 
         _entities.Where(ent => ent.IsRemoved).ToList().ForEach(RemoveEntity);
 
-        foreach (var operation in UserInterface.Update())
-        {
-            _operations.Add(operation);
-        }
-    }
-
-    [Obsolete("Will be removed with INodeOperation")]
-    public void UpdateNodes(GameNode gameNode)
-    {
-        foreach (var operation in _operations)
-        {
-            operation.Execute(gameNode);
-        }
-
-        _operations.Clear();
+        UserInterface.Update();
     }
 
     public void StartConstruction(HexCubeCoord position, HexagonDirection rotation, ConstructionDefinition construction)

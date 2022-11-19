@@ -43,12 +43,11 @@ public class ConstructionEntity : IEntity
     public bool IsFinished => Progress >= CompleteProgress;
     public bool MaterialsDelivered { get; set; }
 
-    public IEnumerable<INodeOperation> Update()
+    public void Update()
     {
         if (IsRemoved)
         {
             Messaging.Broadcast(new ConstructionRemoved(Id.ToString()));
-            return Enumerable.Empty<INodeOperation>();
         }
         
         if (_isDirty)
@@ -56,8 +55,6 @@ public class ConstructionEntity : IEntity
             Messaging.Broadcast(new ConstructionUpdated(Id.ToString(), Position, ProgressRelative));
             _isDirty = false;
         }
-        
-        return Enumerable.Empty<INodeOperation>();
     }
 
     public void RemoveEntity()

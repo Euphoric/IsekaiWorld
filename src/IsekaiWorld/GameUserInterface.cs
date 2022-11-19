@@ -95,7 +95,7 @@ public class GameUserInterface
 
     public HexagonDirection ConstructionRotation { get; set; }
 
-    public IEnumerable<INodeOperation> Update()
+    public void Update()
     {
         if (_selectedLabelDirty)
         {
@@ -110,8 +110,6 @@ public class GameUserInterface
                 Messaging.Broadcast(new SelectionChanged(_currentSelection?.Label));
             }
         }
-        
-        return Enumerable.Empty<INodeOperation>();
     }
 
     private void SelectItemOn(HexCubeCoord position)
