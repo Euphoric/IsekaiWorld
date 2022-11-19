@@ -217,7 +217,7 @@ namespace IsekaiWorld.Test
             var treePosition = new HexCubeCoord(5, -3, -2);
             game.AddEntity(new BuildingEntity(treePosition, HexagonDirection.Left, BuildingDefinitions.TreeOak));
 
-            game.DesignateCutWood(treePosition);
+            game.Designate(treePosition, "CutWood");
 
             game.UpdateUntil(_ =>
             {
@@ -327,6 +327,25 @@ namespace IsekaiWorld.Test
 
             var remainingItems = game.Items.Any();
             remainingItems.Should().BeFalse();
+        }
+        
+        [Fact]
+        public void Deconstruct_building()
+        {
+            var game = CreateGame();
+            game.Initialize(new EmptyMapGenerator());
+
+            var character = game.AddCharacter("Test guy");
+            character.Position = HexCubeCoord.Zero;
+
+            var buildingPosition = new HexCubeCoord(1, 1, -2);
+            game.SpawnBuilding(buildingPosition, HexagonDirection.Left, BuildingDefinitions.WoodenWall);
+            
+            game.Designate(buildingPosition, "Deconstruct");
+
+            game.UpdateUntil(_=>character.CurrentActivity is DeconstructActivity);
+            
+            game.UpdateUntil(gts => !gts.Game.EntitiesOn(buildingPosition).Any());
         }
     }
 }

@@ -144,12 +144,13 @@ public class GameUserInterface
         Construction,
         PlaceBuilding,
         PlaceItem,
-        DesignateCutWood
+        Designate
     }
 
     private Tool _currentTool = Tool.Selection;
     private ConstructionDefinition _currentBuildingSelection;
     private ItemDefinition _currentItemSelection;
+    private string _currentDesignation;
 
     public void MouseClickOnMap(HexCubeCoord clickPosition)
     {
@@ -168,8 +169,8 @@ public class GameUserInterface
             case Tool.PlaceItem:
                 _game.SpawnItem(clickPosition, _currentItemSelection, 1);
                 break;
-            case Tool.DesignateCutWood:
-                _game.DesignateCutWood(clickPosition);
+            case Tool.Designate:
+                _game.Designate(clickPosition, _currentDesignation);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -201,7 +202,14 @@ public class GameUserInterface
 
     public void DesignateCutWoodSelected()
     {
-        _currentTool = Tool.DesignateCutWood;
+        _currentTool = Tool.Designate;
+        _currentDesignation = "CutWood";
+    }
+    
+    public void DesignateDeconstructSelected()
+    {
+        _currentTool = Tool.Designate;
+        _currentDesignation = "Deconstruct";
     }
 }
 

@@ -8,26 +8,26 @@ public class GameEntity
     public GameUserInterface UserInterface { get; private set; }
     public JobSystem Jobs { get; }
     public HaulJobGiver HaulJobGiver { get; }
-    public CutWoodJobGiver CutWoodJobGiver { get; }
     public MessagingHub Messaging { get; }
 
     public IReadOnlyList<ConstructionEntity> Constructions => _entities.OfType<ConstructionEntity>().ToList();
     public IReadOnlyList<BuildingEntity> Buildings => _entities.OfType<BuildingEntity>().ToList();
     public IReadOnlyList<ItemEntity> Items => _entities.OfType<ItemEntity>().ToList();
 
-    private readonly List<INodeOperation> _operations = new List<INodeOperation>();
+    private readonly List<INodeOperation> _operations = new();
 
-    private readonly List<IEntity> _entities = new List<IEntity>();
+    private readonly List<IEntity> _entities = new();
 
-    public MapItems MapItems { get; } = new MapItems();
+    public MapItems MapItems { get; } = new();
 
     public GameEntity()
     {
         Messaging = new MessagingHub();
         HaulJobGiver = new HaulJobGiver(this);
+        var deconstructJobGiver = new DeconstructJobGiver(this);
         var constructionJobGiver = new ConstructionJobGiver(this);
-        CutWoodJobGiver = new CutWoodJobGiver(this);
-        Jobs = new JobSystem(new IJobGiver[] { HaulJobGiver, constructionJobGiver, CutWoodJobGiver });
+        var cutWoodJobGiver = new CutWoodJobGiver(this);
+        Jobs = new JobSystem(new IJobGiver[] { HaulJobGiver, deconstructJobGiver, constructionJobGiver, cutWoodJobGiver });
     }
 
     public void Initialize(IMapGenerator mapGenerator)
@@ -166,14 +166,28 @@ public class GameEntity
         Messaging.Unregister(entity.Messaging);
     }
 
-    public void DesignateCutWood(HexCubeCoord position)
+    public void Designate(HexCubeCoord position, string designation)
     {
-        var treeEntity = Buildings.FirstOrDefault(e =>
-            e.OccupiedCells.Contains(position) && e.Definition == BuildingDefinitions.TreeOak);
-
-        if (treeEntity != null)
+        if (designation == "CutWood")
         {
-            treeEntity.Designate("CutWood");
+            var treeEntity = Buildings.FirstOrDefault(e =>
+                e.OccupiedCells.Contains(position) && e.Definition == BuildingDefinitions.TreeOak);
+
+            if (treeEntity != null)
+            {
+                treeEntity.Designate(designation);
+            }
+        }
+        else if (designation == "Deconstruct")
+        {
+            var buildingEntity = Buildings
+                .Where(e => e.OccupiedCells.Contains(position))
+                .FirstOrDefault(e => e.Definition == BuildingDefinitions.WoodenWall);
+
+            if (buildingEntity != null)
+            {
+                buildingEntity.Designate(designation);
+            }
         }
     }
 }

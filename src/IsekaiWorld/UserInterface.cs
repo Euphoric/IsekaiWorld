@@ -49,10 +49,19 @@ public partial class UserInterface : CanvasLayer
             var designationButton = GetNode<Button>("BottomMenu/DesignationButton");
             designationButton.Pressed += _on_DesignationButton_pressed;
 
-            var cutWoodButton = new Button();
-            cutWoodButton.Text = "Cut wood";
-            cutWoodButton.Pressed += _on_CutWoodButton_pressed;
-            DesignationContainer.AddChild(cutWoodButton);
+            {
+                var cutWoodButton = new Button();
+                cutWoodButton.Text = "Cut wood";
+                cutWoodButton.Pressed += _on_CutWoodButton_pressed;
+                DesignationContainer.AddChild(cutWoodButton);
+            }
+            
+            {
+                var deconstructButton = new Button();
+                deconstructButton.Text = "Deconstruct";
+                deconstructButton.Pressed += _on_DeconstructButton_pressed;
+                DesignationContainer.AddChild(deconstructButton);
+            }
         }
 
 
@@ -131,9 +140,15 @@ public partial class UserInterface : CanvasLayer
         _game.UserInterface.ConstructionRotation = (HexagonDirection)index;
     }
 
-    public void _on_CutWoodButton_pressed()
+    private void _on_CutWoodButton_pressed()
     {
         _game.UserInterface.DesignateCutWoodSelected();
         ToolLabel.Text = "Cut tree";
+    }
+    
+    private void _on_DeconstructButton_pressed()
+    {
+        _game.UserInterface.DesignateDeconstructSelected();
+        ToolLabel.Text = "Deconstruct";
     }
 }
