@@ -1,3 +1,18 @@
+Harvesting and scavenging
+- early-game acquisition of resources
+- trees slowly produce piles of wood around themselves
+- berries, herbs, wild grains, mushrooms grow on soil
+- cutting down wood is time-consuming, so clearing space for construction is slow and work-intensive
+ - cutting down trees produces "timber" piles, which need to be harvested and hauled
+ - requires tools to do it effectively and at scale
+
+
+Wood types
+ - poor wood - low-quality wood only useful for firewood
+ - wood - wood useful as firewood or for construction
+ - hard wood - highly useful for construction and carpentry
+ - luxury wood - high-value wood, foolish to burn, great for crafts and carpentry
+
 Construction
 Construction materials of different type, made from different materials and heaving different properties
  - Light material
