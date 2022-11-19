@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class CharacterEntity : IEntity, IItemHolder
 {
@@ -33,7 +34,7 @@ public class CharacterEntity : IEntity, IItemHolder
     {
         if (!_initialized)
         {
-            yield return new CreateCharacter(this);
+            Messaging.Broadcast(new CharacterCreated(Id.ToString()));
             _initialized = true;
         }
         
@@ -50,7 +51,7 @@ public class CharacterEntity : IEntity, IItemHolder
         }
 
         Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Position));
-        yield return new UpdateCharacter(this);
+        return Enumerable.Empty<INodeOperation>();
     }
 
     public void StartActivity(IActivity activity)
@@ -73,12 +74,12 @@ public class CharacterEntity : IEntity, IItemHolder
 
 public class CharacterUpdated : IEntityMessage
 {
-    public string Id { get; }
+    public string EntityId { get; }
     public HexCubeCoord Position { get; }
 
-    public CharacterUpdated(String id, HexCubeCoord position)
+    public CharacterUpdated(String entityId, HexCubeCoord position)
     {
-        Id = id;
+        EntityId = entityId;
         Position = position;
     }
 }

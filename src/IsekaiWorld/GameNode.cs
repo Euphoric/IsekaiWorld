@@ -2,16 +2,19 @@ using Godot;
 
 public partial class GameNode : Node
 {
-	private GameEntity _game;
-	private BuildingView _buildingView;
-	private MapItemView _mapItemView;
-	
+	private GameEntity _game = null!;
+	private BuildingView _buildingView = null!;
+	private MapItemView _mapItemView = null!;
+	private CharacterView _characterView = null!;
+
 	public GameEntity GameEntity => _game;
 	public HexagonalMap MapNode { get; private set; }
 
 	public override void _EnterTree()
 	{
 		_game = new GameEntity();
+		_characterView = new CharacterView(this);
+		_game.Messaging.Register(_characterView.Messaging);
 		_buildingView = new BuildingView(this);
 		_game.Messaging.Register(_buildingView.Messaging);
 		_mapItemView = new MapItemView(this);
@@ -40,6 +43,7 @@ public partial class GameNode : Node
 	{
 		_game.Update();
 		_game.UpdateNodes(this);
+		_characterView.Update();
 		_buildingView.Update();
 		_mapItemView.Update();
 		

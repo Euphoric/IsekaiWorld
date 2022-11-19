@@ -17,14 +17,14 @@ namespace IsekaiWorld.Test
             {
                 if (evnt is CharacterUpdated cu)
                 {
-                    _characterPositions.TryGetValue(cu.Id, out var previousPosition);
+                    _characterPositions.TryGetValue(cu.EntityId, out var previousPosition);
 
                     if (previousPosition != cu.Position)
                     {
-                        _logs.Add($"Character {cu.Id} : {cu.Position}");
+                        _logs.Add($"Character {cu.EntityId} : {cu.Position}");
                     }
                     
-                    _characterPositions[cu.Id] = cu.Position;
+                    _characterPositions[cu.EntityId] = cu.Position;
                 }else if (evnt is BuildingUpdated bu)
                 {
                     _logs.Add($"Building {bu.EntityId}");
