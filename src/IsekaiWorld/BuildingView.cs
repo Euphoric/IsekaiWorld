@@ -47,7 +47,7 @@ public class BuildingView
             buildingNode = new Node2D();
             buildingNode.Name = message.EntityId;
             _gameNode.MapNode.AddChild(buildingNode);
-
+            
             // Line2D outline = new Line2D();
             // buildingNode.AddChild(outline);
             // outline.Points = new[]{new Vector2(1, 1), new Vector2(1, -1), new Vector2(-1, -1), new Vector2(-1, 1), new Vector2(1, 1)};
@@ -102,9 +102,7 @@ public class BuildingView
 
             if (message.Definition == BuildingDefinitions.TreeOak)
             {
-                sprite.Scale = Vector2.One / texture.GetSize();
-                
-                buildingNode.Scale *= new Vector2(5, 5);
+                sprite.Scale = Vector2.One / texture.GetSize() * 5;
                 sprite.Offset = new Vector2(0, -200);
             }
 
@@ -122,9 +120,9 @@ public class BuildingView
         if (message.Designation != null)
         {
             var designationNode = new Sprite2D();
-            var texture = ResourceLoader.Load<Texture2D>("Textures/Designation/CutPlant.png");
+            var texture = ResourceLoader.Load<Texture2D>(message.Designation.TexturePath);
             designationNode.Texture = texture;
-            designationNode.Scale = Vector2.One / texture.GetSize() * 0.25f;
+            designationNode.Scale = Vector2.One / texture.GetSize();
             buildingNode.AddChild(designationNode);
         }
     }

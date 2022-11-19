@@ -49,7 +49,7 @@ public class BuildingEntity : IEntity
     }
 
     public ItemDefinition ReservedForItem { get; private set; }
-    public DesignationDefinition Designation { get; set; }
+    public DesignationDefinition? Designation { get; set; }
 
     public void ReserveForItem(ItemDefinition item)
     {
@@ -74,7 +74,7 @@ public class BuildingEntity : IEntity
 
 public class BuildingUpdated : IEntityMessage
 {
-    public BuildingUpdated(HexCubeCoord position, BuildingDefinition definition, string entityId, HexagonDirection rotation, DesignationDefinition designation)
+    public BuildingUpdated(HexCubeCoord position, BuildingDefinition definition, string entityId, HexagonDirection rotation, DesignationDefinition? designation)
     {
         Position = position;
         Definition = definition;
@@ -87,7 +87,7 @@ public class BuildingUpdated : IEntityMessage
     public BuildingDefinition Definition { get; }
     public String EntityId { get; }
     public HexagonDirection Rotation { get; }
-    public DesignationDefinition Designation { get; }
+    public DesignationDefinition? Designation { get; }
 }
 
 public class BuildingRemoved : IEntityMessage
