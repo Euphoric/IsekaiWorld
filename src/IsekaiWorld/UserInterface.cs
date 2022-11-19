@@ -4,14 +4,21 @@ using GodotArray = Godot.Collections.Array;
 
 public partial class UserInterface : CanvasLayer
 {
-    private GameEntity _game;
+    
+    public EntityMessaging Messaging { get; }
+    
+    [Obsolete("Should not be used directly")]
+    private GameEntity _game = null!;
 
-    public override void _EnterTree()
+    public UserInterface()
     {
-        var gameNode = GetNode<GameNode>("/root/GameNode");
-        _game = gameNode.GameEntity;
+        Messaging = new EntityMessaging();
+    }
 
-        base._EnterTree();
+    [Obsolete("Should not be needed")]
+    public void Initialize(GameEntity gameEntity)
+    {
+        _game = gameEntity;
     }
 
     public override void _Ready()
@@ -78,6 +85,29 @@ public partial class UserInterface : CanvasLayer
     
     public Container PlaceItemContainer => GetNode<Container>("PlaceItemContainer");
     
+    public override void _Process(double delta)
+    {
+        Messaging.HandleMessages(MessageHandler);
+        
+        base._Process(delta);
+    }
+    
+    private void MessageHandler(IEntityMessage message)
+    {
+        switch (message)
+        {
+            case SelectionChanged selectedEntityChanged:
+                OnSelectedEntityChanged(selectedEntityChanged);
+                break;
+        }
+    }
+
+    private void OnSelectedEntityChanged(SelectionChanged message)
+    {
+        var selectionLabel = GetNode<Label>("SelectionLabel");
+        selectionLabel.Text = message.SelectionLabel;
+    }
+
     // ReSharper disable once UnusedMember.Global
     public void _on_SelectionButton_pressed()
     {

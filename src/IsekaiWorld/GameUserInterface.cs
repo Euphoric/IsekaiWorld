@@ -82,11 +82,15 @@ public class GameUserInterface
     private readonly GameEntity _game;
 
     private bool _selectedLabelDirty;
-    private ISelection _currentSelection;
+    
+    private ISelection? _currentSelection;
 
+    public EntityMessaging Messaging { get; }
+    
     public GameUserInterface(GameEntity game)
     {
         _game = game;
+        Messaging = new EntityMessaging();
     }
 
     public HexagonDirection ConstructionRotation { get; set; }
@@ -95,7 +99,7 @@ public class GameUserInterface
     {
         if (_selectedLabelDirty)
         {
-            yield return new UpdateSelectedEntityOperation(_currentSelection.Label);
+            Messaging.Broadcast(new SelectionChanged(_currentSelection?.Label));
             _selectedLabelDirty = false;
         }
 
@@ -103,9 +107,11 @@ public class GameUserInterface
         {
             if (_currentSelection.Update())
             {
-                yield return new UpdateSelectedEntityOperation(_currentSelection.Label);
+                Messaging.Broadcast(new SelectionChanged(_currentSelection?.Label));
             }
         }
+        
+        return Enumerable.Empty<INodeOperation>();
     }
 
     private void SelectItemOn(HexCubeCoord position)
@@ -148,9 +154,9 @@ public class GameUserInterface
     }
 
     private Tool _currentTool = Tool.Selection;
-    private ConstructionDefinition _currentBuildingSelection;
-    private ItemDefinition _currentItemSelection;
-    private DesignationDefinition _currentDesignation;
+    private ConstructionDefinition _currentBuildingSelection = null!;
+    private ItemDefinition _currentItemSelection = null!;
+    private DesignationDefinition _currentDesignation = null!;
 
     public void MouseClickOnMap(HexCubeCoord clickPosition)
     {
@@ -213,18 +219,12 @@ public class GameUserInterface
     }
 }
 
-public class UpdateSelectedEntityOperation : INodeOperation
+public class SelectionChanged : IEntityMessage
 {
-    private readonly string _selectionLabelText;
+    public string? SelectionLabel { get; }
 
-    public UpdateSelectedEntityOperation(string selectionLabelText)
+    public SelectionChanged(string? selectionLabel)
     {
-        _selectionLabelText = selectionLabelText;
-    }
-
-    public void Execute(GameNode gameNode)
-    {
-        var selectionLabel = gameNode.GetNode<Label>("/root/GameNode/UserInterface/SelectionLabel");
-        selectionLabel.Text = _selectionLabelText;
+        SelectionLabel = selectionLabel;
     }
 }

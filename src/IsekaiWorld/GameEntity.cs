@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -33,7 +34,8 @@ public class GameEntity
     public void Initialize(IMapGenerator mapGenerator)
     {
         UserInterface = new GameUserInterface(this);
-
+        Messaging.Register(UserInterface.Messaging);
+        
         var (map, entities) = mapGenerator.GenerateNewMap();
         GameMap = map;
         entities.ForEach(AddEntity);
@@ -72,6 +74,7 @@ public class GameEntity
         }
     }
 
+    [Obsolete("Will be removed with INodeOperation")]
     public void UpdateNodes(GameNode gameNode)
     {
         foreach (var operation in _operations)
