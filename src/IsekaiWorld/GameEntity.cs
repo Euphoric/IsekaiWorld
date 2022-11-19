@@ -166,28 +166,22 @@ public class GameEntity
         Messaging.Unregister(entity.Messaging);
     }
 
-    public void Designate(HexCubeCoord position, string designation)
+    public void Designate(HexCubeCoord position, DesignationDefinition designation)
     {
-        if (designation == "CutWood")
+        if (designation == DesignationDefinitions.CutWood)
         {
             var treeEntity = Buildings.FirstOrDefault(e =>
                 e.OccupiedCells.Contains(position) && e.Definition == BuildingDefinitions.TreeOak);
 
-            if (treeEntity != null)
-            {
-                treeEntity.Designate(designation);
-            }
+            treeEntity?.Designate(designation);
         }
-        else if (designation == "Deconstruct")
+        else if (designation == DesignationDefinitions.Deconstruct)
         {
             var buildingEntity = Buildings
                 .Where(e => e.OccupiedCells.Contains(position))
                 .FirstOrDefault(e => e.Definition == BuildingDefinitions.WoodenWall);
 
-            if (buildingEntity != null)
-            {
-                buildingEntity.Designate(designation);
-            }
+            buildingEntity?.Designate(designation);
         }
     }
 }

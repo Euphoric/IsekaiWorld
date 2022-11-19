@@ -12,7 +12,7 @@ public class DeconstructJobGiver : IJobGiver
     public bool SetJobActivity(CharacterEntity character)
     {
         var buildingsToDeconstruct = 
-            _game.Buildings.Where(x => x.Designation == "Deconstruct");
+            _game.Buildings.Where(x => x.Designation == DesignationDefinitions.Deconstruct);
         
         var building = buildingsToDeconstruct.FirstOrDefault();
         if (building == null)

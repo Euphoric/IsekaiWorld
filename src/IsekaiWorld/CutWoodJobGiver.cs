@@ -13,7 +13,7 @@ public class CutWoodJobGiver : IJobGiver
 
     public bool SetJobActivity(CharacterEntity character)
     {
-        var treesToCut = _game.Buildings.Where(x => x.Definition == BuildingDefinitions.TreeOak && x.Designation == "CutWood");
+        var treesToCut = _game.Buildings.Where(x => x.Definition == BuildingDefinitions.TreeOak && x.Designation == DesignationDefinitions.CutWood);
         
         var tree = treesToCut.FirstOrDefault();
         if (tree == null)

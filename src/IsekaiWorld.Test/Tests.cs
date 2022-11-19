@@ -217,7 +217,7 @@ namespace IsekaiWorld.Test
             var treePosition = new HexCubeCoord(5, -3, -2);
             game.AddEntity(new BuildingEntity(treePosition, HexagonDirection.Left, BuildingDefinitions.TreeOak));
 
-            game.Designate(treePosition, "CutWood");
+            game.Designate(treePosition, DesignationDefinitions.CutWood);
 
             game.UpdateUntil(_ =>
             {
@@ -341,7 +341,7 @@ namespace IsekaiWorld.Test
             var buildingPosition = new HexCubeCoord(1, 1, -2);
             game.SpawnBuilding(buildingPosition, HexagonDirection.Left, BuildingDefinitions.WoodenWall);
             
-            game.Designate(buildingPosition, "Deconstruct");
+            game.Designate(buildingPosition, DesignationDefinitions.Deconstruct);
 
             game.UpdateUntil(_=>character.CurrentActivity is DeconstructActivity);
             

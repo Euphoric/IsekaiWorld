@@ -150,7 +150,7 @@ public class GameUserInterface
     private Tool _currentTool = Tool.Selection;
     private ConstructionDefinition _currentBuildingSelection;
     private ItemDefinition _currentItemSelection;
-    private string _currentDesignation;
+    private DesignationDefinition _currentDesignation;
 
     public void MouseClickOnMap(HexCubeCoord clickPosition)
     {
@@ -203,13 +203,13 @@ public class GameUserInterface
     public void DesignateCutWoodSelected()
     {
         _currentTool = Tool.Designate;
-        _currentDesignation = "CutWood";
+        _currentDesignation = DesignationDefinitions.CutWood;
     }
     
     public void DesignateDeconstructSelected()
     {
         _currentTool = Tool.Designate;
-        _currentDesignation = "Deconstruct";
+        _currentDesignation = DesignationDefinitions.Deconstruct;
     }
 }
 
