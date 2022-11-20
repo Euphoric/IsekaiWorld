@@ -7,7 +7,7 @@ public partial class UserInterface : CanvasLayer
     
     public MessagingEndpoint Messaging { get; }
 
-    private GameUserInterface _gameUserInterface;
+    private GameUserInterface _gameUserInterface = null!;
 
     public UserInterface()
     {
@@ -106,7 +106,7 @@ public partial class UserInterface : CanvasLayer
     private void OnTpsChanged(TpsChanged tpsChanged)
     {
         var tpsLabel = GetNode<Label>("Container/TpsLabel");
-        tpsLabel.Text = tpsChanged.Tps.ToString("F2");
+        tpsLabel.Text = tpsChanged.Tps.ToString("F0");
     }
 
     // ReSharper disable once UnusedMember.Global

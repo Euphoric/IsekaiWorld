@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Godot;
 
 public partial class GameNode : Node
@@ -56,22 +57,28 @@ public partial class GameNode : Node
 		adamCharacter.Position = new HexCubeCoord(1, 1, -2);
 		// var eveCharacter = _game.AddCharacter("Eve");
 		// eveCharacter.Position = new HexCubeCoord(1, -1, 0);
+
+		var maxTps = 60;
+		var maxMs = 1000d / maxTps;
 		
-		DateTime lastUpdate = DateTime.UtcNow;
+		Stopwatch watch = Stopwatch.StartNew();
+		double lastUpdate = watch.Elapsed.TotalMilliseconds;
 		int loopCounter = 0;
 		while (true)
 		{
+			var startTicks = watch.Elapsed.TotalMilliseconds;
+			
 			_game.Update();
-
-			// TODO: Sleep/Spinwait dynamically to achieve consistent TPS
-			System.Threading.Thread.Sleep(13);
+			
+			while (watch.Elapsed.TotalMilliseconds - startTicks < maxMs)
+			{ }
 
 			loopCounter++;
-			var now = DateTime.Now;
-			var secondsSinceLastUpdate = (now - lastUpdate).TotalSeconds;
-			if (secondsSinceLastUpdate > 1)
+			var now = watch.Elapsed.TotalMilliseconds;
+			var milisecondsSinceLastUpdate = now - lastUpdate;
+			if (milisecondsSinceLastUpdate > 500)
 			{
-				double tps = loopCounter / secondsSinceLastUpdate;
+				double tps = loopCounter / milisecondsSinceLastUpdate * 1000;
 				
 				loopCounter = 0;
 				lastUpdate = now;
