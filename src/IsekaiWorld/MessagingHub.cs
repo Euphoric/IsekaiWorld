@@ -1,10 +1,12 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 public class MessagingHub
 {
-    private readonly Queue<IEntityMessage> _receivedMessages = new();
+    private readonly ConcurrentQueue<IEntityMessage> _receivedMessages = new();
     private readonly List<MessagingEndpoint> _messageRecipients = new();
-
+    private readonly List<MessagingHub> _connectedHubs = new();
+    
     public void Register(MessagingEndpoint messaging)
     {
         _messageRecipients.Add(messaging);
@@ -17,9 +19,19 @@ public class MessagingHub
         messaging.UnregisterHub(this);
     }
 
+    public void ConnectMessageHub(MessagingHub hub)
+    {
+        _connectedHubs.Add(hub);
+    }
+
     public void Broadcast(IEntityMessage message)
     {
         _receivedMessages.Enqueue(message);
+        
+        foreach (var hub in _connectedHubs)
+        {
+            hub.Broadcast(message);
+        }
     }
     
     public void DistributeMessages()

@@ -9,6 +9,8 @@ public partial class GameNode : Node
 	private CharacterView _characterView = null!;
 	private UserInterface _userInterface = null!;
 	
+	private readonly MessagingHub _viewMessagingHub = new MessagingHub();
+	
 	[Obsolete("Should not be accessible to view layer")]
 	public GameEntity GameEntity => _game;
 	public HexagonalMap MapNode { get; private set; }
@@ -16,18 +18,20 @@ public partial class GameNode : Node
 	public override void _EnterTree()
 	{
 		_game = new GameEntity();
+		_game.Messaging.ConnectMessageHub(_viewMessagingHub);
+		
 		
 		_characterView = new CharacterView(this);
-		_game.Messaging.Register(_characterView.Messaging);
+		_viewMessagingHub.Register(_characterView.Messaging);
 		_buildingView = new BuildingView(this);
-		_game.Messaging.Register(_buildingView.Messaging);
+		_viewMessagingHub.Register(_buildingView.Messaging);
 		_mapItemView = new MapItemView(this);
-		_game.Messaging.Register(_mapItemView.Messaging);
+		_viewMessagingHub.Register(_mapItemView.Messaging);
 		_userInterface = GetNode<UserInterface>("UserInterface");
 		_userInterface.Initialize(_game);
-		_game.Messaging.Register(_userInterface.Messaging);
+		_viewMessagingHub.Register(_userInterface.Messaging);
 		MapNode = GetNode<HexagonalMap>("Map/HexagonalMap");
-		_game.Messaging.Register(MapNode.Messaging);
+		_viewMessagingHub.Register(MapNode.Messaging);
 		
 		base._EnterTree();
 	}
@@ -49,7 +53,7 @@ public partial class GameNode : Node
 	{
 		_game.Update();
 		
-		_game.Messaging.DistributeMessages();
+		_viewMessagingHub.DistributeMessages();
 		
 		_characterView.Update();
 		_buildingView.Update();
