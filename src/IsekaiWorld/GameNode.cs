@@ -58,9 +58,6 @@ public partial class GameNode : Node
 		// var eveCharacter = _game.AddCharacter("Eve");
 		// eveCharacter.Position = new HexCubeCoord(1, -1, 0);
 
-		var maxTps = 60;
-		var maxMs = 1000d / maxTps;
-		
 		Stopwatch watch = Stopwatch.StartNew();
 		double lastUpdate = watch.Elapsed.TotalMilliseconds;
 		int loopCounter = 0;
@@ -70,6 +67,8 @@ public partial class GameNode : Node
 			
 			_game.Update();
 			
+			var maxTps = 60 * _game.Speed;
+			var maxMs = 1000d / maxTps;
 			while (watch.Elapsed.TotalMilliseconds - startTicks < maxMs)
 			{ }
 

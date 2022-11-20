@@ -1,0 +1,1 @@
+public record SpeedChanged(int Speed) : IEntityMessage;

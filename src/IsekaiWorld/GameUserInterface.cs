@@ -215,6 +215,11 @@ public class GameUserInterface
         _currentTool = Tool.Designate;
         _currentDesignation = DesignationDefinitions.Deconstruct;
     }
+
+    public void SetSpeed(int speed)
+    {
+        _game.Speed = speed;
+    }
 }
 
 public class SelectionChanged : IEntityMessage

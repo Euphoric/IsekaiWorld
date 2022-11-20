@@ -4,7 +4,6 @@ using GodotArray = Godot.Collections.Array;
 
 public partial class UserInterface : CanvasLayer
 {
-    
     public MessagingEndpoint Messaging { get; }
 
     private GameUserInterface _gameUserInterface = null!;
@@ -30,10 +29,10 @@ public partial class UserInterface : CanvasLayer
             {
                 Text = definition.Label,
             };
-            button.Pressed += () => _on_ConstructionSelectionButton_pressed(definition.Id); 
-            ConstructionContainer.AddChild(button);            
+            button.Pressed += () => _on_ConstructionSelectionButton_pressed(definition.Id);
+            ConstructionContainer.AddChild(button);
         }
-        
+
         foreach (var definition in ItemDefinitions.Definitions)
         {
             var button = new Button
@@ -41,13 +40,14 @@ public partial class UserInterface : CanvasLayer
                 Text = definition.Label,
             };
             button.Pressed += () => _on_PlaceItemSelectionButton_pressed(definition.Id);
-            PlaceItemContainer.AddChild(button);            
+            PlaceItemContainer.AddChild(button);
         }
 
         foreach (HexagonDirection rotation in Enum.GetValues(typeof(HexagonDirection)))
         {
             RotationOptionButton.AddItem(rotation.ToString(), (int)rotation);
         }
+
         RotationOptionButton.Selected = 0;
         RotationOptionButton.ItemSelected += _on_rotation_selected;
 
@@ -61,7 +61,7 @@ public partial class UserInterface : CanvasLayer
                 cutWoodButton.Pressed += _on_CutWoodButton_pressed;
                 DesignationContainer.AddChild(cutWoodButton);
             }
-            
+
             {
                 var deconstructButton = new Button();
                 deconstructButton.Text = "Deconstruct";
@@ -81,7 +81,7 @@ public partial class UserInterface : CanvasLayer
     public CheckButton PlaceDirectlyButton => ConstructionContainer.GetNode<CheckButton>("PlaceDirectlyButton");
     public OptionButton RotationOptionButton => ConstructionContainer.GetNode<OptionButton>("RotationOptionButton");
     public Container DesignationContainer => GetNode<Container>("DesignationContainer");
-    
+
     public Container PlaceItemContainer => GetNode<Container>("PlaceItemContainer");
 
     private void MessageHandler(IEntityMessage message)
@@ -94,7 +94,36 @@ public partial class UserInterface : CanvasLayer
             case TpsChanged tpsChanged:
                 OnTpsChanged(tpsChanged);
                 break;
+            case SpeedChanged speedChanged:
+                OnSpeedChanged(speedChanged);
+                break;
         }
+    }
+
+    public override void _Input(InputEvent evnt)
+    {
+        if (evnt.IsAction("speed_1"))
+        {
+            _gameUserInterface.SetSpeed(1);
+        }
+        else if (evnt.IsAction("speed_2"))
+        {
+            _gameUserInterface.SetSpeed(2);
+        }
+        else if (evnt.IsAction("speed_3"))
+        {
+            _gameUserInterface.SetSpeed(3);
+        }
+        else if (evnt.IsAction("speed_4"))
+        {
+            _gameUserInterface.SetSpeed(4);
+        }
+        else if (evnt.IsAction("speed_5"))
+        {
+            _gameUserInterface.SetSpeed(5);
+        }
+
+        base._Input(evnt);
     }
 
     private void OnSelectedEntityChanged(SelectionChanged message)
@@ -102,11 +131,17 @@ public partial class UserInterface : CanvasLayer
         var selectionLabel = GetNode<Label>("SelectionLabel");
         selectionLabel.Text = message.SelectionLabel;
     }
-    
+
     private void OnTpsChanged(TpsChanged tpsChanged)
     {
         var tpsLabel = GetNode<Label>("Container/TpsLabel");
         tpsLabel.Text = tpsChanged.Tps.ToString("F0");
+    }
+
+    private void OnSpeedChanged(SpeedChanged speedChanged)
+    {
+        var speedLabel = GetNode<Label>("Container/SpeedLabel");
+        speedLabel.Text = speedChanged.Speed + "x";
     }
 
     // ReSharper disable once UnusedMember.Global
@@ -116,10 +151,10 @@ public partial class UserInterface : CanvasLayer
         PlaceItemContainer.Visible = false;
 
         ToolLabel.Text = "Selection";
-        
+
         _gameUserInterface.SelectionSelected();
     }
-    
+
     // ReSharper disable once UnusedMember.Global
     public void _on_ConstructionButton_pressed()
     {
@@ -127,7 +162,7 @@ public partial class UserInterface : CanvasLayer
         DesignationContainer.Visible = false;
         ConstructionContainer.Visible = !ConstructionContainer.Visible;
     }
-    
+
     // ReSharper disable once UnusedMember.Global
     public void _on_PlaceItemButton_pressed()
     {
@@ -135,7 +170,7 @@ public partial class UserInterface : CanvasLayer
         DesignationContainer.Visible = false;
         PlaceItemContainer.Visible = !PlaceItemContainer.Visible;
     }
-    
+
     public void _on_DesignationButton_pressed()
     {
         ConstructionContainer.Visible = false;
@@ -176,7 +211,7 @@ public partial class UserInterface : CanvasLayer
         _gameUserInterface.DesignateCutWoodSelected();
         ToolLabel.Text = "Cut tree";
     }
-    
+
     private void _on_DeconstructButton_pressed()
     {
         _gameUserInterface.DesignateDeconstructSelected();

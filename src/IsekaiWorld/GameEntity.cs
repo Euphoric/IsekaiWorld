@@ -16,7 +16,17 @@ public class GameEntity
     public IReadOnlyList<ItemEntity> Items => _entities.OfType<ItemEntity>().ToList();
 
     private readonly List<IEntity> _entities = new();
-
+    private int _speed;
+    public int Speed
+    {
+        get => _speed;
+        set
+        {
+            _speed = value;
+            Messaging.Broadcast(new SpeedChanged(_speed));
+        }
+    }
+    
     public MapItems MapItems { get; } = new();
 
     public GameEntity()
@@ -32,6 +42,8 @@ public class GameEntity
 
     public void Initialize(IMapGenerator mapGenerator)
     {
+        Speed = 1;
+        
         Messaging.Register(UserInterface.Messaging);
         
         var (map, entities) = mapGenerator.GenerateNewMap();
