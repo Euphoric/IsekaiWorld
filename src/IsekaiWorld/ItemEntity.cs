@@ -10,7 +10,7 @@ public interface IItemHolder
 
 public class ItemEntity : IEntity
 {
-    public EntityMessaging Messaging { get; } = new EntityMessaging();
+    public MessagingEndpoint Messaging { get; } = new MessagingEndpoint();
 
     private bool _toRemove;
     public bool IsRemoved { get; private set; }

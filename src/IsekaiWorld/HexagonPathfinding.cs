@@ -18,7 +18,7 @@ public class PathfindingResult
 
 public class HexagonPathfinding
 {
-	public EntityMessaging Messaging { get; } = new EntityMessaging();
+	public MessagingEndpoint Messaging { get; } = new MessagingEndpoint();
 
 	private readonly Dictionary<HexCubeCoord, Node> _nodes = new Dictionary<HexCubeCoord, Node>();
 	private readonly Dictionary<INode, HexCubeCoord> _nodeToHexPosition = new Dictionary<INode, HexCubeCoord>();

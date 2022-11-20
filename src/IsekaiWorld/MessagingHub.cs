@@ -2,15 +2,15 @@ using System.Collections.Generic;
 
 public class MessagingHub
 {
-    private readonly List<EntityMessaging> _messageRecipients = new();
+    private readonly List<MessagingEndpoint> _messageRecipients = new();
 
-    public void Register(EntityMessaging messaging)
+    public void Register(MessagingEndpoint messaging)
     {
         _messageRecipients.Add(messaging);
         messaging.RegisterHub(this);
     }
 
-    public void Unregister(EntityMessaging messaging)
+    public void Unregister(MessagingEndpoint messaging)
     {
         _messageRecipients.Remove(messaging);
         messaging.UnregisterHub(this);

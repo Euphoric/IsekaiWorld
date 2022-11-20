@@ -4,7 +4,7 @@ using System.Linq;
 
 public class ConstructionEntity : IEntity
 {
-    public EntityMessaging Messaging { get; } = new EntityMessaging();
+    public MessagingEndpoint Messaging { get; } = new MessagingEndpoint();
     
     private bool _isDirty;
     public bool IsRemoved { get; private set; }

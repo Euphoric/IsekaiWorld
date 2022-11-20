@@ -85,12 +85,12 @@ public class GameUserInterface
     
     private ISelection? _currentSelection;
 
-    public EntityMessaging Messaging { get; }
+    public MessagingEndpoint Messaging { get; }
     
     public GameUserInterface(GameEntity game)
     {
         _game = game;
-        Messaging = new EntityMessaging();
+        Messaging = new MessagingEndpoint();
     }
 
     public HexagonDirection ConstructionRotation { get; set; }

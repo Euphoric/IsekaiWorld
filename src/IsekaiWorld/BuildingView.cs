@@ -3,13 +3,13 @@ using Godot;
 
 public class BuildingView
 {
-    public EntityMessaging Messaging { get; }
+    public MessagingEndpoint Messaging { get; }
     private readonly GameNode _gameNode;
 
     public BuildingView(GameNode gameNode)
     {
         _gameNode = gameNode;
-        Messaging = new EntityMessaging();
+        Messaging = new MessagingEndpoint();
     }
 
     public void Update()

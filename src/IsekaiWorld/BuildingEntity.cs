@@ -9,7 +9,7 @@ public class BuildingEntity : IEntity
     private bool _toRemove;
     private bool _isDirty;
 
-    public EntityMessaging Messaging { get; } = new();
+    public MessagingEndpoint Messaging { get; } = new();
     
     public BuildingEntity(HexCubeCoord position, HexagonDirection rotation, BuildingDefinition definition)
     {

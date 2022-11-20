@@ -5,13 +5,13 @@ using GodotArray = Godot.Collections.Array;
 public partial class UserInterface : CanvasLayer
 {
     
-    public EntityMessaging Messaging { get; }
+    public MessagingEndpoint Messaging { get; }
 
     private GameUserInterface _gameUserInterface;
 
     public UserInterface()
     {
-        Messaging = new EntityMessaging();
+        Messaging = new MessagingEndpoint();
     }
 
     [Obsolete("Should not be needed")]

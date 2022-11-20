@@ -2,14 +2,14 @@ using Godot;
 
 public class CharacterView
 {
-    public EntityMessaging Messaging { get; }
+    public MessagingEndpoint Messaging { get; }
     
     private readonly GameNode _gameNode;
 
     public CharacterView(GameNode gameNode)
     {
         _gameNode = gameNode;
-        Messaging = new EntityMessaging();
+        Messaging = new MessagingEndpoint();
     }
     
     public void Update()

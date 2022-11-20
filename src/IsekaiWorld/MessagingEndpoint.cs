@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public class EntityMessaging
+public class MessagingEndpoint
 {
     private MessagingHub? _messagingHub;
     private readonly Queue<IEntityMessage> _receivedMessages = new();

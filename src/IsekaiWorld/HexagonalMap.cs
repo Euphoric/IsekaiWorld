@@ -5,7 +5,7 @@ using Godot;
 
 public partial class HexagonalMap : Node2D
 {
-    public EntityMessaging Messaging = new EntityMessaging();
+    public MessagingEndpoint Messaging = new MessagingEndpoint();
     
     private readonly Dictionary<SurfaceDefinition, ArrayMesh> _surfaceMeshes =
         new Dictionary<SurfaceDefinition, ArrayMesh>();

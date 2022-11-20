@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 public interface IEntity
 {
-    EntityMessaging Messaging { get; }
+    MessagingEndpoint Messaging { get; }
     
     bool IsRemoved { get; }
 

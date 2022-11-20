@@ -5,7 +5,7 @@ using System.Linq;
 public class CharacterEntity : IEntity, IItemHolder
 {
     public Guid Id { get; }
-    public EntityMessaging Messaging { get; } = new EntityMessaging();
+    public MessagingEndpoint Messaging { get; } = new MessagingEndpoint();
     
     public bool IsRemoved => false;
     

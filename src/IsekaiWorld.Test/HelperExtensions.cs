@@ -38,7 +38,7 @@ namespace IsekaiWorld.Test
         
         public static void UpdateUntil(this GameEntity game, Func<GameTestStep, bool> check, int maxSteps = 1000, string? title = null)
         {
-            var messaging = new EntityMessaging();
+            var messaging = new MessagingEndpoint();
             game.Messaging.Register(messaging);
             var timedOut = UpdateUntilInner(game, check, maxSteps);
             game.Messaging.Unregister(messaging);
