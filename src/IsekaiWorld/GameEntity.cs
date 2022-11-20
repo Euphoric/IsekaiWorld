@@ -22,6 +22,7 @@ public class GameEntity
     public GameEntity()
     {
         Messaging = new MessagingHub();
+        UserInterface = new GameUserInterface(this);
         HaulJobGiver = new HaulJobGiver(this);
         var deconstructJobGiver = new DeconstructJobGiver(this);
         var constructionJobGiver = new ConstructionJobGiver(this);
@@ -31,7 +32,6 @@ public class GameEntity
 
     public void Initialize(IMapGenerator mapGenerator)
     {
-        UserInterface = new GameUserInterface(this);
         Messaging.Register(UserInterface.Messaging);
         
         var (map, entities) = mapGenerator.GenerateNewMap();
