@@ -91,6 +91,9 @@ public partial class UserInterface : CanvasLayer
             case SelectionChanged selectedEntityChanged:
                 OnSelectedEntityChanged(selectedEntityChanged);
                 break;
+            case TpsChanged tpsChanged:
+                OnTpsChanged(tpsChanged);
+                break;
         }
     }
 
@@ -98,6 +101,12 @@ public partial class UserInterface : CanvasLayer
     {
         var selectionLabel = GetNode<Label>("SelectionLabel");
         selectionLabel.Text = message.SelectionLabel;
+    }
+    
+    private void OnTpsChanged(TpsChanged tpsChanged)
+    {
+        var tpsLabel = GetNode<Label>("Container/TpsLabel");
+        tpsLabel.Text = tpsChanged.Tps.ToString("F2");
     }
 
     // ReSharper disable once UnusedMember.Global

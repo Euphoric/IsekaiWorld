@@ -1,0 +1,1 @@
+public record TpsChanged(double Tps) : IEntityMessage;

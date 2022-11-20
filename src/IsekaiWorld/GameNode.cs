@@ -56,13 +56,28 @@ public partial class GameNode : Node
 		adamCharacter.Position = new HexCubeCoord(1, 1, -2);
 		// var eveCharacter = _game.AddCharacter("Eve");
 		// eveCharacter.Position = new HexCubeCoord(1, -1, 0);
-
+		
+		DateTime lastUpdate = DateTime.UtcNow;
+		int loopCounter = 0;
 		while (true)
 		{
 			_game.Update();
-			
+
 			// TODO: Sleep/Spinwait dynamically to achieve consistent TPS
 			System.Threading.Thread.Sleep(13);
+
+			loopCounter++;
+			var now = DateTime.Now;
+			var secondsSinceLastUpdate = (now - lastUpdate).TotalSeconds;
+			if (secondsSinceLastUpdate > 1)
+			{
+				double tps = loopCounter / secondsSinceLastUpdate;
+				
+				loopCounter = 0;
+				lastUpdate = now;
+				
+				_game.Messaging.Broadcast(new TpsChanged(tps));
+			}
 		}
 	}
 	
