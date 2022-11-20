@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 public class EntityMessaging
 {
-    private MessagingHub _messagingHub;
-    private readonly List<IEntityMessage> _receivedMessages = new List<IEntityMessage>();
+    private MessagingHub? _messagingHub;
+    private readonly List<IEntityMessage> _receivedMessages = new();
 
     public void Broadcast(IEntityMessage message)
     {
-        _messagingHub.Broadcast(message);
+        _messagingHub?.Broadcast(message);
     }
 
     public void RegisterHub(MessagingHub messagingHub)

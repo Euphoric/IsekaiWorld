@@ -6,9 +6,8 @@ public partial class UserInterface : CanvasLayer
 {
     
     public EntityMessaging Messaging { get; }
-    
-    [Obsolete("Should not be used directly")]
-    private GameEntity _game = null!;
+
+    private GameUserInterface _gameUserInterface;
 
     public UserInterface()
     {
@@ -18,7 +17,7 @@ public partial class UserInterface : CanvasLayer
     [Obsolete("Should not be needed")]
     public void Initialize(GameEntity gameEntity)
     {
-        _game = gameEntity;
+        _gameUserInterface = gameEntity.UserInterface;
     }
 
     public override void _Ready()
@@ -116,7 +115,7 @@ public partial class UserInterface : CanvasLayer
 
         ToolLabel.Text = "Selection";
         
-        _game.UserInterface.SelectionSelected();
+        _gameUserInterface.SelectionSelected();
     }
     
     // ReSharper disable once UnusedMember.Global
@@ -147,7 +146,7 @@ public partial class UserInterface : CanvasLayer
         var definition = ConstructionDefinitions.GetById(constructionDefinitionId);
         if (!PlaceDirectlyButton.ButtonPressed)
         {
-            _game.UserInterface.ConstructionSelected(definition);
+            _gameUserInterface.ConstructionSelected(definition);
             ToolLabel.Text = "Construction: " + definition.Label;
         }
         else
@@ -161,24 +160,24 @@ public partial class UserInterface : CanvasLayer
     public void _on_PlaceItemSelectionButton_pressed(string itemDefinitionId)
     {
         var itemDefinition = ItemDefinitions.GetById(itemDefinitionId);
-        _game.UserInterface.PlaceItemSelected(itemDefinition);
+        _gameUserInterface.PlaceItemSelected(itemDefinition);
         ToolLabel.Text = "Place item";
     }
 
     public void _on_rotation_selected(long index)
     {
-        _game.UserInterface.ConstructionRotation = (HexagonDirection)index;
+        _gameUserInterface.ConstructionRotation = (HexagonDirection)index;
     }
 
     private void _on_CutWoodButton_pressed()
     {
-        _game.UserInterface.DesignateCutWoodSelected();
+        _gameUserInterface.DesignateCutWoodSelected();
         ToolLabel.Text = "Cut tree";
     }
     
     private void _on_DeconstructButton_pressed()
     {
-        _game.UserInterface.DesignateDeconstructSelected();
+        _gameUserInterface.DesignateDeconstructSelected();
         ToolLabel.Text = "Deconstruct";
     }
 }
