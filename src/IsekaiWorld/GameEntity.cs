@@ -57,6 +57,8 @@ public class GameEntity
 
     public void Update()
     {
+        Messaging.DistributeMessages();
+        
         Pathfinding.Update();
         foreach (var entity in _entities.ToList())
         {
