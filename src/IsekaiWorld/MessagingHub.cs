@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 public class MessagingHub
 {
-    private readonly List<EntityMessaging> _messageRecipients = new List<EntityMessaging>();
+    private readonly List<EntityMessaging> _messageRecipients = new();
 
     public void Register(EntityMessaging messaging)
     {

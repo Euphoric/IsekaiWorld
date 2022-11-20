@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class EntityMessaging
 {
     private MessagingHub? _messagingHub;
-    private readonly List<IEntityMessage> _receivedMessages = new();
+    private readonly Queue<IEntityMessage> _receivedMessages = new();
 
     public void Broadcast(IEntityMessage message)
     {
@@ -33,16 +33,15 @@ public class EntityMessaging
 
     public void Receive(IEntityMessage message)
     {
-        _receivedMessages.Add(message);
+        _receivedMessages.Enqueue(message);
     }
 
     public void HandleMessages(Action<IEntityMessage> messageHandler)
     {
-        foreach (var message in _receivedMessages)
+        while (_receivedMessages.TryDequeue(out var message))
         {
             messageHandler(message);
         }
-        _receivedMessages.Clear();
     }
 }
 

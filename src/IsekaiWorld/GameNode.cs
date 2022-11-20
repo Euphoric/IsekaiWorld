@@ -26,6 +26,8 @@ public partial class GameNode : Node
 		_userInterface = GetNode<UserInterface>("UserInterface");
 		_userInterface.Initialize(_game);
 		_game.Messaging.Register(_userInterface.Messaging);
+		MapNode = GetNode<HexagonalMap>("Map/HexagonalMap");
+		_game.Messaging.Register(MapNode.Messaging);
 		
 		base._EnterTree();
 	}
@@ -41,9 +43,6 @@ public partial class GameNode : Node
 		adamCharacter.Position = new HexCubeCoord(1, 1, -2);
 		// var eveCharacter = _game.AddCharacter("Eve");
 		// eveCharacter.Position = new HexCubeCoord(1, -1, 0);
-
-		MapNode = GetNode<HexagonalMap>("Map/HexagonalMap");
-		_game.Messaging.Register(MapNode.Messaging);
 	}
 
 	public override void _Process(double delta)
