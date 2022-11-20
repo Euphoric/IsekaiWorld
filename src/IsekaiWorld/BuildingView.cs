@@ -9,12 +9,11 @@ public class BuildingView
     public BuildingView(GameNode gameNode)
     {
         _gameNode = gameNode;
-        Messaging = new MessagingEndpoint();
+        Messaging = new MessagingEndpoint(MessageHandler);
     }
 
     public void Update()
     {
-        Messaging.HandleMessages(MessageHandler);
     }
 
     private void MessageHandler(IEntityMessage message)

@@ -43,8 +43,8 @@ namespace IsekaiWorld.Test
             var timedOut = UpdateUntilInner(game, check, maxSteps);
             game.Messaging.Unregister(messaging);
 
-            var parser = new MessageParser();
-            messaging.HandleMessages(parser.MessageHandler);
+            //var parser = new MessageParser();
+            //messaging.HandleMessages(parser.MessageHandler);
             
             if (timedOut)
             {

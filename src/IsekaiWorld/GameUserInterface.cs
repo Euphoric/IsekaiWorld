@@ -90,7 +90,7 @@ public class GameUserInterface
     public GameUserInterface(GameEntity game)
     {
         _game = game;
-        Messaging = new MessagingEndpoint();
+        Messaging = new MessagingEndpoint(_ => { });
     }
 
     public HexagonDirection ConstructionRotation { get; set; }

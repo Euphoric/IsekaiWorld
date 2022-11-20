@@ -18,14 +18,18 @@ public class PathfindingResult
 
 public class HexagonPathfinding
 {
-	public MessagingEndpoint Messaging { get; } = new MessagingEndpoint();
+	public MessagingEndpoint Messaging { get; }
 
 	private readonly Dictionary<HexCubeCoord, Node> _nodes = new Dictionary<HexCubeCoord, Node>();
 	private readonly Dictionary<INode, HexCubeCoord> _nodeToHexPosition = new Dictionary<INode, HexCubeCoord>();
 
+	public HexagonPathfinding()
+	{
+		Messaging = new MessagingEndpoint(MessageHandler);
+	}
+	
 	public void Update()
 	{
-		Messaging.HandleMessages(MessageHandler);
 	}
 	
 	private void MessageHandler(IEntityMessage message)

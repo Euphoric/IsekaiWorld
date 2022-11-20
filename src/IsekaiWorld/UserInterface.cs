@@ -11,7 +11,7 @@ public partial class UserInterface : CanvasLayer
 
     public UserInterface()
     {
-        Messaging = new MessagingEndpoint();
+        Messaging = new MessagingEndpoint(MessageHandler);
     }
 
     [Obsolete("Should not be needed")]
@@ -83,14 +83,7 @@ public partial class UserInterface : CanvasLayer
     public Container DesignationContainer => GetNode<Container>("DesignationContainer");
     
     public Container PlaceItemContainer => GetNode<Container>("PlaceItemContainer");
-    
-    public override void _Process(double delta)
-    {
-        Messaging.HandleMessages(MessageHandler);
-        
-        base._Process(delta);
-    }
-    
+
     private void MessageHandler(IEntityMessage message)
     {
         switch (message)

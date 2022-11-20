@@ -5,7 +5,7 @@ using Godot;
 
 public partial class HexagonalMap : Node2D
 {
-    public MessagingEndpoint Messaging = new MessagingEndpoint();
+    public MessagingEndpoint Messaging { get; }
     
     private readonly Dictionary<SurfaceDefinition, ArrayMesh> _surfaceMeshes =
         new Dictionary<SurfaceDefinition, ArrayMesh>();
@@ -27,6 +27,7 @@ public partial class HexagonalMap : Node2D
     public HexagonalMap()
     {
         TextureRepeat = TextureRepeatEnum.Enabled;
+        Messaging = new MessagingEndpoint(MessageHandler);
     }
     
     public override void _Ready()
@@ -527,8 +528,6 @@ public partial class HexagonalMap : Node2D
         var hex = HexCubeCoord.FromPosition(position, 1);
         _mouseoverHexagon.HexPosition = hex;
 
-        Messaging.HandleMessages(MessageHandler);
-        
         if (_isDirty)
         {
             RefreshGameMap();

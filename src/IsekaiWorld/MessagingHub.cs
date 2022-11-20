@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 public class MessagingHub
 {
+    private readonly Queue<IEntityMessage> _receivedMessages = new();
     private readonly List<MessagingEndpoint> _messageRecipients = new();
 
     public void Register(MessagingEndpoint messaging)
@@ -18,9 +19,17 @@ public class MessagingHub
 
     public void Broadcast(IEntityMessage message)
     {
-        foreach (var messageRecipient in _messageRecipients)
+        _receivedMessages.Enqueue(message);
+    }
+    
+    public void DistributeMessages()
+    {
+        while (_receivedMessages.TryDequeue(out var message))
         {
-            messageRecipient.Receive(message);
+            foreach (var recipient in _messageRecipients)
+            {
+                recipient.HandleMessage(message);
+            }
         }
     }
 }

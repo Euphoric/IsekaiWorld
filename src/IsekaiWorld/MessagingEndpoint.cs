@@ -1,11 +1,26 @@
 using System;
-using System.Collections.Generic;
 
 public class MessagingEndpoint
 {
+    private readonly Action<IEntityMessage> _messageHandler;
     private MessagingHub? _messagingHub;
-    private readonly Queue<IEntityMessage> _receivedMessages = new();
 
+    private static void NullHandler(IEntityMessage msg){}
+    
+    public MessagingEndpoint()
+    :this(NullHandler)
+    { }
+    
+    public MessagingEndpoint(Action<IEntityMessage> messageHandler)
+    {
+        _messageHandler = messageHandler;
+    }
+    
+    public void HandleMessage(IEntityMessage message)
+    {
+        _messageHandler(message);
+    }
+    
     public void Broadcast(IEntityMessage message)
     {
         _messagingHub?.Broadcast(message);
@@ -29,19 +44,6 @@ public class MessagingEndpoint
         }
 
         _messagingHub = null;
-    }
-
-    public void Receive(IEntityMessage message)
-    {
-        _receivedMessages.Enqueue(message);
-    }
-
-    public void HandleMessages(Action<IEntityMessage> messageHandler)
-    {
-        while (_receivedMessages.TryDequeue(out var message))
-        {
-            messageHandler(message);
-        }
     }
 }
 
