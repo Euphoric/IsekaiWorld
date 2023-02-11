@@ -57,8 +57,8 @@ public readonly struct HexCubeCoord : IEquatable<HexCubeCoord>
 
     public static HexCubeCoord FromPosition(Vector2 position, float size)
     {
-        var q = (Mathf.Sqrt(3) / 3 * position.x - 1f / 3 * position.y) / size;
-        var r = (2f / 3 * position.y) / size;
+        var q = (Mathf.Sqrt(3) / 3 * position.X - 1f / 3 * position.Y) / size;
+        var r = (2f / 3 * position.Y) / size;
         var s = 0 - r - q;
 
         return CubeRound(r, q, s);
@@ -70,8 +70,8 @@ public readonly struct HexCubeCoord : IEquatable<HexCubeCoord>
 
         var angleDeg = 60 * i - 30;
         var angleRad = (float)(Math.PI / 180 * angleDeg);
-        return new Vector2(center.x + size * Mathf.Cos(angleRad),
-            center.y + size * Mathf.Sin(angleRad));
+        return new Vector2(center.X + size * Mathf.Cos(angleRad),
+            center.Y + size * Mathf.Sin(angleRad));
     }
 
     public static HexCubeCoord operator +(HexCubeCoord position, HexagonDirection direction)

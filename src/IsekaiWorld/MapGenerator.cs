@@ -22,10 +22,10 @@ public class MapGenerator : IMapGenerator
         {
             var center = cell.Position.Center(1000);
             var isRockWall = rockWallNoise.CalcPixel2D(
-                Mathf.CeilToInt(center.x),
-                Mathf.CeilToInt(center.y), 1 / 1000f * 0.04f) < -0.5;
+                Mathf.CeilToInt(center.X),
+                Mathf.CeilToInt(center.Y), 1 / 1000f * 0.04f) < -0.5;
             
-            var isGrass = surfaceNoise.CalcPixel2D(Mathf.CeilToInt(center.x), Mathf.CeilToInt(center.y), 1 / 1000f * 0.04f) < 0;
+            var isGrass = surfaceNoise.CalcPixel2D(Mathf.CeilToInt(center.X), Mathf.CeilToInt(center.Y), 1 / 1000f * 0.04f) < 0;
 
             var surface = isGrass ? SurfaceDefinitions.Grass : SurfaceDefinitions.Dirt;
             cell.Surface = surface;

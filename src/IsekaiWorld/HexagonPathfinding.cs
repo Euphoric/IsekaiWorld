@@ -49,7 +49,7 @@ public class HexagonPathfinding
 		{
 			var hex = cell.Position;
 			var hexCenter = hex.Center(1);
-			var node = new Node(new Position(hexCenter.x, hexCenter.y));
+			var node = new Node(new Position(hexCenter.X, hexCenter.Y));
 			_nodes[hex] = node;
 			_nodeToHexPosition[node] = hex;
 		}

@@ -173,7 +173,7 @@ public partial class HexagonalMap : Node2D
         var arrays = new Godot.Collections.Array();
         arrays.Resize((int)Mesh.ArrayType.Max);
         arrays[(int)Mesh.ArrayType.Vertex] = Variant.CreateFrom(vertices_);
-        arrays[(int)Mesh.ArrayType.TexUv] = Variant.CreateFrom(textureUv);
+        arrays[(int)Mesh.ArrayType.TexUV] = Variant.CreateFrom(textureUv);
         arrays[(int)Mesh.ArrayType.Color] = Variant.CreateFrom(colors___);
 
         mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
@@ -462,7 +462,7 @@ public partial class HexagonalMap : Node2D
         var arrays = new Godot.Collections.Array();
         arrays.Resize((int)Mesh.ArrayType.Max);
         arrays[(int)Mesh.ArrayType.Vertex] = Variant.CreateFrom(vertices_);
-        arrays[(int)Mesh.ArrayType.TexUv] = Variant.CreateFrom(textureUv);
+        arrays[(int)Mesh.ArrayType.TexUV] = Variant.CreateFrom(textureUv);
         arrays[(int)Mesh.ArrayType.Color] = Variant.CreateFrom(colors___);
 
         mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
