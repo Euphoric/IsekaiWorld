@@ -4,8 +4,8 @@ using System.Linq;
 
 public class GameEntity
 {
-    public HexagonalMapEntity GameMap { get; private set; }
-    public HexagonPathfinding Pathfinding { get; private set; }
+    public HexagonalMapEntity GameMap { get; private set; } = null!;
+    public HexagonPathfinding Pathfinding { get; private set; } = null!;
     public GameUserInterface UserInterface { get; private set; }
     public JobSystem Jobs { get; }
     public HaulJobGiver HaulJobGiver { get; }
@@ -23,10 +23,21 @@ public class GameEntity
         set
         {
             _speed = value;
-            Messaging.Broadcast(new SpeedChanged(_speed));
+            Messaging.Broadcast(new SpeedChanged(_paused, _speed));
         }
     }
-    
+
+    private Boolean _paused;
+    public Boolean Paused
+    {
+        get => _paused;
+        set
+        {
+            _paused = value;
+            Messaging.Broadcast(new SpeedChanged(_paused, _speed));
+        }
+    }
+
     public MapItems MapItems { get; } = new();
 
     public GameEntity()
@@ -82,15 +93,18 @@ public class GameEntity
         UserInterface.Update();
     }
 
-    public void StartConstruction(HexCubeCoord position, HexagonDirection rotation, ConstructionDefinition construction)
+    public ConstructionEntity? StartConstruction(HexCubeCoord position, HexagonDirection rotation, ConstructionDefinition construction)
     {
         var constructionExists = _entities.OfType<ConstructionEntity>().Any(x => x.Position == position);
         var isTerrainPassable = GameMap.CellForPosition(position).Surface.IsPassable;
+        ConstructionEntity? constructionEntity = null;
         if (!constructionExists && isTerrainPassable)
         {
-            var constructionEntity = new ConstructionEntity(position, rotation, construction);
+            constructionEntity = new ConstructionEntity(position, rotation, construction);
             AddEntity(constructionEntity);
         }
+
+        return constructionEntity;
     }
 
     public IReadOnlyList<IEntity> EntitiesOn(HexCubeCoord position)

@@ -16,7 +16,7 @@ public class CharacterEntity : IEntity, IItemHolder
     
     public bool IsIdle => CurrentActivity == null;
 
-    public IActivity? CurrentActivity { get; private set; }
+    public Activity? CurrentActivity { get; private set; }
     public string Label { get; private set; }
 
     private bool _initialized;
@@ -53,7 +53,7 @@ public class CharacterEntity : IEntity, IItemHolder
         Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Position));
     }
 
-    public void StartActivity(IActivity activity)
+    public void StartActivity(Activity activity)
     {
         CurrentActivity = activity;
     }

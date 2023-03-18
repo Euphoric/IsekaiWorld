@@ -1,27 +1,21 @@
 using System.Linq;
 
-public class CutTreeActivity : IActivity
+public class CutTreeActivity : Activity
 {
-    private readonly GameEntity _game;
     public CharacterEntity Character { get; }
     public BuildingEntity Tree { get; }
 
-    private MovementActivity _movement;
-    
-    public bool IsFinished { get; private set; }
+    private MovementActivity? _movement;
 
     public CutTreeActivity(GameEntity game, CharacterEntity character, BuildingEntity tree)
+        :base(game)
     {
-        _game = game;
         Character = character;
         Tree = tree;
     }
 
-    public void Update()
+    protected override void UpdateInner()
     {
-        if (IsFinished)
-            return;
-
         if (_movement != null)
         {
             _movement.Update();
@@ -33,7 +27,7 @@ public class CutTreeActivity : IActivity
             _movement = null;
 
             Tree.RemoveEntity();
-            _game.SpawnItem(Tree.Position, ItemDefinitions.Wood, 5);
+            Game.SpawnItem(Tree.Position, ItemDefinitions.Wood, 5);
             
             IsFinished = true;
         }
@@ -43,7 +37,7 @@ public class CutTreeActivity : IActivity
             if (_movement == null)
             {
                 // move on item
-                _movement = new MovementActivity(_game.Pathfinding, Character, Tree.Position, true);
+                _movement = new MovementActivity(Game, Game.Pathfinding, Character, Tree.Position, true);
             }
         }
     }

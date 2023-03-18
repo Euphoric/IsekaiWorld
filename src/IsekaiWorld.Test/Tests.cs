@@ -119,8 +119,7 @@ namespace IsekaiWorld.Test
             var character = game.AddCharacter("Test guy");
             character.Position = HexCubeCoord.Zero;
 
-            var stockpile = new BuildingEntity(new HexCubeCoord(1, 1, -2), HexagonDirection.Left,
-                BuildingDefinitions.StockpileZone);
+            var stockpile = new BuildingEntity(new HexCubeCoord(1, 1, -2), HexagonDirection.Left, BuildingDefinitions.StockpileZone);
             game.AddEntity(stockpile);
             game.SpawnItem(new HexCubeCoord(-1, -1, 2), ItemDefinitions.Wood, 1);
 
@@ -250,7 +249,7 @@ namespace IsekaiWorld.Test
 
             var target = HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right;
 
-            character.StartActivity(new MovementActivity(game.Pathfinding, character, target, false));
+            character.StartActivity(new MovementActivity(game, game.Pathfinding, character, target, false));
 
             var checkpoint = HexCubeCoord.Zero + HexagonDirection.Left;
 
@@ -368,6 +367,60 @@ namespace IsekaiWorld.Test
             game.Designate(tree.Position, DesignationDefinitions.Deconstruct);
 
             tree.Designation.Should().BeNull();
+        }
+
+        [Fact]
+        public void Pause_stops_hauling()
+        {
+            var game = CreateGame();
+            game.Initialize(new EmptyMapGenerator());
+
+            game.Paused = true;
+
+            var character = game.AddCharacter("Test guy");
+            character.Position = HexCubeCoord.Zero;
+
+            var stockpile = new BuildingEntity(new HexCubeCoord(1, 1, -2), HexagonDirection.Left, BuildingDefinitions.StockpileZone);
+            game.AddEntity(stockpile);
+            game.SpawnItem(new HexCubeCoord(-1, -1, 2), ItemDefinitions.Wood, 1);
+
+            for (int i = 0; i < 100; i++)
+            {
+                game.Update();                
+            }
+
+            var itemInStockpile = game.Items.Any(x => x.Position == stockpile.Position);
+            Assert.False(itemInStockpile);
+            
+            game.Paused = false;
+            
+            game.UpdateUntil(NoItemsOutsideStockpile);
+        }
+        
+        [Fact]
+        public void Pause_stops_construction()
+        {
+            var game = CreateGame();
+            game.Initialize(new EmptyMapGenerator());
+
+            game.Paused = true;
+
+            var character = game.AddCharacter("Test guy");
+            character.Position = HexCubeCoord.Zero;
+            
+            var construction = game.StartConstruction(new HexCubeCoord(1, 1, -2), HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall)!;
+            game.SpawnItem(new HexCubeCoord(-1, -1, 2), ItemDefinitions.Wood, 1);
+
+            for (int i = 0; i < 100; i++)
+            {
+                game.Update();
+            }
+
+            Assert.Equal(0, construction.Progress);
+
+            game.Paused = false;
+            
+            game.UpdateUntil(NoActiveConstructions);
         }
     }
 }

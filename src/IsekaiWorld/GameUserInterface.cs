@@ -220,6 +220,11 @@ public class GameUserInterface
     {
         _game.Speed = speed;
     }
+
+    public void TogglePause()
+    {
+        _game.Paused = !_game.Paused;
+    }
 }
 
 public class SelectionChanged : IEntityMessage

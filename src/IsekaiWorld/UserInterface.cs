@@ -102,25 +102,32 @@ public partial class UserInterface : CanvasLayer
 
     public override void _Input(InputEvent evnt)
     {
-        if (evnt.IsAction("speed_1"))
+        if (evnt.IsPressed())
         {
-            _gameUserInterface.SetSpeed(1);
-        }
-        else if (evnt.IsAction("speed_2"))
-        {
-            _gameUserInterface.SetSpeed(2);
-        }
-        else if (evnt.IsAction("speed_3"))
-        {
-            _gameUserInterface.SetSpeed(3);
-        }
-        else if (evnt.IsAction("speed_4"))
-        {
-            _gameUserInterface.SetSpeed(4);
-        }
-        else if (evnt.IsAction("speed_5"))
-        {
-            _gameUserInterface.SetSpeed(5);
+            if (evnt.IsAction("speed_1"))
+            {
+                _gameUserInterface.SetSpeed(1);
+            }
+            else if (evnt.IsAction("speed_2"))
+            {
+                _gameUserInterface.SetSpeed(2);
+            }
+            else if (evnt.IsAction("speed_3"))
+            {
+                _gameUserInterface.SetSpeed(3);
+            }
+            else if (evnt.IsAction("speed_4"))
+            {
+                _gameUserInterface.SetSpeed(4);
+            }
+            else if (evnt.IsAction("speed_5"))
+            {
+                _gameUserInterface.SetSpeed(5);
+            }
+            else if (evnt.IsAction("pause"))
+            {
+                _gameUserInterface.TogglePause();
+            }
         }
 
         base._Input(evnt);
@@ -141,7 +148,18 @@ public partial class UserInterface : CanvasLayer
     private void OnSpeedChanged(SpeedChanged speedChanged)
     {
         var speedLabel = GetNode<Label>("Container/SpeedLabel");
-        speedLabel.Text = speedChanged.Speed + "x";
+
+        String label;
+        if (speedChanged.Paused)
+        {
+            label = "paused";
+        }
+        else
+        {
+            label = speedChanged.Speed + "x";
+        }
+
+        speedLabel.Text = label;
     }
 
     // ReSharper disable once UnusedMember.Global

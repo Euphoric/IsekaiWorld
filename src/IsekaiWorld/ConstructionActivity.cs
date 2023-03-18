@@ -1,28 +1,21 @@
 using System;
 
-public class ConstructionActivity : IActivity
+public class ConstructionActivity : Activity
 {
-    private readonly GameEntity _game;
     public CharacterEntity Character { get; }
     public ConstructionEntity Construction { get; }
 
-    private MovementActivity _movement;
-
-
-    public bool IsFinished { get; private set; }
+    private MovementActivity? _movement;
 
     public ConstructionActivity(GameEntity game, CharacterEntity character, ConstructionEntity construction)
+        :base(game)
     {
-        _game = game;
         Character = character;
         Construction = construction;
     }
 
-    public void Update()
+    protected override void UpdateInner()
     {
-        if (IsFinished)
-            return;
-
         bool isNextToConstruction =
             Construction.Position == Character.Position ||
             Character.Position.IsNextTo(Construction.Position);
@@ -31,7 +24,7 @@ public class ConstructionActivity : IActivity
         {
             if (_movement == null)
             {
-                _movement = new MovementActivity(_game.Pathfinding, Character, Construction.Position, true);
+                _movement = new MovementActivity(Game, Game.Pathfinding, Character, Construction.Position, true);
             }
 
             _movement.Update();
@@ -50,7 +43,7 @@ public class ConstructionActivity : IActivity
                 if (construction.Definition.PlaceBuildingId != null)
                 {
                     var buildingDefinition = BuildingDefinitions.GetById(construction.Definition.PlaceBuildingId);
-                    _game.SpawnBuilding(construction.Position, construction.Rotation, buildingDefinition);
+                    Game.SpawnBuilding(construction.Position, construction.Rotation, buildingDefinition);
                 }
                 else if (construction.Definition.PlaceFloorId != null)
                 {

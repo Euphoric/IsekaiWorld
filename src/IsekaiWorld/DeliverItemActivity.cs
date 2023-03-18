@@ -1,30 +1,24 @@
 using System;
 
-public class DeliverItemActivity : IActivity
+public class DeliverItemActivity : Activity
 {
-    private readonly GameEntity _game;
     private readonly CharacterEntity _character;
     private readonly ItemEntity _item;
     private readonly ConstructionEntity _construction;
     
-    private ItemEntity _carriedItem;
-    private MovementActivity _movement;
+    private ItemEntity? _carriedItem;
+    private MovementActivity? _movement;
     
     public DeliverItemActivity(GameEntity game, CharacterEntity character, ItemEntity item, ConstructionEntity construction)
+        :base(game)
     {
-        _game = game;
         _character = character;
         _item = item;
         _construction = construction;
     }
-    
-    public bool IsFinished { get; private set; }
 
-    public void Update()
+    protected override void UpdateInner()
     {
-        if (IsFinished)
-            return;
-        
         if (_movement != null)
         {
             _movement.Update();
@@ -35,7 +29,7 @@ public class DeliverItemActivity : IActivity
             if (_movement == null)
             {
                 // move on item
-                _movement = new MovementActivity(_game.Pathfinding, _character, _item.Position, false);
+                _movement = new MovementActivity(Game, Game.Pathfinding, _character, _item.Position, false);
             }
 
             if (_movement.IsFinished)
@@ -46,7 +40,7 @@ public class DeliverItemActivity : IActivity
                 {
                     _item.AddCount(-1);
                     var splitStack = new ItemEntity(_character.Position, _item.Definition, 1);
-                    _game.AddEntity(splitStack);
+                    Game.AddEntity(splitStack);
                     splitStack.SetHolder(_character);
                     _carriedItem = splitStack;
                 }
@@ -62,7 +56,7 @@ public class DeliverItemActivity : IActivity
             if (_movement == null)
             {
                 // move on item
-                _movement = new MovementActivity(_game.Pathfinding, _character, _construction.Position, false);
+                _movement = new MovementActivity(Game, Game.Pathfinding, _character, _construction.Position, false);
             }
             
             if (_movement.IsFinished)

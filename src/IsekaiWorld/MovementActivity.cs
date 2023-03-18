@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class MovementActivity : IActivity
+public class MovementActivity : Activity
 {
     private readonly HexagonPathfinding _pathfinding;
     private readonly CharacterEntity _charater;
@@ -9,10 +9,10 @@ public class MovementActivity : IActivity
     private readonly bool _stopNextTo;
 
     private float _movementTimer;
-    private Queue<HexCubeCoord> _movementQueue;
+    private Queue<HexCubeCoord>? _movementQueue;
 
-    public MovementActivity(HexagonPathfinding pathfinding, CharacterEntity charater, HexCubeCoord target,
-        bool stopNextTo)
+    public MovementActivity(GameEntity game, HexagonPathfinding pathfinding, CharacterEntity charater, HexCubeCoord target, bool stopNextTo)
+        :base(game)
     {
         _pathfinding = pathfinding;
         _charater = charater;
@@ -20,7 +20,7 @@ public class MovementActivity : IActivity
         _stopNextTo = stopNextTo;
     }
 
-    public void Update()
+    protected override void UpdateInner()
     {
         if (_movementQueue != null && _movementQueue.Any())
         {

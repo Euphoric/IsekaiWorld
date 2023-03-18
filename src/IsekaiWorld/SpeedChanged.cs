@@ -1,1 +1,1 @@
-public record SpeedChanged(int Speed) : IEntityMessage;
+public record SpeedChanged(bool Paused, int Speed) : IEntityMessage;

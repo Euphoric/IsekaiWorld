@@ -1,25 +1,19 @@
-public class DeconstructActivity : IActivity
+public class DeconstructActivity : Activity
 {
-    private readonly GameEntity _game;
     public CharacterEntity Character { get; }
     public BuildingEntity Building { get; }
 
     private MovementActivity? _movement;
-    
-    public bool IsFinished { get; private set; }
 
     public DeconstructActivity(GameEntity game, CharacterEntity character, BuildingEntity building)
+        :base(game)
     {
-        _game = game;
         Character = character;
         Building = building;
     }
 
-    public void Update()
+    protected override void UpdateInner()
     {
-        if (IsFinished)
-            return;
-
         _movement?.Update();
 
         var canWork = Character.Position.IsNextTo(Building.Position);
@@ -34,7 +28,7 @@ public class DeconstructActivity : IActivity
         else
         {
             // move on item
-            _movement ??= new MovementActivity(_game.Pathfinding, Character, Building.Position, true);
+            _movement ??= new MovementActivity(Game, Game.Pathfinding, Character, Building.Position, true);
         }
     }
 }
