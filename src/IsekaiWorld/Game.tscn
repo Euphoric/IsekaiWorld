@@ -10,7 +10,6 @@
 script = ExtResource("4")
 
 [node name="MapCamera" type="Camera2D" parent="."]
-current = true
 script = ExtResource("2")
 
 [node name="Map" type="Node2D" parent="."]
@@ -27,30 +26,19 @@ offset_bottom = 14.0
 
 [node name="FPSLabel" type="Label" parent="UserInterface/Container"]
 layout_mode = 2
-offset_right = 28.0
-offset_bottom = 26.0
 text = "FPS"
 script = ExtResource("3")
 
 [node name="SpeedLabel" type="Label" parent="UserInterface/Container"]
 layout_mode = 2
-offset_left = 32.0
-offset_right = 80.0
-offset_bottom = 26.0
 text = "Speed"
 
 [node name="TpsLabel" type="Label" parent="UserInterface/Container"]
 layout_mode = 2
-offset_left = 84.0
-offset_right = 112.0
-offset_bottom = 26.0
 text = "TPS"
 
 [node name="DebugLabel" type="Label" parent="UserInterface/Container"]
 layout_mode = 2
-offset_left = 116.0
-offset_right = 208.0
-offset_bottom = 26.0
 text = "Debug label"
 
 [node name="BottomMenu" type="HBoxContainer" parent="UserInterface"]
@@ -64,32 +52,18 @@ grow_vertical = 0
 
 [node name="SelectionButton" type="Button" parent="UserInterface/BottomMenu"]
 layout_mode = 2
-offset_right = 79.0
-offset_bottom = 31.0
 text = "Selection"
 
 [node name="ConstructionButton" type="Button" parent="UserInterface/BottomMenu"]
 layout_mode = 2
-offset_left = 83.0
-offset_right = 191.0
-offset_bottom = 31.0
-pivot_offset = Vector2(123, 10)
 text = "Construction"
 
 [node name="PlaceItemButton" type="Button" parent="UserInterface/BottomMenu"]
 layout_mode = 2
-offset_left = 195.0
-offset_right = 284.0
-offset_bottom = 31.0
-pivot_offset = Vector2(123, 10)
 text = "Place item"
 
 [node name="DesignationButton" type="Button" parent="UserInterface/BottomMenu"]
 layout_mode = 2
-offset_left = 288.0
-offset_right = 389.0
-offset_bottom = 31.0
-pivot_offset = Vector2(123, 10)
 text = "Designation"
 
 [node name="SelectionLabel" type="Label" parent="UserInterface"]
@@ -110,15 +84,10 @@ offset_bottom = 527.0
 
 [node name="PlaceDirectlyButton" type="CheckButton" parent="UserInterface/ConstructionContainer"]
 layout_mode = 2
-offset_right = 151.0
-offset_bottom = 31.0
 text = "Place directly"
 
 [node name="RotationOptionButton" type="OptionButton" parent="UserInterface/ConstructionContainer"]
 layout_mode = 2
-offset_top = 35.0
-offset_right = 151.0
-offset_bottom = 55.0
 
 [node name="PlaceItemContainer" type="GridContainer" parent="UserInterface"]
 offset_top = 31.0
