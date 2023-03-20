@@ -141,7 +141,7 @@ public readonly struct HexCubeCoord : IEquatable<HexCubeCoord>
         return R == other.R && Q == other.Q && S == other.S;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj is HexCubeCoord other && Equals(other);
     }

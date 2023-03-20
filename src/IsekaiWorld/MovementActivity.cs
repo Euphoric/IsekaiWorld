@@ -62,7 +62,7 @@ public class MovementActivity : Activity
                 _charater.Position = nextPosition;
             }
         }
+        
+        IsFinished = _movementQueue != null && !_movementQueue.Any();
     }
-
-    public bool IsFinished => _movementQueue != null && !_movementQueue.Any();
 }

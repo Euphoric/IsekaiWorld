@@ -7,5 +7,5 @@
         Position = position;
     }
 
-    public SurfaceDefinition Surface { get; set; }
+    public SurfaceDefinition Surface { get; set; } = SurfaceDefinitions.Empty;
 }

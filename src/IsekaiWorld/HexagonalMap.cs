@@ -6,30 +6,27 @@ using Godot;
 public partial class HexagonalMap : Node2D
 {
     public MessagingEndpoint Messaging { get; }
-    
-    private readonly Dictionary<SurfaceDefinition, ArrayMesh> _surfaceMeshes =
-        new Dictionary<SurfaceDefinition, ArrayMesh>();
 
-    private readonly Dictionary<BuildingDefinition, ArrayMesh> _buildingMeshes =
-        new Dictionary<BuildingDefinition, ArrayMesh>();
+    private readonly Dictionary<SurfaceDefinition, ArrayMesh> _surfaceMeshes = new();
 
-    private readonly Dictionary<BuildingDefinition, Texture2D> _buildingTextures =
-        new Dictionary<BuildingDefinition, Texture2D>();
-    
+    private readonly Dictionary<BuildingDefinition, ArrayMesh> _buildingMeshes = new();
+
+    private readonly Dictionary<BuildingDefinition, Texture2D> _buildingTextures = new();
+
     private bool _isDirty;
-    private HexagonNode _mouseoverHexagon;
-    private GameEntity _game;
+    private HexagonNode _mouseoverHexagon = null!;
+    private GameEntity _game = null!;
 
-    private Texture2D _grassTexture;
-    private Texture2D _dirtTexture;
-    private Texture2D _tileTexture;
+    private Texture2D _grassTexture = null!;
+    private Texture2D _dirtTexture = null!;
+    private Texture2D _tileTexture = null!;
 
     public HexagonalMap()
     {
         TextureRepeat = TextureRepeatEnum.Enabled;
         Messaging = new MessagingEndpoint(MessageHandler);
     }
-    
+
     public override void _Ready()
     {
         _grassTexture = ResourceLoader.Load<Texture2D>("res://Textures/Surface/grass.png");
@@ -55,7 +52,7 @@ public partial class HexagonalMap : Node2D
     {
         _isDirty = true;
     }
-    
+
     private void RefreshGameMap()
     {
         var surfaces = _game.GameMap.Cells.GroupBy(x => x.Surface);
@@ -80,7 +77,7 @@ public partial class HexagonalMap : Node2D
 
         _buildingTextures.Clear();
 
-        var wallBuildings = _game.Buildings.Where(e=>e.Definition.EdgeConnected).ToList();
+        var wallBuildings = _game.Buildings.Where(e => e.Definition.EdgeConnected).ToList();
         var connectedPositions = wallBuildings.Select(x => x.Position).ToHashSet();
         foreach (var kvp in wallBuildings.GroupBy(x => x.Definition))
         {
@@ -97,10 +94,12 @@ public partial class HexagonalMap : Node2D
                 mesh.ClearSurfaces();
             }
 
-            RegenerateConnectedBuildingMesh(definition, buildings.Select(b=>b.Position).ToList(), connectedPositions, mesh);
-            _buildingTextures[definition] = ResourceLoader.Load<Texture2D>(definition.TextureResource[HexagonDirection.Right]);
+            RegenerateConnectedBuildingMesh(definition, buildings.Select(b => b.Position).ToList(), connectedPositions,
+                mesh);
+            _buildingTextures[definition] =
+                ResourceLoader.Load<Texture2D>(definition.TextureResource[HexagonDirection.Right]);
         }
-        
+
         QueueRedraw();
     }
 
@@ -179,7 +178,8 @@ public partial class HexagonalMap : Node2D
         mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
     }
 
-    private void RegenerateConnectedBuildingMesh(BuildingDefinition building, List<HexCubeCoord> positions, ISet<HexCubeCoord> connectedPositions, ArrayMesh mesh)
+    private void RegenerateConnectedBuildingMesh(BuildingDefinition building, List<HexCubeCoord> positions,
+        ISet<HexCubeCoord> connectedPositions, ArrayMesh mesh)
     {
         Color hexColor = building.Color;
 
@@ -480,7 +480,7 @@ public partial class HexagonalMap : Node2D
             var surface = pair.Key;
             var mesh = pair.Value;
 
-            Texture2D texture = null;
+            Texture2D? texture;
 
             if (surface == SurfaceDefinitions.Grass)
             {
@@ -494,7 +494,11 @@ public partial class HexagonalMap : Node2D
             {
                 texture = _tileTexture;
             }
-            
+            else
+            {
+                texture = null;
+            }
+
             DrawMesh(mesh, texture);
         }
 
@@ -556,6 +560,5 @@ public partial class HexagonalMap : Node2D
 
                 break;
         }
-        
     }
 }

@@ -3,7 +3,7 @@ using Godot;
 public partial class HexagonNode : Node2D
 {
     private HexCubeCoord _hexPosition;
-    private ArrayMesh _hexesMesh;
+    private ArrayMesh _hexesMesh = null!;
     private Color _color;
     private bool _isDirty;
     private float _outerSize = 1f;

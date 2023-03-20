@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
@@ -50,7 +49,7 @@ public class GameUserInterface
             _construction = construction;
         }
 
-        public string Label { get; private set; }
+        public string Label { get; private set; } = "";
 
         public bool Update()
         {
@@ -70,7 +69,7 @@ public class GameUserInterface
             _item = item;
         }
 
-        public string Label { get; private set; }
+        public string Label { get; private set; } = "";
 
         public bool Update()
         {

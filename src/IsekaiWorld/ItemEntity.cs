@@ -17,7 +17,7 @@ public class ItemEntity : IEntity
 
     private bool _isDirty = true;
 
-    private IItemHolder _holder;
+    private IItemHolder? _holder;
     private HexCubeCoord _position;
 
     public ItemEntity(HexCubeCoord position, ItemDefinition definition, int count)
