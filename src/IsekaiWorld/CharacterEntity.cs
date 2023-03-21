@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 public class CharacterEntity : IEntity, IItemHolder
 {
@@ -17,10 +16,10 @@ public class CharacterEntity : IEntity, IItemHolder
     public bool IsIdle => CurrentActivity == null;
 
     public Activity? CurrentActivity { get; private set; }
-    public string Label { get; private set; }
+    public string Label { get; }
 
     private bool _initialized;
-    
+
     public CharacterEntity(GameEntity game, string label)
     {
         Id = Guid.NewGuid();
@@ -34,7 +33,7 @@ public class CharacterEntity : IEntity, IItemHolder
     {
         if (!_initialized)
         {
-            Messaging.Broadcast(new CharacterCreated(Id.ToString()));
+            Messaging.Broadcast(new CharacterCreated(Id.ToString(), Label));
             _initialized = true;
         }
         
@@ -49,8 +48,8 @@ public class CharacterEntity : IEntity, IItemHolder
         {
             CurrentActivity = null;
         }
-
-        Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Position));
+        
+        Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Position, CurrentActivity?.GetType().Name));
     }
 
     public void StartActivity(Activity activity)
@@ -71,14 +70,4 @@ public class CharacterEntity : IEntity, IItemHolder
     }
 }
 
-public class CharacterUpdated : IEntityMessage
-{
-    public string EntityId { get; }
-    public HexCubeCoord Position { get; }
-
-    public CharacterUpdated(String entityId, HexCubeCoord position)
-    {
-        EntityId = entityId;
-        Position = position;
-    }
-}
+public record CharacterUpdated(String EntityId, HexCubeCoord Position, String? ActivityName) : IEntityMessage;

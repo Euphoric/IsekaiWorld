@@ -5,22 +5,25 @@ public class MessagingEndpoint
     private readonly Action<IEntityMessage> _messageHandler;
     private MessagingHub? _messagingHub;
 
-    private static void NullHandler(IEntityMessage msg){}
-    
+    private static void NullHandler(IEntityMessage msg)
+    {
+    }
+
     public MessagingEndpoint()
-    :this(NullHandler)
-    { }
-    
+        : this(NullHandler)
+    {
+    }
+
     public MessagingEndpoint(Action<IEntityMessage> messageHandler)
     {
         _messageHandler = messageHandler;
     }
-    
+
     public void HandleMessage(IEntityMessage message)
     {
         _messageHandler(message);
     }
-    
+
     public void Broadcast(IEntityMessage message)
     {
         _messagingHub?.Broadcast(message);
@@ -47,4 +50,6 @@ public class MessagingEndpoint
     }
 }
 
-public interface IEntityMessage { }
+public interface IEntityMessage
+{
+}

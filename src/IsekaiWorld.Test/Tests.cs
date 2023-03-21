@@ -43,8 +43,7 @@ namespace IsekaiWorld.Test
             game.Update(); // receive msg
 
             var issues = game.CheckForIssues().ToList();
-            var characterStuckIssue = issues.Any(s =>
-                s == $"Character '{character.Label}' stuck on impassable surface on {character.Position}");
+            var characterStuckIssue = issues.Any(s => s == $"Character '{character.Label}' stuck on impassable surface on {character.Position}");
             Assert.True(characterStuckIssue);
         }
 
@@ -313,7 +312,7 @@ namespace IsekaiWorld.Test
             
             building.Designation.Should().Be(DesignationDefinitions.Deconstruct);
             
-            game.UpdateUntil(_=>character.CurrentActivity is DeconstructActivity);
+            game.UpdateUntil(_=>character.ActivityName == "DeconstructActivity");
             
             game.UpdateUntil(gts => !gts.Game.EntitiesOn(building.Position).Any());
         }

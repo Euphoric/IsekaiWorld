@@ -9,10 +9,15 @@ public class GameTestInstance
 {
     private readonly GameEntity _game;
 
+    private readonly Dictionary<String, CharacterTestView> _characterTestViews = new();
+    
     public GameTestInstance()
     {
         _game = new GameEntity();
         _game.Initialize(new EmptyMapGenerator());
+
+        var messaging = new MessagingEndpoint(MessageHandler);
+        _game.Messaging.Register(messaging);
     }
 
     public HexagonalMapEntity GameMap => _game.GameMap;
@@ -31,11 +36,14 @@ public class GameTestInstance
         return _game.SpawnBuilding(position, direction, building);
     }
 
-    public CharacterEntity AddCharacter(string name, HexCubeCoord position)
+    public CharacterTestView AddCharacter(string name, HexCubeCoord position)
     {
         var character = _game.AddCharacter(name);
         character.Position = position;
-        return character;
+        
+        var testView = new CharacterTestView(character.Id.ToString());
+        _characterTestViews[testView.Id] = testView;
+        return testView;
     }
 
     public void Update()
@@ -48,27 +56,34 @@ public class GameTestInstance
         return _game.CheckForIssues();
     }
 
-    public ConstructionEntity? StartConstruction(HexCubeCoord position, HexagonDirection direction, ConstructionDefinition construction)
+    public ConstructionEntity? StartConstruction(HexCubeCoord position, HexagonDirection direction,
+        ConstructionDefinition construction)
     {
         return _game.StartConstruction(position, direction, construction);
     }
 
     public void UpdateUntil(Func<GameTestStep, bool> check, int maxSteps = 1000, string? title = null)
     {
-        var messaging = new MessagingEndpoint();
-        _game.Messaging.Register(messaging);
         var timedOut = UpdateUntilInner(check, maxSteps);
-        _game.Messaging.Unregister(messaging);
 
-        //var parser = new MessageParser();
-        //messaging.HandleMessages(parser.MessageHandler);
-            
         if (timedOut)
         {
             throw new Exception("Didn't reach final check before timeout.");
         }
     }
-        
+    
+    private void MessageHandler(IEntityMessage evnt)
+    {
+        if (evnt is CharacterCreated cc)
+        {
+            _characterTestViews[cc.EntityId].UpdateFrom(cc);
+        }
+        if (evnt is CharacterUpdated cu)
+        {
+            _characterTestViews[cu.EntityId].UpdateFrom(cu);
+        }
+    }
+
     private bool UpdateUntilInner(Func<GameTestStep, bool> check, int maxSteps = 1000)
     {
         int steps = 0;
@@ -78,9 +93,10 @@ public class GameTestInstance
             {
                 return true;
             }
+
             steps++;
             _game.Update();
-                
+
             var issues = _game.CheckForIssues().ToList();
             issues.Should().BeEmpty();
         }
