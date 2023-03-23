@@ -8,16 +8,21 @@ namespace IsekaiWorld.Test;
 public class GameTestInstance
 {
     private readonly GameEntity _game;
-
-    private readonly Dictionary<String, CharacterTestView> _characterTestViews = new();
+    private readonly MessagingHub _messageHub;
     
+    private readonly Dictionary<String, CharacterTestView> _characterTestViews = new();
+
+
     public GameTestInstance()
     {
         _game = new GameEntity();
         _game.Initialize(new EmptyMapGenerator());
 
+        _messageHub = new MessagingHub();
+        _game.Messaging.ConnectMessageHub(_messageHub);
+        
         var messaging = new MessagingEndpoint(MessageHandler);
-        _game.Messaging.Register(messaging);
+        _messageHub.Register(messaging);
     }
 
     public HexagonalMapEntity GameMap => _game.GameMap;
@@ -49,6 +54,7 @@ public class GameTestInstance
     public void Update()
     {
         _game.Update();
+        _messageHub.DistributeMessages();
     }
 
     public IEnumerable<string> CheckForIssues()
@@ -95,7 +101,7 @@ public class GameTestInstance
             }
 
             steps++;
-            _game.Update();
+            Update();
 
             var issues = _game.CheckForIssues().ToList();
             issues.Should().BeEmpty();

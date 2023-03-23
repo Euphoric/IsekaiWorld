@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class CharacterEntity : IEntity, IItemHolder
 {
     public Guid Id { get; }
-    public MessagingEndpoint Messaging { get; } = new MessagingEndpoint();
+    public MessagingEndpoint Messaging { get; } = new();
     
     public bool IsRemoved => false;
     
@@ -52,8 +52,12 @@ public class CharacterEntity : IEntity, IItemHolder
             CurrentActivity = null;
         }
 
-        Hunger -= 0.0001;
-        
+        if (!_game.Paused)
+        {
+            const double hungerRate = 0.0001;
+            Hunger -= hungerRate;
+        }
+
         Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Position, CurrentActivity?.GetType().Name, Hunger));
     }
 

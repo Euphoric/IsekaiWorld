@@ -394,5 +394,23 @@ namespace IsekaiWorld.Test
 
             game.UpdateUntil(_=>0.95 < character.Hunger && character.Hunger < 0.98, because: "Character's hunger must decrease");
         }
+        
+        [Fact]
+        public void Character_hunger_decrease_stops_when_paused()
+        {
+            var game = CreateGame();
+
+            var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
+
+            game.UpdateUntil(_=>0.98 < character.Hunger && character.Hunger < 1.0, because: "Character's hunger starts at 1");
+            
+            game.Paused = true;
+
+            var startHunger = character.Hunger;
+            
+            game.Update();
+            
+            Assert.Equal(startHunger, character.Hunger);
+        }
     }
 }
