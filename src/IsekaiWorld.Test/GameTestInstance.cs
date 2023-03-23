@@ -62,13 +62,13 @@ public class GameTestInstance
         return _game.StartConstruction(position, direction, construction);
     }
 
-    public void UpdateUntil(Func<GameTestStep, bool> check, int maxSteps = 1000, string? title = null)
+    public void UpdateUntil(Func<GameTestStep, bool> check, int maxSteps = 1000, string? because = null)
     {
         var timedOut = UpdateUntilInner(check, maxSteps);
 
         if (timedOut)
         {
-            throw new Exception("Didn't reach final check before timeout.");
+            throw new Exception($"Didn't reach final check before timeout because: {because}");
         }
     }
     
@@ -84,7 +84,7 @@ public class GameTestInstance
         }
     }
 
-    private bool UpdateUntilInner(Func<GameTestStep, bool> check, int maxSteps = 1000)
+    private bool UpdateUntilInner(Func<GameTestStep, bool> check, int maxSteps)
     {
         int steps = 0;
         while (!check(new GameTestStep(_game)))

@@ -8,6 +8,7 @@ public class CharacterTestView
     public String Label { get; private set; } = null!;
     public HexCubeCoord Position { get; private set; }
     public string? ActivityName { get; private set; }
+    public double Hunger { get; private set; }
 
     public CharacterTestView(String id)
     {
@@ -23,5 +24,6 @@ public class CharacterTestView
     {
         Position = characterUpdated.Position;
         ActivityName = characterUpdated.ActivityName;
+        Hunger = characterUpdated.Hunger;
     }
 }

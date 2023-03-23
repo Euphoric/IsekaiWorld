@@ -52,7 +52,7 @@ public partial class UserInterface : CanvasLayer
         RotationOptionButton.ItemSelected += _on_rotation_selected;
 
         {
-            var designationButton = GetNode<Button>("BottomMenu/DesignationButton");
+            var designationButton = GetNode<Button>("BottomMenuArea/BottomMenu/DesignationButton");
             designationButton.Pressed += _on_DesignationButton_pressed;
 
             {
@@ -76,7 +76,8 @@ public partial class UserInterface : CanvasLayer
         DesignationContainer.Visible = false;
     }
 
-    public Label ToolLabel => GetNode<Label>("ToolLabel");
+    public Label ToolLabel => GetNode<Label>("BottomMenuArea/ToolLabel");
+    public Label CharacterSelectionLabel => GetNode<Label>("BottomMenuArea/CharacterSelectionLabel");
     public Container ConstructionContainer => GetNode<Container>("ConstructionContainer");
     public CheckButton PlaceDirectlyButton => ConstructionContainer.GetNode<CheckButton>("PlaceDirectlyButton");
     public OptionButton RotationOptionButton => ConstructionContainer.GetNode<OptionButton>("RotationOptionButton");
@@ -90,6 +91,9 @@ public partial class UserInterface : CanvasLayer
         {
             case SelectionChanged selectedEntityChanged:
                 OnSelectedEntityChanged(selectedEntityChanged);
+                break;
+            case CharacterUpdated characterUpdated:
+                OnCharacterUpdated(characterUpdated);
                 break;
             case TpsChanged tpsChanged:
                 OnTpsChanged(tpsChanged);
@@ -132,10 +136,15 @@ public partial class UserInterface : CanvasLayer
 
         base._Input(evnt);
     }
+    
+    private void OnCharacterUpdated(CharacterUpdated characterUpdated)
+    {
+        CharacterSelectionLabel.Text = $"Activity: {characterUpdated.ActivityName} / Hunger: {(characterUpdated.Hunger*100):F1}";
+    }
 
     private void OnSelectedEntityChanged(SelectionChanged message)
     {
-        var selectionLabel = GetNode<Label>("SelectionLabel");
+        var selectionLabel = GetNode<Label>("BottomMenuArea/SelectionLabel");
         selectionLabel.Text = message.SelectionLabel;
     }
 

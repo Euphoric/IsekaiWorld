@@ -20,6 +20,8 @@ public class CharacterEntity : IEntity, IItemHolder
 
     private bool _initialized;
 
+    public double Hunger { get; private set; }
+    
     public CharacterEntity(GameEntity game, string label)
     {
         Id = Guid.NewGuid();
@@ -27,6 +29,7 @@ public class CharacterEntity : IEntity, IItemHolder
         Label = label;
         _game = game;
         _initialized = false;
+        Hunger = 1;
     }
 
     public void Update()
@@ -48,8 +51,10 @@ public class CharacterEntity : IEntity, IItemHolder
         {
             CurrentActivity = null;
         }
+
+        Hunger -= 0.0001;
         
-        Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Position, CurrentActivity?.GetType().Name));
+        Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Position, CurrentActivity?.GetType().Name, Hunger));
     }
 
     public void StartActivity(Activity activity)
@@ -70,4 +75,4 @@ public class CharacterEntity : IEntity, IItemHolder
     }
 }
 
-public record CharacterUpdated(String EntityId, HexCubeCoord Position, String? ActivityName) : IEntityMessage;
+public record CharacterUpdated(String EntityId, HexCubeCoord Position, String? ActivityName, double Hunger) : IEntityMessage;

@@ -41,42 +41,6 @@ text = "TPS"
 layout_mode = 2
 text = "Debug label"
 
-[node name="BottomMenu" type="HBoxContainer" parent="UserInterface"]
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -20.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="SelectionButton" type="Button" parent="UserInterface/BottomMenu"]
-layout_mode = 2
-text = "Selection"
-
-[node name="ConstructionButton" type="Button" parent="UserInterface/BottomMenu"]
-layout_mode = 2
-text = "Construction"
-
-[node name="PlaceItemButton" type="Button" parent="UserInterface/BottomMenu"]
-layout_mode = 2
-text = "Place item"
-
-[node name="DesignationButton" type="Button" parent="UserInterface/BottomMenu"]
-layout_mode = 2
-text = "Designation"
-
-[node name="SelectionLabel" type="Label" parent="UserInterface"]
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -40.0
-offset_bottom = -20.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "Selection label"
-
 [node name="ConstructionContainer" type="GridContainer" parent="UserInterface"]
 offset_top = 37.0
 offset_right = 418.0
@@ -98,16 +62,46 @@ offset_bottom = 533.0
 offset_top = 31.0
 offset_bottom = 31.0
 
-[node name="ToolLabel" type="Label" parent="UserInterface"]
-anchors_preset = 2
+[node name="BottomMenuArea" type="VBoxContainer" parent="UserInterface"]
+anchors_preset = 12
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -58.0
-offset_right = 62.0
-offset_bottom = -44.0
+offset_top = -91.0
+grow_horizontal = 2
 grow_vertical = 0
+
+[node name="ToolLabel" type="Label" parent="UserInterface/BottomMenuArea"]
+layout_mode = 2
 text = "Tool label"
 
-[connection signal="pressed" from="UserInterface/BottomMenu/SelectionButton" to="UserInterface" method="_on_SelectionButton_pressed"]
-[connection signal="pressed" from="UserInterface/BottomMenu/ConstructionButton" to="UserInterface" method="_on_ConstructionButton_pressed"]
-[connection signal="pressed" from="UserInterface/BottomMenu/PlaceItemButton" to="UserInterface" method="_on_PlaceItemButton_pressed"]
+[node name="SelectionLabel" type="Label" parent="UserInterface/BottomMenuArea"]
+layout_mode = 2
+text = "Selection label"
+
+[node name="CharacterSelectionLabel" type="Label" parent="UserInterface/BottomMenuArea"]
+layout_mode = 2
+text = "Character Selection label"
+
+[node name="BottomMenu" type="HBoxContainer" parent="UserInterface/BottomMenuArea"]
+layout_mode = 2
+
+[node name="SelectionButton" type="Button" parent="UserInterface/BottomMenuArea/BottomMenu"]
+layout_mode = 2
+text = "Selection"
+
+[node name="ConstructionButton" type="Button" parent="UserInterface/BottomMenuArea/BottomMenu"]
+layout_mode = 2
+text = "Construction"
+
+[node name="PlaceItemButton" type="Button" parent="UserInterface/BottomMenuArea/BottomMenu"]
+layout_mode = 2
+text = "Place item"
+
+[node name="DesignationButton" type="Button" parent="UserInterface/BottomMenuArea/BottomMenu"]
+layout_mode = 2
+text = "Designation"
+
+[connection signal="pressed" from="UserInterface/BottomMenuArea/BottomMenu/SelectionButton" to="UserInterface" method="_on_SelectionButton_pressed"]
+[connection signal="pressed" from="UserInterface/BottomMenuArea/BottomMenu/ConstructionButton" to="UserInterface" method="_on_ConstructionButton_pressed"]
+[connection signal="pressed" from="UserInterface/BottomMenuArea/BottomMenu/PlaceItemButton" to="UserInterface" method="_on_PlaceItemButton_pressed"]
