@@ -14,9 +14,12 @@ public class GameUserInterface
     {
         public CharacterSelection(CharacterEntity character)
         {
+            Id = character.Id.ToString();
             Label = "Character: " + character.Label;
         }
 
+        public String Id { get; }
+        
         public string Label { get; }
 
         public bool Update()
@@ -223,6 +226,14 @@ public class GameUserInterface
     public void TogglePause()
     {
         _game.Paused = !_game.Paused;
+    }
+
+    public void SetCharacterHealth()
+    {
+        if (_currentSelection is CharacterSelection cs)
+        {
+            Messaging.Broadcast(new SetCharacterHunger(cs.Id, 0.31));
+        }        
     }
 }
 

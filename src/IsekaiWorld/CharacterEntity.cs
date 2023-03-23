@@ -4,8 +4,8 @@ using System.Collections.Generic;
 public class CharacterEntity : IEntity, IItemHolder
 {
     public Guid Id { get; }
-    public MessagingEndpoint Messaging { get; } = new();
-    
+    public MessagingEndpoint Messaging { get; }
+
     public bool IsRemoved => false;
     
     private readonly GameEntity _game;
@@ -20,10 +20,12 @@ public class CharacterEntity : IEntity, IItemHolder
 
     private bool _initialized;
 
-    public double Hunger { get; private set; }
+    public double Hunger { get; set; }
     
     public CharacterEntity(GameEntity game, string label)
     {
+        Messaging = new(MessageHandler);
+        
         Id = Guid.NewGuid();
         
         Label = label;
@@ -58,7 +60,23 @@ public class CharacterEntity : IEntity, IItemHolder
             Hunger -= hungerRate;
         }
 
+        if (Hunger < 0.3)
+        {
+            CurrentActivity = new EatActivity(_game, this);
+        }
+
         Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Position, CurrentActivity?.GetType().Name, Hunger));
+    }
+    
+    private void MessageHandler(IEntityMessage msgg)
+    {
+        if (msgg is SetCharacterHunger msg)
+        {
+            if (Id.ToString() == msg.EntityId)
+            {
+                Hunger = msg.Hunger;
+            }
+        }
     }
 
     public void StartActivity(Activity activity)
@@ -80,3 +98,5 @@ public class CharacterEntity : IEntity, IItemHolder
 }
 
 public record CharacterUpdated(String EntityId, HexCubeCoord Position, String? ActivityName, double Hunger) : IEntityMessage;
+
+public record SetCharacterHunger(String EntityId, double Hunger) : IEntityMessage;

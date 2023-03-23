@@ -6,7 +6,7 @@ public class MessagingHub
     private readonly ConcurrentQueue<IEntityMessage> _receivedMessages = new();
     private readonly List<MessagingEndpoint> _messageRecipients = new();
     private readonly List<MessagingHub> _connectedHubs = new();
-    
+
     public void Register(MessagingEndpoint messaging)
     {
         _messageRecipients.Add(messaging);
@@ -22,18 +22,24 @@ public class MessagingHub
     public void ConnectMessageHub(MessagingHub hub)
     {
         _connectedHubs.Add(hub);
+        hub._connectedHubs.Add(this);
     }
 
     public void Broadcast(IEntityMessage message)
     {
         _receivedMessages.Enqueue(message);
-        
+
         foreach (var hub in _connectedHubs)
         {
-            hub.Broadcast(message);
+            hub.Enqueue(message);
         }
     }
-    
+
+    private void Enqueue(IEntityMessage message)
+    {
+        _receivedMessages.Enqueue(message);
+    }
+
     public void DistributeMessages()
     {
         while (_receivedMessages.TryDequeue(out var message))

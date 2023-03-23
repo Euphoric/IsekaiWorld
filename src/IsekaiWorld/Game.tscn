@@ -62,6 +62,10 @@ offset_bottom = 533.0
 offset_top = 31.0
 offset_bottom = 31.0
 
+[node name="DebugContainer" type="GridContainer" parent="UserInterface"]
+offset_top = 31.0
+offset_bottom = 31.0
+
 [node name="BottomMenuArea" type="VBoxContainer" parent="UserInterface"]
 anchors_preset = 12
 anchor_top = 1.0
@@ -101,6 +105,10 @@ text = "Place item"
 [node name="DesignationButton" type="Button" parent="UserInterface/BottomMenuArea/BottomMenu"]
 layout_mode = 2
 text = "Designation"
+
+[node name="DebugButton" type="Button" parent="UserInterface/BottomMenuArea/BottomMenu"]
+layout_mode = 2
+text = "Debug"
 
 [connection signal="pressed" from="UserInterface/BottomMenuArea/BottomMenu/SelectionButton" to="UserInterface" method="_on_SelectionButton_pressed"]
 [connection signal="pressed" from="UserInterface/BottomMenuArea/BottomMenu/ConstructionButton" to="UserInterface" method="_on_ConstructionButton_pressed"]

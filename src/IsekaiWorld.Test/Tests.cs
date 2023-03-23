@@ -107,10 +107,14 @@ namespace IsekaiWorld.Test
 
             game.AddCharacter("Test guy", HexCubeCoord.Zero);
             
-            game.SpawnStockpile(new HexCubeCoord(1, 1, -2));
+            var stockpile=  game.SpawnStockpile(new HexCubeCoord(1, 1, -2));
             game.SpawnItem(new HexCubeCoord(-1, -1, 2), ItemDefinitions.Wood, 1);
 
             game.UpdateUntil(NoItemsOutsideStockpile);
+
+            game.Items.Select(x => new { x.Position, x.Definition, x.Count })
+                .Should()
+                .Contain(new { stockpile.Position, Definition = ItemDefinitions.Wood, Count = 1 });
         }
 
         private bool NoItemsOutsideStockpile(GameTestStep gts)
@@ -411,6 +415,25 @@ namespace IsekaiWorld.Test
             game.Update();
             
             Assert.Equal(startHunger, character.Hunger);
+        }
+
+        [Fact]
+        public void Hungry_character_eats_food()
+        {
+            var game = CreateGame();
+
+            var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
+            game.SpawnItem(HexCubeCoord.Zero, ItemDefinitions.Grains, 1);
+
+            character.SetHungerTo(0.31);
+            game.UpdateUntil(_=>0.3 < character.Hunger && character.Hunger < 0.31, because: "Character should be close to hungry");
+
+            game.UpdateUntil(_ => character.ActivityName == "EatActivity");
+            
+            game.UpdateUntil(_=>0.98 < character.Hunger && character.Hunger < 1.0, because: "Character was unable to eat");
+            game.Items.Should().BeEmpty();
+            
+            game.UpdateUntil(_ => character.ActivityName == null);
         }
     }
 }

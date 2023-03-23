@@ -70,10 +70,21 @@ public partial class UserInterface : CanvasLayer
             }
         }
 
+        {
+            var debugButton = GetNode<Button>("BottomMenuArea/BottomMenu/DebugButton");
+            debugButton.Pressed += _on_DebugButton_pressed;
+
+            var setHungerButton = new Button();
+            setHungerButton.Text = "Set character hunger to 31/100";
+            setHungerButton.Pressed += () => _gameUserInterface.SetCharacterHealth();
+            DebugContainer.AddChild(setHungerButton);
+        }
+
 
         ConstructionContainer.Visible = false;
         PlaceItemContainer.Visible = false;
         DesignationContainer.Visible = false;
+        DebugContainer.Visible = false;
     }
 
     public Label ToolLabel => GetNode<Label>("BottomMenuArea/ToolLabel");
@@ -82,8 +93,8 @@ public partial class UserInterface : CanvasLayer
     public CheckButton PlaceDirectlyButton => ConstructionContainer.GetNode<CheckButton>("PlaceDirectlyButton");
     public OptionButton RotationOptionButton => ConstructionContainer.GetNode<OptionButton>("RotationOptionButton");
     public Container DesignationContainer => GetNode<Container>("DesignationContainer");
-
     public Container PlaceItemContainer => GetNode<Container>("PlaceItemContainer");
+    public Container DebugContainer => GetNode<Container>("DebugContainer");
 
     private void MessageHandler(IEntityMessage message)
     {
@@ -187,6 +198,7 @@ public partial class UserInterface : CanvasLayer
     {
         PlaceItemContainer.Visible = false;
         DesignationContainer.Visible = false;
+        DebugContainer.Visible = false;
         ConstructionContainer.Visible = !ConstructionContainer.Visible;
     }
 
@@ -195,6 +207,7 @@ public partial class UserInterface : CanvasLayer
     {
         ConstructionContainer.Visible = false;
         DesignationContainer.Visible = false;
+        DebugContainer.Visible = false;
         PlaceItemContainer.Visible = !PlaceItemContainer.Visible;
     }
 
@@ -202,7 +215,16 @@ public partial class UserInterface : CanvasLayer
     {
         ConstructionContainer.Visible = false;
         PlaceItemContainer.Visible = false;
+        DebugContainer.Visible = false;
         DesignationContainer.Visible = !DesignationContainer.Visible;
+    }
+    
+    private void _on_DebugButton_pressed()
+    {
+        ConstructionContainer.Visible = false;
+        PlaceItemContainer.Visible = false;
+        DebugContainer.Visible = !DebugContainer.Visible;
+        DesignationContainer.Visible = false;
     }
 
     public void _on_ConstructionSelectionButton_pressed(string constructionDefinitionId)

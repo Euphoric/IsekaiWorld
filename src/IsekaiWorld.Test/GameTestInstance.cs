@@ -9,9 +9,9 @@ public class GameTestInstance
 {
     private readonly GameEntity _game;
     private readonly MessagingHub _messageHub;
+    private readonly MessagingEndpoint _messaging;
     
     private readonly Dictionary<String, CharacterTestView> _characterTestViews = new();
-
 
     public GameTestInstance()
     {
@@ -21,8 +21,8 @@ public class GameTestInstance
         _messageHub = new MessagingHub();
         _game.Messaging.ConnectMessageHub(_messageHub);
         
-        var messaging = new MessagingEndpoint(MessageHandler);
-        _messageHub.Register(messaging);
+        _messaging = new MessagingEndpoint(MessageHandler);
+        _messageHub.Register(_messaging);
     }
 
     public HexagonalMapEntity GameMap => _game.GameMap;
@@ -46,7 +46,7 @@ public class GameTestInstance
         var character = _game.AddCharacter(name);
         character.Position = position;
         
-        var testView = new CharacterTestView(character.Id.ToString());
+        var testView = new CharacterTestView(character.Id.ToString(), _messaging);
         _characterTestViews[testView.Id] = testView;
         return testView;
     }
