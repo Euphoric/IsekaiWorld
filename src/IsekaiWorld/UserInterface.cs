@@ -6,6 +6,7 @@ public partial class UserInterface : CanvasLayer
 {
     public MessagingEndpoint Messaging { get; }
 
+    [Obsolete("Do not use. Replace by messaging.")]
     private GameUserInterface _gameUserInterface = null!;
 
     public UserInterface()
@@ -13,7 +14,7 @@ public partial class UserInterface : CanvasLayer
         Messaging = new MessagingEndpoint(MessageHandler);
     }
 
-    [Obsolete("Should not be needed")]
+    [Obsolete("Do not use. Replace by messaging.")]
     public void Initialize(GameEntity gameEntity)
     {
         _gameUserInterface = gameEntity.UserInterface;

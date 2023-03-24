@@ -15,6 +15,7 @@ public partial class HexagonalMap : Node2D
 
     private bool _isDirty;
     private HexagonNode _mouseoverHexagon = null!;
+    [Obsolete("Use messaging")]
     private GameEntity _game = null!;
 
     private Texture2D _grassTexture = null!;
