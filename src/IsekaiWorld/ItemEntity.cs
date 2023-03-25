@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 public interface IItemHolder
 {
@@ -72,6 +71,7 @@ public class ItemEntity : IEntity
 
         if (_toRemove)
         {
+            Messaging.Broadcast(new ItemPickedUp(EntityId.ToString()));
             IsRemoved = true;
         }
 

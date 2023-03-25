@@ -101,6 +101,20 @@ namespace IsekaiWorld.Test
         }
 
         [Fact]
+        public void Item_spawned()
+        {
+            var game = CreateGame();
+
+            var position = new HexCubeCoord(-1, -1, 2);
+            game.SpawnItem(position, ItemDefinitions.Wood, 13);
+            game.Update();
+            
+            game.Items.Select(x => new { x.Position, x.Definition, x.Count })
+                .Should()
+                .Contain(new { Position = position, Definition = ItemDefinitions.Wood, Count = 13 });
+        }
+        
+        [Fact]
         public void Items_hauling_test_simple()
         {
             var game = CreateGame();
@@ -141,7 +155,8 @@ namespace IsekaiWorld.Test
                     game.SpawnItem(mapCell.Position, typeDivide ? ItemDefinitions.Wood : ItemDefinitions.Grains, 1);
                 }
             }
-
+            game.Update();
+            
             var totalItemCountStart = game.Items.GroupBy(x => x.Definition)
                 .Select(grp => new { Definition = grp.Key, Count = grp.Sum(x => x.Count) }).ToList();
 

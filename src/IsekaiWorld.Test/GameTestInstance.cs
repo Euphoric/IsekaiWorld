@@ -10,8 +10,9 @@ public class GameTestInstance
     private readonly GameEntity _game;
     private readonly MessagingHub _messageHub;
     private readonly MessagingEndpoint _messaging;
-    
+
     private readonly Dictionary<String, CharacterTestView> _characterTestViews = new();
+    private readonly Dictionary<String, ItemTestView> _itemTestViews = new();
 
     public GameTestInstance()
     {
@@ -20,7 +21,7 @@ public class GameTestInstance
 
         _messageHub = new MessagingHub();
         _game.Messaging.ConnectMessageHub(_messageHub);
-        
+
         _messaging = new MessagingEndpoint(MessageHandler);
         _messageHub.Register(_messaging);
     }
@@ -28,7 +29,7 @@ public class GameTestInstance
     public HexagonalMapEntity GameMap => _game.GameMap;
     public IReadOnlyList<ConstructionEntity> Constructions => _game.Constructions;
     public IReadOnlyList<BuildingEntity> Buildings => _game.Buildings;
-    public IReadOnlyList<ItemEntity> Items => _game.Items;
+    public IReadOnlyList<ItemTestView> Items => _itemTestViews.Values.ToList();
 
     public bool Paused
     {
@@ -45,7 +46,7 @@ public class GameTestInstance
     {
         var character = _game.AddCharacter(name);
         character.Position = position;
-        
+
         var testView = new CharacterTestView(character.Id.ToString(), _messaging);
         _characterTestViews[testView.Id] = testView;
         return testView;
@@ -77,16 +78,25 @@ public class GameTestInstance
             throw new Exception($"Didn't reach final check before timeout because: {because}");
         }
     }
-    
+
     private void MessageHandler(IEntityMessage evnt)
     {
         if (evnt is CharacterCreated cc)
         {
             _characterTestViews[cc.EntityId].UpdateFrom(cc);
         }
+
         if (evnt is CharacterUpdated cu)
         {
             _characterTestViews[cu.EntityId].UpdateFrom(cu);
+        }
+        else if (evnt is ItemUpdated iu)
+        {
+            _itemTestViews.GetOrAdd(iu.EntityId, id => new ItemTestView(id)).UpdateFrom(iu);
+        }
+        else if (evnt is ItemPickedUp ipu)
+        {
+            _itemTestViews.Remove(ipu.EntityId);
         }
     }
 
