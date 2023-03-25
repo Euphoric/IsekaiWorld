@@ -88,4 +88,6 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
+anti_aliasing/quality/msaa_2d=1
+textures/canvas_textures/default_texture_filter=2
 environment/default_environment="res://default_env.tres"
