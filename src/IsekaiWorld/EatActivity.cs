@@ -1,11 +1,13 @@
 using System.Linq;
+using System.Net.Http;
 
 public class EatActivity : Activity
 {
     private readonly CharacterEntity _character;
     private readonly ItemEntity _foodItem;
 
-    private bool _waitUpdate = true;
+    private PickUpItemActivity? _pickUpItemActivity;
+    private ItemEntity? _carriedFood;
     
     public EatActivity(GameEntity game, CharacterEntity character, ItemEntity foodItem) : base(game)
     {
@@ -15,15 +17,27 @@ public class EatActivity : Activity
 
     protected override void UpdateInner()
     {
-        if (_waitUpdate)
+        if (_carriedFood == null)
         {
-            _waitUpdate = false;
-            return;
+            if (_pickUpItemActivity == null)
+            {
+                _pickUpItemActivity = new PickUpItemActivity(Game, _character, _foodItem);
+            }
+            else
+            {
+                _pickUpItemActivity.Update();
+                if (_pickUpItemActivity.IsFinished)
+                {
+                    _carriedFood = _pickUpItemActivity.PickedUpItem;
+                    _pickUpItemActivity = null;
+                }
+            }
         }
-        
-        _character.Hunger = 1;
-        var pickedItem = _foodItem.PickUpItem(1);
-        pickedItem.Remove();
-        IsFinished = true;      
+        else
+        {
+            _character.Hunger = 1;
+            _carriedFood.Remove();
+            IsFinished = true;            
+        }
     }
 }
