@@ -7,7 +7,7 @@ public class DeliverItemActivity : Activity
     private readonly ConstructionEntity _construction;
 
     private ItemEntity? _carriedItem;
-    private MovementActivity? _movement;
+    private MovementActivity? _moveToConstructionActivity;
     private PickUpItemActivity? _pickUpItemActivity;
 
     public DeliverItemActivity(GameEntity game, CharacterEntity character, ItemEntity item,
@@ -21,43 +21,44 @@ public class DeliverItemActivity : Activity
 
     protected override void UpdateInner()
     {
-        if (_movement != null)
+        if (_carriedItem == null)
         {
-            _movement.Update();
-        }
-
-        if (_pickUpItemActivity != null)
-        {
-            _pickUpItemActivity.Update();
-
-            if (_pickUpItemActivity.IsFinished)
+            if (_pickUpItemActivity == null)
             {
-                _carriedItem = _pickUpItemActivity.PickedUpItem;
-                _pickUpItemActivity = null;
+                _pickUpItemActivity = new PickUpItemActivity(Game, _character, _item);
             }
-        }
-        else if (_carriedItem == null)
-        {
-            _pickUpItemActivity = new PickUpItemActivity(Game, _character, _item);
+            else
+            {
+                _pickUpItemActivity.Update();
+
+                if (_pickUpItemActivity.IsFinished)
+                {
+                    _carriedItem = _pickUpItemActivity.PickedUpItem;
+                    _pickUpItemActivity = null;
+                }
+            }
         }
         else
         {
-            if (_movement == null)
+            if (_moveToConstructionActivity == null)
             {
-                // move on item
-                _movement = new MovementActivity(Game, Game.Pathfinding, _character, _construction.Position, false);
+                _moveToConstructionActivity = new MovementActivity(Game, Game.Pathfinding, _character, _construction.Position, false);
             }
-
-            if (_movement.IsFinished)
+            else
             {
-                _movement = null;
+                _moveToConstructionActivity.Update();
 
-                _carriedItem.Remove();
-                _carriedItem = null;
+                if (_moveToConstructionActivity.IsFinished)
+                {
+                    _moveToConstructionActivity = null;
 
-                _construction.MaterialsDelivered = true;
+                    _carriedItem.Remove();
+                    _carriedItem = null;
 
-                IsFinished = true;
+                    _construction.MaterialsDelivered = true;
+
+                    IsFinished = true;
+                }
             }
         }
     }
