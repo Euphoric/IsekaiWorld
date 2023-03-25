@@ -62,6 +62,7 @@ public class BuildingView
             var texture = ResourceLoader.Load<Texture2D>(textureResource);
             sprite.Texture = texture;
             sprite.Modulate = message.Definition.Color;
+            sprite.ZIndex = message.Position.R + 255;
 
             if (message.Definition == BuildingDefinitions.WoodenChair)
             {
@@ -99,10 +100,23 @@ public class BuildingView
                 sprite.Scale *= new Vector2(2, 2);
             }
 
-            if (message.Definition == BuildingDefinitions.TreeOak)
+            if (message.Definition == BuildingDefinitions.Plant.TreeOak)
             {
-                sprite.Scale = Vector2.One / texture.GetSize() * 5;
+                var plantSize = 5;
+                sprite.Scale = Vector2.One / texture.GetSize() * plantSize;
                 sprite.Offset = new Vector2(0, -200);
+            }
+            
+            if (message.Definition == BuildingDefinitions.Plant.Haygrass)
+            {
+                var plantSize = 1.5f;
+                sprite.Scale = Vector2.One / texture.GetSize() * plantSize;
+            }
+            
+            if (message.Definition == BuildingDefinitions.Plant.WildRice)
+            {
+                var plantSize = 1.5f;
+                sprite.Scale = Vector2.One / texture.GetSize() * plantSize;
             }
 
             if (message.Definition == BuildingDefinitions.CraftingDesk)

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d2te0w66bhx08"
-path="res://.godot/imported/TreeOak.png-8dc1945e06a08248fa7876483fc8c4b0.ctex"
+uid="uid://dxyjcmerxx7j6"
+path="res://.godot/imported/Haygrass.png-2b5cfa66c785907cef411aeacdd7975f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/Plant/TreeOak.png"
-dest_files=["res://.godot/imported/TreeOak.png-8dc1945e06a08248fa7876483fc8c4b0.ctex"]
+source_file="res://Textures/Plant/Haygrass.png"
+dest_files=["res://.godot/imported/Haygrass.png-2b5cfa66c785907cef411aeacdd7975f.ctex"]
 
 [params]
 

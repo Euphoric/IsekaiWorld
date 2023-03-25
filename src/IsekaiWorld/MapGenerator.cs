@@ -67,15 +67,34 @@ public class MapGenerator : IMapGenerator
             }
         }
 
-        Random treeRandom = new Random(6547);
-        var allowedTreeCells = map.Cells.Where(c => c.Surface == SurfaceDefinitions.Grass).ToList();
-        var treeCount = (int)(allowedTreeCells.Count * (1f / 6));
+        Random plantRandom = new Random(6547);
+        var allowedPlantCells = map.Cells.Where(c => c.Surface == SurfaceDefinitions.Grass).ToList();
+        var grassCellsCount = allowedPlantCells.Count;
+        var treeCount = (int)(grassCellsCount * (1f / 6));
         for (int i = 0; i < treeCount; i++)
         {
-            var treeCellIndex = treeRandom.Next(0, allowedTreeCells.Count - 1);
-            var treePosition = allowedTreeCells[treeCellIndex].Position;
-            entities.Add(new BuildingEntity(treePosition, HexagonDirection.Left, BuildingDefinitions.TreeOak));
-            allowedTreeCells.RemoveAt(treeCellIndex);
+            var cellIndex = plantRandom.Next(0, allowedPlantCells.Count - 1);
+            var position = allowedPlantCells[cellIndex].Position;
+            entities.Add(new BuildingEntity(position, HexagonDirection.Left, BuildingDefinitions.Plant.TreeOak));
+            allowedPlantCells.RemoveAt(cellIndex);
+        }
+        
+        var haygrassCount = (int)(grassCellsCount * (1f / 6));
+        for (int i = 0; i < haygrassCount; i++)
+        {
+            var cellIndex = plantRandom.Next(0, allowedPlantCells.Count - 1);
+            var position = allowedPlantCells[cellIndex].Position;
+            entities.Add(new BuildingEntity(position, HexagonDirection.Left, BuildingDefinitions.Plant.Haygrass));
+            allowedPlantCells.RemoveAt(cellIndex);
+        }
+        
+        var riceCount = (int)(grassCellsCount * (1f / 6));
+        for (int i = 0; i < riceCount; i++)
+        {
+            var cellIndex = plantRandom.Next(0, allowedPlantCells.Count - 1);
+            var position = allowedPlantCells[cellIndex].Position;
+            entities.Add(new BuildingEntity(position, HexagonDirection.Left, BuildingDefinitions.Plant.WildRice));
+            allowedPlantCells.RemoveAt(cellIndex);
         }
         
         entities.Add(new BuildingEntity(new HexCubeCoord(3, -5, 2), HexagonDirection.TopRight, BuildingDefinitions.WoodenChair));

@@ -210,7 +210,7 @@ namespace IsekaiWorld
 
             game.AddCharacter("Test guy", HexCubeCoord.Zero);
 
-            var tree = game.SpawnBuilding(new HexCubeCoord(5, -3, -2), HexagonDirection.Left, BuildingDefinitions.TreeOak);
+            var tree = game.SpawnBuilding(new HexCubeCoord(5, -3, -2), HexagonDirection.Left, BuildingDefinitions.Plant.TreeOak);
 
             game.Designate(tree.Position, DesignationDefinitions.CutWood);
             
@@ -220,7 +220,7 @@ namespace IsekaiWorld
             {
                 var entitiesOn = game.EntitiesOn(tree.Position);
                 var treesExist = entitiesOn.OfType<BuildingEntity>()
-                    .Any(b => b.Definition == BuildingDefinitions.TreeOak);
+                    .Any(b => b.Definition == BuildingDefinitions.Plant.TreeOak);
                 var woodSpawned = entitiesOn.OfType<ItemEntity>().Any(i => i.Definition == ItemDefinitions.Wood);
                 return !treesExist && woodSpawned;
             });
@@ -342,7 +342,7 @@ namespace IsekaiWorld
             var game = CreateGame();
 
             var building = game.SpawnBuilding(new HexCubeCoord(1, 1, -2), HexagonDirection.Left, BuildingDefinitions.WoodenWall);
-            var tree = game.SpawnBuilding(new HexCubeCoord(5, -3, -2), HexagonDirection.Left, BuildingDefinitions.TreeOak);
+            var tree = game.SpawnBuilding(new HexCubeCoord(5, -3, -2), HexagonDirection.Left, BuildingDefinitions.Plant.TreeOak);
 
             game.Designate(building.Position, DesignationDefinitions.CutWood);
             

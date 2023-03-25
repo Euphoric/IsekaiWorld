@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d2te0w66bhx08"
-path="res://.godot/imported/TreeOak.png-8dc1945e06a08248fa7876483fc8c4b0.ctex"
+uid="uid://btralmid3r02n"
+path="res://.godot/imported/RicePlant_Grown.png-72af6f48c437f5951fe47106da10d8e4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/Plant/TreeOak.png"
-dest_files=["res://.godot/imported/TreeOak.png-8dc1945e06a08248fa7876483fc8c4b0.ctex"]
+source_file="res://Textures/Plant/RicePlant_Grown.png"
+dest_files=["res://.godot/imported/RicePlant_Grown.png-72af6f48c437f5951fe47106da10d8e4.ctex"]
 
 [params]
 
