@@ -450,5 +450,26 @@ namespace IsekaiWorld.Test
             
             game.UpdateUntil(_ => character.ActivityName == null);
         }
+        
+        [Fact]
+        public void Hungry_character_waits_for_food_to_be_available()
+        {
+            var game = CreateGame();
+
+            var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
+
+            character.SetHungerTo(0.31);
+            
+            game.UpdateUntil(_=>0.27 < character.Hunger && character.Hunger < 0.28, because: "Character should be hungry without food.");
+            character.ActivityName.Should().BeNull("Because there is no food to eat.");
+
+            game.SpawnItem(HexCubeCoord.Zero, ItemDefinitions.Grains, 1);
+            
+            game.UpdateUntil(_ => character.ActivityName == "EatActivity");
+            game.UpdateUntil(_=>0.98 < character.Hunger && character.Hunger < 1.0, because: "Character was unable to eat");
+            game.Items.Should().BeEmpty();
+
+            game.UpdateUntil(_ => character.ActivityName == null);
+        }
     }
 }

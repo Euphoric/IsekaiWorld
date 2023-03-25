@@ -8,7 +8,6 @@ public class GameEntity
     public HexagonPathfinding Pathfinding { get; private set; } = null!;
     public GameUserInterface UserInterface { get; private set; }
     public JobSystem Jobs { get; }
-    public HaulJobGiver HaulJobGiver { get; }
     public MessagingHub Messaging { get; }
 
     public IReadOnlyList<ConstructionEntity> Constructions => _entities.OfType<ConstructionEntity>().ToList();
@@ -44,11 +43,12 @@ public class GameEntity
     {
         Messaging = new MessagingHub();
         UserInterface = new GameUserInterface(this);
-        HaulJobGiver = new HaulJobGiver(this);
+        var eatJobGiver = new EatFoodJobGiver(this);
+        var haulJobGiver = new HaulJobGiver(this);
         var deconstructJobGiver = new DeconstructJobGiver(this);
         var constructionJobGiver = new ConstructionJobGiver(this);
         var cutWoodJobGiver = new CutWoodJobGiver(this);
-        Jobs = new JobSystem(new IJobGiver[] { HaulJobGiver, deconstructJobGiver, constructionJobGiver, cutWoodJobGiver });
+        Jobs = new JobSystem(new IJobGiver[] { eatJobGiver, haulJobGiver, deconstructJobGiver, constructionJobGiver, cutWoodJobGiver });
     }
 
     public void Initialize(IMapGenerator mapGenerator)

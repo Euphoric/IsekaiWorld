@@ -60,11 +60,6 @@ public class CharacterEntity : IEntity, IItemHolder
             Hunger -= hungerRate;
         }
 
-        if (Hunger < 0.3)
-        {
-            CurrentActivity = new EatActivity(_game, this);
-        }
-
         Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Position, CurrentActivity?.GetType().Name, Hunger));
     }
     
