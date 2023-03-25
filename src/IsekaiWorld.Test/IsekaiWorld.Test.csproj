@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <RootNamespace>IsekaiWorld.Test</RootNamespace>
+        <RootNamespace>IsekaiWorld</RootNamespace>
         <AssemblyName>IsekaiWorld.Test</AssemblyName>
         <Nullable>enable</Nullable>
+        <LangVersion>11</LangVersion>
     </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\IsekaiWorld\IsekaiWorld.csproj" />

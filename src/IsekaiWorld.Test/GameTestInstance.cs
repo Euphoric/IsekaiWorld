@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 
-namespace IsekaiWorld.Test;
+namespace IsekaiWorld;
 
 public class GameTestInstance
 {

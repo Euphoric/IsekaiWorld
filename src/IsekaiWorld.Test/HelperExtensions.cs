@@ -1,6 +1,6 @@
 using System;
 
-namespace IsekaiWorld.Test
+namespace IsekaiWorld
 {
     public static class HelperExtensions
     {

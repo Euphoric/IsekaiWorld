@@ -3,7 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using Xunit;
 
-namespace IsekaiWorld.Test
+namespace IsekaiWorld
 {
     public class Tests
     {

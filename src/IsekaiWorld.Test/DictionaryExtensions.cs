@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace IsekaiWorld.Test;
+namespace IsekaiWorld;
 
 /// <summary>
 /// Extensions for dealing with <see cref="Dictionary{TKey,TValue}"/>

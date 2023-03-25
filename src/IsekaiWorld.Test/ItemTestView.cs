@@ -1,4 +1,4 @@
-namespace IsekaiWorld.Test;
+namespace IsekaiWorld;
 
 public class ItemTestView
 {
