@@ -127,9 +127,10 @@ public class GameTestInstance
         return stockpile;
     }
 
-    public void SpawnItem(HexCubeCoord position, ItemDefinition item, int quantity)
+    public ItemTestView SpawnItem(HexCubeCoord position, ItemDefinition item, int quantity)
     {
-        _game.SpawnItem(position, item, quantity);
+        var itemEntity = _game.SpawnItem(position, item, quantity);
+        return _itemTestViews.GetOrAdd(itemEntity.EntityId.ToString(), id => new ItemTestView(id));
     }
 
     public void Designate(HexCubeCoord position, DesignationDefinition designation)

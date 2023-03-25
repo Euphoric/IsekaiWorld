@@ -153,7 +153,7 @@ public class GameEntity
         }
     }
 
-    public void SpawnItem(HexCubeCoord position, ItemDefinition item, int count)
+    public ItemEntity SpawnItem(HexCubeCoord position, ItemDefinition item, int count)
     {
         var existingEntity = _entities.OfType<ItemEntity>()
             .FirstOrDefault(i => i.Position == position && i.Definition == item);
@@ -162,10 +162,12 @@ public class GameEntity
             var itemEntity = new ItemEntity(this, position, item, count);
             itemEntity.SetHolder(MapItems);
             AddEntity(itemEntity);
+            return itemEntity;
         }
         else
         {
             existingEntity.AddCount(count);
+            return existingEntity;
         }
     }
 
