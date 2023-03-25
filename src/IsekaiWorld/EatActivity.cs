@@ -21,9 +21,9 @@ public class EatActivity : Activity
             return;
         }
         
-        // TODO: Only eat one piece
         _character.Hunger = 1;
-        _foodItem.Remove();
+        var pickedItem = _foodItem.PickUpItem(1);
+        pickedItem.Remove();
         IsFinished = true;      
     }
 }

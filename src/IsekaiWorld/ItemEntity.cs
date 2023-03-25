@@ -9,6 +9,7 @@ public interface IItemHolder
 
 public class ItemEntity : IEntity
 {
+    private readonly GameEntity _game;
     public MessagingEndpoint Messaging { get; } = new MessagingEndpoint();
 
     private bool _toRemove;
@@ -19,9 +20,10 @@ public class ItemEntity : IEntity
     private IItemHolder? _holder;
     private HexCubeCoord _position;
 
-    public ItemEntity(HexCubeCoord position, ItemDefinition definition, int count)
+    public ItemEntity(GameEntity game, HexCubeCoord position, ItemDefinition definition, int count)
     {
         EntityId = Guid.NewGuid();
+        _game = game;
         _position = position;
         Definition = definition;
         Count = count;
@@ -92,6 +94,24 @@ public class ItemEntity : IEntity
     public void Remove()
     {
         _toRemove = true;
+    }
+
+    public ItemEntity PickUpItem(int pickUpCount)
+    {
+        ItemEntity pickedItem;
+        if (Count > pickUpCount)
+        {
+            AddCount(-pickUpCount);
+            var splitStack = new ItemEntity(_game, Position, Definition, pickUpCount);
+            _game.AddEntity(splitStack);
+            pickedItem = splitStack;
+        }
+        else
+        {
+            pickedItem = this;
+        }
+
+        return pickedItem;
     }
 }
 

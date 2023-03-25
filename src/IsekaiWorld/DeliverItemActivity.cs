@@ -32,23 +32,15 @@ public class DeliverItemActivity : Activity
                 _movement = new MovementActivity(Game, Game.Pathfinding, _character, _item.Position, false);
             }
 
+            var pickUpCount = 1;
             if (_movement.IsFinished)
             {
                 _movement = null;
 
-                if (_item.Count > 1)
-                {
-                    _item.AddCount(-1);
-                    var splitStack = new ItemEntity(_character.Position, _item.Definition, 1);
-                    Game.AddEntity(splitStack);
-                    splitStack.SetHolder(_character);
-                    _carriedItem = splitStack;
-                }
-                else
-                {
-                    _item.SetHolder(_character);
-                    _carriedItem = _item;
-                }
+                var pickedItem = _item.PickUpItem(pickUpCount);
+                
+                pickedItem.SetHolder(_character);
+                _carriedItem = pickedItem;
             }
         }
         else

@@ -159,7 +159,7 @@ public class GameEntity
             .FirstOrDefault(i => i.Position == position && i.Definition == item);
         if (existingEntity == null)
         {
-            var itemEntity = new ItemEntity(position, item, count);
+            var itemEntity = new ItemEntity(this, position, item, count);
             itemEntity.SetHolder(MapItems);
             AddEntity(itemEntity);
         }
