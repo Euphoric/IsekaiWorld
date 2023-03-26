@@ -64,6 +64,9 @@ public class GameEntity
         Pathfinding = new HexagonPathfinding();
         Pathfinding.BuildMap(GameMap);
         Messaging.Register(Pathfinding.Messaging);
+        
+        // Probably shouldn't be here. Find better place for initial surface update.
+        Messaging.Broadcast(new SurfaceChanged(GameMap.Cells));
     }
 
     public CharacterEntity AddCharacter(string label)

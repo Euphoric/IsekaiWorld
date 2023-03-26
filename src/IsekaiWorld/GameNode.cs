@@ -12,7 +12,7 @@ public partial class GameNode : Node
 	private System.Threading.Thread _gameThread = null!;
 
 	
-	private readonly MessagingHub _viewMessagingHub = new MessagingHub();
+	private readonly MessagingHub _viewMessagingHub = new();
 	
 	[Obsolete("Should not be accessible to view layer")]
 	public GameEntity GameEntity => _game;
@@ -96,5 +96,10 @@ public partial class GameNode : Node
 		_mapItemView.Update();
 
 		base._Process(delta);
+	}
+
+	public void RegisterMessaging(MessagingEndpoint messaging)
+	{
+		_viewMessagingHub.Register(messaging);
 	}
 }
