@@ -1,0 +1,67 @@
+[gd_scene load_steps=13 format=3 uid="uid://7hmd2jfomak1"]
+
+[ext_resource type="Texture2D" uid="uid://rt4jqkpbiil7" path="res://Textures/Character/Bodies/Naked_Male_south.png" id="1_jssng"]
+[ext_resource type="Texture2D" uid="uid://c6eehhorwvts1" path="res://Textures/Character/Apparel/ShirtBasic/ShirtBasic_Male_south.png" id="2_cpo7o"]
+[ext_resource type="Texture2D" uid="uid://dmovqvalwtdot" path="res://Textures/Character/Apparel/Pants/Pants_Male_south.png" id="3_nwo0v"]
+[ext_resource type="Texture2D" uid="uid://bp74koy774rg7" path="res://Textures/Character/Apparel/Jacket/Jacket_Male_south.png" id="4_fbcaa"]
+[ext_resource type="Texture2D" uid="uid://mpwrf177h6h0" path="res://Textures/Character/Heads/Male/Male_Average_Normal_south.png" id="5_3c37r"]
+[ext_resource type="Texture2D" uid="uid://ddhb4er53o18" path="res://Textures/Character/Hair_male/AFUm03_south.png" id="6_0bbmf"]
+[ext_resource type="Texture2D" uid="uid://db6o5jqv1rxhg" path="res://Textures/Character/Apparel/CowboyHat/CowboyHat_south.png" id="6_mamq1"]
+[ext_resource type="Texture2D" uid="uid://c8b4l543fhvgs" path="res://Textures/Character/Bodies/Naked_Female_east.png" id="7_g2wxu"]
+[ext_resource type="Texture2D" uid="uid://u3b73g42vmxr" path="res://Textures/Character/Apparel/ShirtBasic/ShirtBasic_Female_east.png" id="8_8tmet"]
+[ext_resource type="Texture2D" uid="uid://dqfuy0e18s6rf" path="res://Textures/Character/Heads/Female/Female_Average_Wide_east.png" id="8_rqerp"]
+[ext_resource type="Texture2D" uid="uid://kgj3mik6rrlp" path="res://Textures/Character/Apparel/Pants/Pants_Female_east.png" id="9_nc6k1"]
+[ext_resource type="Texture2D" uid="uid://b2vkf0bpvu6rp" path="res://Textures/Character/Hair_female/AFUf08_east.png" id="12_lctt6"]
+
+[node name="CharacterTest" type="Node2D"]
+
+[node name="Man" type="Node2D" parent="."]
+position = Vector2(784, 412)
+
+[node name="Body" type="Sprite2D" parent="Man"]
+texture = ExtResource("1_jssng")
+
+[node name="ShirtBasicMaleSouth" type="Sprite2D" parent="Man"]
+texture = ExtResource("2_cpo7o")
+
+[node name="PantsMaleSouth" type="Sprite2D" parent="Man"]
+texture = ExtResource("3_nwo0v")
+
+[node name="JacketMaleSouth" type="Sprite2D" parent="Man"]
+texture = ExtResource("4_fbcaa")
+
+[node name="Head" type="Node2D" parent="Man"]
+position = Vector2(0, -135)
+
+[node name="HeadSprite" type="Sprite2D" parent="Man/Head"]
+texture = ExtResource("5_3c37r")
+
+[node name="AfUm03South" type="Sprite2D" parent="Man/Head"]
+scale = Vector2(2, 2)
+texture = ExtResource("6_0bbmf")
+
+[node name="CowboyHatSouth" type="Sprite2D" parent="Man/Head"]
+visible = false
+texture = ExtResource("6_mamq1")
+
+[node name="Woman" type="Node2D" parent="."]
+position = Vector2(314, 340)
+
+[node name="NakedFemaleEast" type="Sprite2D" parent="Woman"]
+texture = ExtResource("7_g2wxu")
+
+[node name="ShirtBasicFemaleEast" type="Sprite2D" parent="Woman"]
+texture = ExtResource("8_8tmet")
+
+[node name="PantsFemaleEast" type="Sprite2D" parent="Woman"]
+texture = ExtResource("9_nc6k1")
+
+[node name="Head" type="Node2D" parent="Woman"]
+position = Vector2(0, -128)
+
+[node name="FemaleAverageWideEast" type="Sprite2D" parent="Woman/Head"]
+texture = ExtResource("8_rqerp")
+
+[node name="AfUf08East" type="Sprite2D" parent="Woman/Head"]
+scale = Vector2(2, 2)
+texture = ExtResource("12_lctt6")
