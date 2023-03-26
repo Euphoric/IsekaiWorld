@@ -16,8 +16,8 @@ public partial class GameNode : Node
 	
 	[Obsolete("Should not be accessible to view layer")]
 	public GameEntity GameEntity => _game;
-
-	public HexagonalMap MapNode { get; private set; } = null!;
+	
+	public Node2D EntitiesNode { get; private set; } = null!;
 
 	public override void _EnterTree()
 	{
@@ -35,9 +35,10 @@ public partial class GameNode : Node
 		_userInterface = GetNode<UserInterface>("UserInterface");
 		_userInterface.Initialize(_game);
 		_viewMessagingHub.Register(_userInterface.Messaging);
-		MapNode = GetNode<HexagonalMap>("Map/HexagonalMap");
-		_viewMessagingHub.Register(MapNode.Messaging);
-
+		var mapNode = GetNode<HexagonalMap>("Map/HexagonalMap");
+		_viewMessagingHub.Register(mapNode.Messaging);
+		EntitiesNode = GetNode<Node2D>("Map/Entities");
+		
 		base._EnterTree();
 	}
 

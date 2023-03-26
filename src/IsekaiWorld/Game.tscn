@@ -19,8 +19,10 @@ script = ExtResource("2")
 script = ExtResource("3_2ej4f")
 
 [node name="HexagonalMap" type="Node2D" parent="Map"]
-y_sort_enabled = true
 script = ExtResource("1")
+
+[node name="Entities" type="Node2D" parent="Map"]
+y_sort_enabled = true
 
 [node name="UserInterface" type="CanvasLayer" parent="."]
 script = ExtResource("5")

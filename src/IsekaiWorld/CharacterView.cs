@@ -37,13 +37,13 @@ public class CharacterView
             HexPosition = HexCubeCoord.Zero,
             Color = Colors.Blue
         };
-        var mapNode = _gameNode.MapNode;
+        var mapNode = _gameNode.EntitiesNode;
         mapNode.AddChild(characterHexagon);
     }
 
     private void OnCharacterUpdated(CharacterUpdated message)
     {
-        var node = _gameNode.MapNode.GetNode<HexagonNode>(message.EntityId);
+        var node = _gameNode.EntitiesNode.GetNode<HexagonNode>(message.EntityId);
         node.HexPosition = message.Position;
     }
 }

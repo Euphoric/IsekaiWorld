@@ -3,9 +3,11 @@ using Godot;
 
 public class BuildingView
 {
-    public MessagingEndpoint Messaging { get; }
     private readonly GameNode _gameNode;
+    public MessagingEndpoint Messaging { get; }
 
+    private Node2D EntitiesNode => _gameNode.EntitiesNode;
+    
     public BuildingView(GameNode gameNode)
     {
         _gameNode = gameNode;
@@ -40,12 +42,12 @@ public class BuildingView
         if (message.Definition.EdgeConnected)
             return;
         
-        Node2D buildingNode = _gameNode.MapNode.GetNodeOrNull<Node2D>(message.EntityId);
+        Node2D buildingNode = EntitiesNode.GetNodeOrNull<Node2D>(message.EntityId);
         if (buildingNode == null)
         {
             buildingNode = new Node2D();
             buildingNode.Name = message.EntityId;
-            _gameNode.MapNode.AddChild(buildingNode);
+            EntitiesNode.AddChild(buildingNode);
             
             // Line2D outline = new Line2D();
             // buildingNode.AddChild(outline);
@@ -183,7 +185,7 @@ public class BuildingView
         if (message.Definition.EdgeConnected)
             return;
         
-        Node2D buildingNode = _gameNode.MapNode.GetNodeOrNull<Node2D>(message.EntityId);
+        Node2D buildingNode = EntitiesNode.GetNodeOrNull<Node2D>(message.EntityId);
         if (buildingNode != null)
         {
             buildingNode.GetParent().RemoveChild(buildingNode);
@@ -193,7 +195,7 @@ public class BuildingView
     private void OnConstructionUpdated(ConstructionUpdated constructionUpdated)
     {
         var nodeName = constructionUpdated.Id;
-        var constructioNode = _gameNode.MapNode.GetNodeOrNull<HexagonNode>(nodeName);
+        var constructioNode = EntitiesNode.GetNodeOrNull<HexagonNode>(nodeName);
         if (constructioNode == null)
         {
             var constructionNode = new HexagonNode
@@ -203,7 +205,7 @@ public class BuildingView
             };
             
             constructionNode.HexPosition = constructionUpdated.Position;
-            _gameNode.MapNode.AddChild(constructionNode);
+            EntitiesNode.AddChild(constructionNode);
         }
         else
         {
@@ -214,7 +216,7 @@ public class BuildingView
 
     private void OnConstructionRemoved(ConstructionRemoved constructionRemoved)
     {
-        var constructionNode = _gameNode.MapNode.GetNodeOrNull<HexagonNode>(constructionRemoved.Id);
-        _gameNode.MapNode.RemoveChild(constructionNode);
+        var constructionNode = EntitiesNode.GetNodeOrNull<HexagonNode>(constructionRemoved.Id);
+        EntitiesNode.RemoveChild(constructionNode);
     }
 }
