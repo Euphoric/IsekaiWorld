@@ -62,7 +62,6 @@ public class BuildingView
             var texture = ResourceLoader.Load<Texture2D>(textureResource);
             sprite.Texture = texture;
             sprite.Modulate = message.Definition.Color;
-            sprite.ZIndex = message.Position.R + 255;
 
             if (message.Definition == BuildingDefinitions.WoodenChair)
             {
