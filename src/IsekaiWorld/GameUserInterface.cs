@@ -92,7 +92,15 @@ public class GameUserInterface
     public GameUserInterface(GameEntity game)
     {
         _game = game;
-        Messaging = new MessagingEndpoint(_ => { });
+        Messaging = new MessagingEndpoint(HandleMessage);
+    }
+
+    private void HandleMessage(IEntityMessage mssg)
+    {
+        if (mssg is DesignationToolSelect msg)
+        {
+            DesignateTool(msg.Designation);
+        }
     }
 
     public HexagonDirection ConstructionRotation { get; set; }
@@ -206,18 +214,12 @@ public class GameUserInterface
         _currentItemSelection = itemDefinition;
     }
 
-    public void DesignateCutWoodSelected()
+    private void DesignateTool(DesignationDefinition designation)
     {
         _currentTool = Tool.Designate;
-        _currentDesignation = DesignationDefinitions.CutWood;
+        _currentDesignation = designation;
     }
     
-    public void DesignateDeconstructSelected()
-    {
-        _currentTool = Tool.Designate;
-        _currentDesignation = DesignationDefinitions.Deconstruct;
-    }
-
     public void SetSpeed(int speed)
     {
         _game.Speed = speed;
@@ -237,12 +239,6 @@ public class GameUserInterface
     }
 }
 
-public class SelectionChanged : IEntityMessage
-{
-    public string? SelectionLabel { get; }
+record SelectionChanged(string? SelectionLabel) : IEntityMessage;
 
-    public SelectionChanged(string? selectionLabel)
-    {
-        SelectionLabel = selectionLabel;
-    }
-}
+record DesignationToolSelect(DesignationDefinition Designation) : IEntityMessage;

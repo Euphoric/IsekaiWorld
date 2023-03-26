@@ -52,24 +52,7 @@ public partial class UserInterface : CanvasLayer
         RotationOptionButton.Selected = 0;
         RotationOptionButton.ItemSelected += _on_rotation_selected;
 
-        {
-            var designationButton = GetNode<Button>("BottomMenuArea/BottomMenu/DesignationButton");
-            designationButton.Pressed += _on_DesignationButton_pressed;
-
-            {
-                var cutWoodButton = new Button();
-                cutWoodButton.Text = "Cut wood";
-                cutWoodButton.Pressed += _on_CutWoodButton_pressed;
-                DesignationContainer.AddChild(cutWoodButton);
-            }
-
-            {
-                var deconstructButton = new Button();
-                deconstructButton.Text = "Deconstruct";
-                deconstructButton.Pressed += _on_DeconstructButton_pressed;
-                DesignationContainer.AddChild(deconstructButton);
-            }
-        }
+        SetUpDesignations();
 
         {
             var debugButton = GetNode<Button>("BottomMenuArea/BottomMenu/DebugButton");
@@ -86,6 +69,26 @@ public partial class UserInterface : CanvasLayer
         PlaceItemContainer.Visible = false;
         DesignationContainer.Visible = false;
         DebugContainer.Visible = false;
+    }
+
+    private void SetUpDesignations()
+    {
+        var designationButton = GetNode<Button>("BottomMenuArea/BottomMenu/DesignationButton");
+        designationButton.Pressed += _on_DesignationButton_pressed;
+
+        void OnDesignationToolButtonPressed(DesignationDefinition designation)
+        {
+            Messaging.Broadcast(new DesignationToolSelect(designation));
+            ToolLabel.Text = designation.Title;
+        }
+
+        foreach (var designation in DesignationDefinitions.All)
+        {
+            var button = new Button();
+            button.Text = designation.Title;
+            button.Pressed += () => OnDesignationToolButtonPressed(designation);
+            DesignationContainer.AddChild(button);
+        }
     }
 
     public Label ToolLabel => GetNode<Label>("BottomMenuArea/ToolLabel");
@@ -254,17 +257,5 @@ public partial class UserInterface : CanvasLayer
     public void _on_rotation_selected(long index)
     {
         _gameUserInterface.ConstructionRotation = (HexagonDirection)index;
-    }
-
-    private void _on_CutWoodButton_pressed()
-    {
-        _gameUserInterface.DesignateCutWoodSelected();
-        ToolLabel.Text = "Cut tree";
-    }
-
-    private void _on_DeconstructButton_pressed()
-    {
-        _gameUserInterface.DesignateDeconstructSelected();
-        ToolLabel.Text = "Deconstruct";
     }
 }
