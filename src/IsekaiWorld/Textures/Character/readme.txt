@@ -1,7 +1,5 @@
-Textures from Imozou's mods
-https://steamcommunity.com/sharedfiles/filedetails/?id=2645457599
-https://steamcommunity.com/sharedfiles/filedetails/?id=2645457078
-https://steamcommunity.com/sharedfiles/filedetails/?id=2660249018
+Bodies and apparel from Xeva's bodies
+https://steamcommunity.com/sharedfiles/filedetails/?id=2017782001
 
 AFU's hairs
 https://steamcommunity.com/sharedfiles/filedetails/?id=2020779666
