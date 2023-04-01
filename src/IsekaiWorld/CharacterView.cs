@@ -37,6 +37,14 @@ public class CharacterView
             HexPosition = HexCubeCoord.Zero,
             Color = Colors.Blue
         };
+        CharacterNode character = new CharacterNode();
+        character.Scale = Vector2.One * 0.017f;
+        character.BodyType = "Female";
+        character.Clothes = "DameDress/DameDress";
+        character.Hair = "Hair_Female/AFUf08";
+        character.HairColor = new Color("FAF0BE");
+        characterHexagon.AddChild(character);
+        
         var mapNode = _gameNode.EntitiesNode;
         mapNode.AddChild(characterHexagon);
     }
