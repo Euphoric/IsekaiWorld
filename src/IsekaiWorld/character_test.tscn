@@ -1,6 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://7hmd2jfomak1"]
+[gd_scene load_steps=13 format=3 uid="uid://7hmd2jfomak1"]
 
 [ext_resource type="Texture2D" uid="uid://rt4jqkpbiil7" path="res://Textures/Character/Bodies/Naked_Male_south.png" id="1_jssng"]
+[ext_resource type="Script" path="res://CharacterTest.cs" id="1_ob4t2"]
 [ext_resource type="Texture2D" uid="uid://c6eehhorwvts1" path="res://Textures/Character/Apparel/ShirtBasic/ShirtBasic_Male_south.png" id="2_cpo7o"]
 [ext_resource type="Texture2D" uid="uid://bp74koy774rg7" path="res://Textures/Character/Apparel/Jacket/Jacket_Male_south.png" id="4_fbcaa"]
 [ext_resource type="Texture2D" uid="uid://mpwrf177h6h0" path="res://Textures/Character/Heads/Male/Male_Average_Normal_south.png" id="5_3c37r"]
@@ -9,13 +10,14 @@
 [ext_resource type="Texture2D" uid="uid://c8b4l543fhvgs" path="res://Textures/Character/Bodies/Naked_Female_east.png" id="7_g2wxu"]
 [ext_resource type="Texture2D" uid="uid://dt0rjgvqfel8" path="res://Textures/Character/Apparel/DameDress/DameDress_Female_east.png" id="8_dwjiq"]
 [ext_resource type="Texture2D" uid="uid://dqfuy0e18s6rf" path="res://Textures/Character/Heads/Female/Female_Average_Wide_east.png" id="8_rqerp"]
+[ext_resource type="Texture2D" uid="uid://di4m122rnppo0" path="res://Textures/Character/Apparel/Cape/Cape_Female_east.png" id="10_l3b0m"]
 [ext_resource type="Texture2D" uid="uid://b2vkf0bpvu6rp" path="res://Textures/Character/Hair_female/AFUf08_east.png" id="12_lctt6"]
 
 [node name="CharacterTest" type="Node2D"]
+script = ExtResource("1_ob4t2")
 
 [node name="Man" type="Node2D" parent="."]
-position = Vector2(915, 145)
-scale = Vector2(2, 2)
+position = Vector2(76, 83)
 
 [node name="Body" type="Sprite2D" parent="Man"]
 texture = ExtResource("1_jssng")
@@ -40,14 +42,16 @@ texture = ExtResource("6_0bbmf")
 texture = ExtResource("6_mamq1")
 
 [node name="Woman" type="Node2D" parent="."]
-position = Vector2(334, 114)
-scale = Vector2(2, 2)
+position = Vector2(199, 85)
 
 [node name="NakedFemaleEast" type="Sprite2D" parent="Woman"]
 texture = ExtResource("7_g2wxu")
 
 [node name="DameDressFemaleEast" type="Sprite2D" parent="Woman"]
 texture = ExtResource("8_dwjiq")
+
+[node name="CapeFemaleEast" type="Sprite2D" parent="Woman"]
+texture = ExtResource("10_l3b0m")
 
 [node name="Head" type="Node2D" parent="Woman"]
 position = Vector2(0, -32)
