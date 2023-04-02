@@ -166,4 +166,40 @@ public readonly struct HexCubeCoord : IEquatable<HexCubeCoord>
     {
         return !left.Equals(right);
     }
+
+    public HexagonDirection DirectionTo(HexCubeCoord neighbor)
+    {
+        var diffR = neighbor.R - R;
+        var diffS = neighbor.S - S;
+        var diffQ = neighbor.Q - Q;
+
+        if (diffR == 1 && diffS == -1)
+        {
+            return HexagonDirection.BottomRight;
+        }
+        if (diffR == 1 && diffQ == -1)
+        {
+            return HexagonDirection.BottomLeft;
+        }
+        if (diffR == -1 && diffS == 1)
+        {
+            return HexagonDirection.TopLeft;
+        }
+        if (diffR == -1 && diffQ == 1)
+        {
+            return HexagonDirection.TopRight;
+        }
+
+        if (diffQ == -1 && diffS == 1)
+        {
+            return HexagonDirection.Left;
+        }
+
+        if (diffQ == 1 && diffS == -1)
+        {
+            return HexagonDirection.Right;
+        }
+
+        throw new ArgumentException("Neighbor must be cell next to this one.");
+    }
 }
