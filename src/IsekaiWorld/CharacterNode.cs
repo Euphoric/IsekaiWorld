@@ -15,8 +15,9 @@ public partial class CharacterNode : Node2D
         get => _direction;
         set
         {
+            if (_direction != value)
+                _isDirty = true;               
             _direction = value;
-            _isDirty = true;
         }
     }
 
@@ -70,7 +71,7 @@ public partial class CharacterNode : Node2D
         }
     }
 
-    public override void _Ready()
+    public override void _Process(double delta)
     {
         if (!_isDirty)
             return;
@@ -125,5 +126,7 @@ public partial class CharacterNode : Node2D
         characterNode.AddChild(headNode);
 
         AddChild(characterNode);
+
+        base._Process(delta);
     }
 }

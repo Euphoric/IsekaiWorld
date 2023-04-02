@@ -54,12 +54,14 @@ public class MovementActivity : Activity
         if (_movementQueue != null && _movementQueue.Any())
         {
             _movementTimer += 1;
-            var delayBetweenCells = 5f;
+            var delayBetweenCells = 15f;
             if (_movementTimer > delayBetweenCells)
             {
                 _movementTimer -= delayBetweenCells;
                 var nextPosition = _movementQueue.Dequeue();
+                var facingDirection = _charater.Position.DirectionTo(nextPosition);
                 _charater.Position = nextPosition;
+                _charater.FacingDirection = facingDirection;
             }
         }
         

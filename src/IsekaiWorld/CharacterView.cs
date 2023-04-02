@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 public class CharacterView
@@ -35,9 +36,10 @@ public class CharacterView
         {
             Name = message.EntityId,
             HexPosition = HexCubeCoord.Zero,
-            Color = Colors.Blue
+            Color = Colors.Transparent
         };
         CharacterNode character = new CharacterNode();
+        character.Name = "CharacterSpriteNode";
         character.Scale = Vector2.One * 0.017f;
         character.BodyType = "Female";
         character.Clothes = "DameDress/DameDress";
@@ -53,5 +55,28 @@ public class CharacterView
     {
         var node = _gameNode.EntitiesNode.GetNode<HexagonNode>(message.EntityId);
         node.HexPosition = message.Position;
+        var cn = node.GetNode<CharacterNode>("CharacterSpriteNode")!;
+        cn.Direction = ToCharacterDirection(message.FacingDirection);
+    }
+
+    private string ToCharacterDirection(HexagonDirection direction)
+    {
+        switch (direction)
+        {
+            case HexagonDirection.Right:
+                return "east";
+            case HexagonDirection.BottomRight:
+                return "south";
+            case HexagonDirection.BottomLeft:
+                return "south";
+            case HexagonDirection.Left:
+                return "west";
+            case HexagonDirection.TopLeft:
+                return "north";
+            case HexagonDirection.TopRight:
+                return "north";
+            default:
+                throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+        }
     }
 }

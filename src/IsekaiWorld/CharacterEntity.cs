@@ -21,7 +21,8 @@ public class CharacterEntity : IEntity, IItemHolder
     private bool _initialized;
 
     public double Hunger { get; set; }
-    
+    public HexagonDirection FacingDirection { get; set; }
+
     public CharacterEntity(GameEntity game, string label)
     {
         Messaging = new(MessageHandler);
@@ -60,7 +61,7 @@ public class CharacterEntity : IEntity, IItemHolder
             Hunger -= hungerRate;
         }
 
-        Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Position, CurrentActivity?.GetType().Name, Hunger));
+        Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Position, FacingDirection, CurrentActivity?.GetType().Name, Hunger));
     }
     
     private void MessageHandler(IEntityMessage msgg)
@@ -92,6 +93,6 @@ public class CharacterEntity : IEntity, IItemHolder
     }
 }
 
-public record CharacterUpdated(String EntityId, HexCubeCoord Position, String? ActivityName, double Hunger) : IEntityMessage;
+public record CharacterUpdated(String EntityId, HexCubeCoord Position, HexagonDirection FacingDirection, String? ActivityName, double Hunger) : IEntityMessage;
 
 public record SetCharacterHunger(String EntityId, double Hunger) : IEntityMessage;
