@@ -30,22 +30,22 @@ public partial class MapCamera : Camera2D
         var velocity = Vector2.Zero;
         if (Input.IsActionPressed("move_right"))
         {
-            velocity -= Vector2.Right;
+            velocity += Vector2.Right;
         }
 
         if (Input.IsActionPressed("move_left"))
         {
-            velocity -= Vector2.Left;
+            velocity += Vector2.Left;
         }
 
         if (Input.IsActionPressed("move_up"))
         {
-            velocity -= Vector2.Up;
+            velocity += Vector2.Up;
         }
 
         if (Input.IsActionPressed("move_down"))
         {
-            velocity -= Vector2.Down;
+            velocity += Vector2.Down;
         }
 
         float speed = 400;
