@@ -103,7 +103,7 @@ public class GameTestInstance
     private bool UpdateUntilInner(Func<GameTestStep, bool> check, int maxSteps)
     {
         int steps = 0;
-        while (!check(new GameTestStep(_game)))
+        while (!check(new GameTestStep(this)))
         {
             if (steps >= maxSteps)
             {

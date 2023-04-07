@@ -193,7 +193,7 @@ namespace IsekaiWorld
             game.UpdateUntil(NoItemsOutsideStockpile);
         }
 
-        private static List<ItemEntity> ItemsOutsideStockpiles(GameEntity game)
+        private static List<ItemTestView> ItemsOutsideStockpiles(GameTestInstance game)
         {
             var stockpilePositions =
                 game.Buildings
