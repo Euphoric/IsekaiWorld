@@ -31,6 +31,11 @@ public class BuildingEntity : IEntity
 
     public bool IsRemoved { get; private set; }
 
+    public void Initialize()
+    {
+        Messaging.Broadcast(new BuildingUpdated(Position, Definition, Id.ToString(), Rotation, Designation));
+    }
+    
     public void Update()
     {
         if (_toRemove)

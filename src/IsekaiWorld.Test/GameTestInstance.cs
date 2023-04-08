@@ -43,7 +43,9 @@ public class GameTestInstance
         BuildingDefinition building)
     {
         var buildingEntity = _game.SpawnBuilding(position, direction, building);
-        return _buildingTestViews.GetOrAdd(buildingEntity.Id.ToString(), id => new BuildingTestView(id));
+        var buildingTestView = _buildingTestViews.GetOrAdd(buildingEntity.Id.ToString(), id => new BuildingTestView(id));
+        _messageHub.DistributeMessages();
+        return buildingTestView;
     }
 
     public CharacterTestView AddCharacter(string name, HexCubeCoord position, bool disableHunger = false)
@@ -149,7 +151,9 @@ public class GameTestInstance
     public ItemTestView SpawnItem(HexCubeCoord position, ItemDefinition item, int quantity)
     {
         var itemEntity = _game.SpawnItem(position, item, quantity);
-        return _itemTestViews.GetOrAdd(itemEntity.EntityId.ToString(), id => new ItemTestView(id));
+        var itemTestView = _itemTestViews.GetOrAdd(itemEntity.EntityId.ToString(), id => new ItemTestView(id));
+        _messageHub.DistributeMessages();
+        return itemTestView;
     }
 
     public void Designate(HexCubeCoord position, DesignationDefinition designation)

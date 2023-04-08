@@ -59,7 +59,6 @@ namespace IsekaiWorld
             game.StartConstruction(position, HexagonDirection.Left, ConstructionDefinitions.StoneWall);
 
             game.UpdateUntil(NoActiveConstructions);
-            game.Update(); // TODO Remove
 
             game.Buildings
                 .Select(x => new { x.Definition, x.Position })
@@ -85,7 +84,6 @@ namespace IsekaiWorld
             }
 
             game.UpdateUntil(NoActiveConstructions, maxSteps: 10000);
-            game.Update(); // TODO Remove
 
             var buildingPositions = game.Buildings.Select(x => x.Position).ToHashSet();
 
@@ -178,8 +176,6 @@ namespace IsekaiWorld
                 }
             }
 
-            game.Update(); // TODO Remove
-
             var totalItemCountStart = game.Items.GroupBy(x => x.Definition)
                 .Select(grp => new { Definition = grp.Key, Count = grp.Sum(x => x.Count) }).ToList();
 
@@ -236,7 +232,6 @@ namespace IsekaiWorld
 
             var tree = game.SpawnBuilding(new HexCubeCoord(5, -3, -2), HexagonDirection.Left,
                 BuildingDefinitions.Plant.TreeOak);
-            game.Update(); // TODO Remove
 
             game.Designate(tree.Position, DesignationDefinitions.CutWood);
 
@@ -364,7 +359,6 @@ namespace IsekaiWorld
 
             var building = game.SpawnBuilding(new HexCubeCoord(1, 1, -2), HexagonDirection.Left,
                 BuildingDefinitions.WoodenWall);
-            game.Update(); // TODO Remove
 
             game.Designate(building.Position, DesignationDefinitions.Deconstruct);
 

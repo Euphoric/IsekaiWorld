@@ -10,7 +10,7 @@ public interface IItemHolder
 public class ItemEntity : IEntity
 {
     private readonly GameEntity _game;
-    public MessagingEndpoint Messaging { get; } = new MessagingEndpoint();
+    public MessagingEndpoint Messaging { get; } = new();
 
     private bool _toRemove;
     public bool IsRemoved { get; private set; }
@@ -64,6 +64,11 @@ public class ItemEntity : IEntity
         _isDirty = true;
     }
 
+    public void Initialize()
+    {
+        Messaging.Broadcast(new ItemUpdated(EntityId.ToString(), Definition, Count, Position));
+    }
+    
     public void Update()
     {
         if (IsRemoved)

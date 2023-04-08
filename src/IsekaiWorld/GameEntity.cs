@@ -120,7 +120,8 @@ public class GameEntity
     {
         var buildingEntity = new BuildingEntity(position, rotation, buildingDefinition);
         AddEntity(buildingEntity);
-
+        buildingEntity.Initialize();
+        
         var stuckCharacter = _entities.OfType<CharacterEntity>().FirstOrDefault(c => c.Position == position);
         if (stuckCharacter != null)
         {
@@ -166,6 +167,7 @@ public class GameEntity
             var itemEntity = new ItemEntity(this, position, item, count);
             itemEntity.SetHolder(MapItems);
             AddEntity(itemEntity);
+            itemEntity.Initialize();
             return itemEntity;
         }
         else
