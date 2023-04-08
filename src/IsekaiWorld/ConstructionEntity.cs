@@ -5,14 +5,14 @@ using System.Linq;
 public class ConstructionEntity : IEntity
 {
     public MessagingEndpoint Messaging { get; } = new MessagingEndpoint();
-    
+
     private bool _isDirty;
     public bool IsRemoved { get; private set; }
 
     public Guid Id { get; }
- 
+
     private float _progress;
-    
+
     public HexCubeCoord Position { get; }
     public HexagonDirection Rotation { get; }
     public ISet<HexCubeCoord> OccupiedCells => new HashSet<HexCubeCoord> { Position };
@@ -24,7 +24,7 @@ public class ConstructionEntity : IEntity
         Position = position;
         Rotation = rotation;
         Definition = definition;
-        
+
         _isDirty = true;
     }
 
@@ -49,8 +49,7 @@ public class ConstructionEntity : IEntity
         {
             Messaging.Broadcast(new ConstructionRemoved(Id.ToString()));
         }
-        
-        if (_isDirty)
+        else if (_isDirty)
         {
             Messaging.Broadcast(new ConstructionUpdated(Id.ToString(), Position, ProgressRelative));
             _isDirty = false;
@@ -71,24 +70,24 @@ public class ConstructionEntity : IEntity
 
 public class ConstructionUpdated : IEntityMessage
 {
-    public ConstructionUpdated(string id, HexCubeCoord position, float progressRelative)
+    public ConstructionUpdated(string entityId, HexCubeCoord position, float progressRelative)
     {
-        Id = id;
+        EntityId = entityId;
         Position = position;
         ProgressRelative = progressRelative;
     }
 
-    public String Id { get; }
+    public String EntityId { get; }
     public HexCubeCoord Position { get; }
     public float ProgressRelative { get; }
 }
 
 public class ConstructionRemoved : IEntityMessage
 {
-    public ConstructionRemoved(string id)
+    public ConstructionRemoved(string entityId)
     {
-        Id = id;
+        EntityId = entityId;
     }
 
-    public String Id { get; }
+    public String EntityId { get; }
 }

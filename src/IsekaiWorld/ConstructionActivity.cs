@@ -39,19 +39,18 @@ public class ConstructionActivity : Activity
             {
                 IsFinished = true;
                 Construction.RemoveEntity();
-                ConstructionEntity construction = Construction;
-                if (construction.Definition.PlaceBuildingId != null)
+                if (Construction.Definition.PlaceBuildingId != null)
                 {
-                    var buildingDefinition = BuildingDefinitions.GetById(construction.Definition.PlaceBuildingId);
-                    Game.SpawnBuilding(construction.Position, construction.Rotation, buildingDefinition);
+                    var buildingDefinition = BuildingDefinitions.GetById(Construction.Definition.PlaceBuildingId);
+                    Game.SpawnBuilding(Construction.Position, Construction.Rotation, buildingDefinition);
                 }
-                else if (construction.Definition.PlaceFloorId != null)
+                else if (Construction.Definition.PlaceFloorId != null)
                 {
                     // TODO
                 }
                 else
                 {
-                    throw new Exception("Invalid construction setup for: " + construction.Definition.Id);
+                    throw new Exception("Invalid construction setup for: " + Construction.Definition.Id);
                 }
             }
         }

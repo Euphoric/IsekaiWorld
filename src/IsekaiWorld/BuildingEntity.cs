@@ -41,7 +41,6 @@ public class BuildingEntity : IEntity
         else if (_isDirty)
         {
             Messaging.Broadcast(new BuildingUpdated(Position, Definition, Id.ToString(), Rotation, Designation));
-
             _isDirty = false;
         }
     }

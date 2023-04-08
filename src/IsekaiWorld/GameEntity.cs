@@ -69,11 +69,12 @@ public class GameEntity
         Messaging.Broadcast(new SurfaceChanged(GameMap.Cells));
     }
 
-    public CharacterEntity AddCharacter(string label)
+    public CharacterEntity AddCharacter(string label, bool disableHunger = false)
     {
         var characterEntity = new CharacterEntity(this, label)
         {
             Position = HexCubeCoord.Zero,
+            DisableHunger = disableHunger
         };
 
         AddEntity(characterEntity);

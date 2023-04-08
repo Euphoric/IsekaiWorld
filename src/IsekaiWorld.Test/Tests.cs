@@ -34,7 +34,7 @@ namespace IsekaiWorld
         public void Character_stuck_in_wall_issue_verification()
         {
             var game = CreateGame();
-            
+
             var building = game.SpawnBuilding(HexCubeCoord.Zero, HexagonDirection.Left, BuildingDefinitions.StoneWall);
 
             var character = game.AddCharacter("Test guy", building.Position);
@@ -43,7 +43,8 @@ namespace IsekaiWorld
             game.Update(); // receive msg
 
             var issues = game.CheckForIssues().ToList();
-            var characterStuckIssue = issues.Any(s => s == $"Character '{character.Label}' stuck on impassable surface on {character.Position}");
+            var characterStuckIssue = issues.Any(s =>
+                s == $"Character '{character.Label}' stuck on impassable surface on {character.Position}");
             Assert.True(characterStuckIssue);
         }
 
@@ -54,21 +55,41 @@ namespace IsekaiWorld
 
             game.AddCharacter("Test guy", HexCubeCoord.Zero);
 
+            var position = new HexCubeCoord(-4, 3, 1);
+            game.StartConstruction(position, HexagonDirection.Left, ConstructionDefinitions.StoneWall);
+
+            game.UpdateUntil(NoActiveConstructions);
+            game.Update(); // TODO Remove
+
+            game.Buildings
+                .Select(x => new { x.Definition, x.Position })
+                .Should().Contain(new { Definition = BuildingDefinitions.StoneWall, Position = position });
+        }
+
+        [Fact]
+        public void Construction_test_many()
+        {
+            var game = CreateGame();
+
+            game.AddCharacter("Test guy", HexCubeCoord.Zero);
+
+            var constructions = new List<ConstructionTestView>();
             foreach (var cell in game.GameMap.Cells)
             {
                 if (cell.Position.R == cell.Position.Q && cell.Position.DistanceFrom(HexCubeCoord.Zero) <= 6)
                 {
-                    game.StartConstruction(cell.Position, HexagonDirection.Left, ConstructionDefinitions.StoneWall);
+                    var construction = game.StartConstruction(cell.Position, HexagonDirection.Left,
+                        ConstructionDefinitions.StoneWall);
+                    constructions.Add(construction);
                 }
             }
 
-            var constructionPositions = game.Constructions.Select(x => x.Position).ToHashSet();
-
-            game.UpdateUntil(NoActiveConstructions);
+            game.UpdateUntil(NoActiveConstructions, maxSteps: 10000);
+            game.Update(); // TODO Remove
 
             var buildingPositions = game.Buildings.Select(x => x.Position).ToHashSet();
 
-            buildingPositions.Should().BeEquivalentTo(constructionPositions);
+            buildingPositions.Should().BeEquivalentTo(constructions.Select(x => x.Position));
         }
 
         [Fact(Skip = "Fix")]
@@ -108,23 +129,24 @@ namespace IsekaiWorld
             var position = new HexCubeCoord(-1, -1, 2);
             game.SpawnItem(position, ItemDefinitions.Wood, 13);
             game.Update();
-            
+
             game.Items.Select(x => new { x.Position, x.Definition, x.Count })
                 .Should()
                 .Contain(new { Position = position, Definition = ItemDefinitions.Wood, Count = 13 });
         }
-        
+
         [Fact]
         public void Items_hauling_test_simple()
         {
             var game = CreateGame();
 
-            game.AddCharacter("Test guy", HexCubeCoord.Zero);
-            
-            var stockpile=  game.SpawnStockpile(new HexCubeCoord(1, 1, -2));
+            var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
+
+            var stockpile = game.SpawnStockpile(new HexCubeCoord(1, 1, -2));
             game.SpawnItem(new HexCubeCoord(-1, -1, 2), ItemDefinitions.Wood, 1);
 
             game.UpdateUntil(NoItemsOutsideStockpile);
+            game.UpdateUntil(_ => character.ActivityName == null);
 
             game.Items.Select(x => new { x.Position, x.Definition, x.Count })
                 .Should()
@@ -141,8 +163,8 @@ namespace IsekaiWorld
         {
             var game = CreateGame();
 
-            game.AddCharacter("Test guy", HexCubeCoord.Zero);
-
+            var character = game.AddCharacter("Test guy", HexCubeCoord.Zero, disableHunger:true);
+            
             game.SpawnStockpile(new HexCubeCoord(0, 0, 0));
             game.SpawnStockpile(new HexCubeCoord(1, 0, -1));
 
@@ -155,12 +177,14 @@ namespace IsekaiWorld
                     game.SpawnItem(mapCell.Position, typeDivide ? ItemDefinitions.Wood : ItemDefinitions.Grains, 1);
                 }
             }
-            game.Update();
-            
+
+            game.Update(); // TODO Remove
+
             var totalItemCountStart = game.Items.GroupBy(x => x.Definition)
                 .Select(grp => new { Definition = grp.Key, Count = grp.Sum(x => x.Count) }).ToList();
 
-            game.UpdateUntil(NoItemsOutsideStockpile, maxSteps: 5000);
+            game.UpdateUntil(NoItemsOutsideStockpile, maxSteps: 10000);
+            game.UpdateUntil(_ => character.ActivityName == null);
 
             var multipleItemsOnSamePositions =
                 game.Items.GroupBy(it => it.Position)
@@ -210,18 +234,21 @@ namespace IsekaiWorld
 
             game.AddCharacter("Test guy", HexCubeCoord.Zero);
 
-            var tree = game.SpawnBuilding(new HexCubeCoord(5, -3, -2), HexagonDirection.Left, BuildingDefinitions.Plant.TreeOak);
+            var tree = game.SpawnBuilding(new HexCubeCoord(5, -3, -2), HexagonDirection.Left,
+                BuildingDefinitions.Plant.TreeOak);
+            game.Update(); // TODO Remove
 
             game.Designate(tree.Position, DesignationDefinitions.CutWood);
-            
+
             tree.Designation.Should().Be(DesignationDefinitions.CutWood);
-            
-            game.UpdateUntil(_ =>
+
+            game.UpdateUntil(gts =>
             {
-                var entitiesOn = game.EntitiesOn(tree.Position);
-                var treesExist = entitiesOn.OfType<BuildingEntity>()
-                    .Any(b => b.Definition == BuildingDefinitions.Plant.TreeOak);
-                var woodSpawned = entitiesOn.OfType<ItemEntity>().Any(i => i.Definition == ItemDefinitions.Wood);
+                var treesExist = gts.Game.Buildings
+                    .Any(b => b.Position == tree.Position && b.Definition == BuildingDefinitions.Plant.TreeOak);
+                var woodSpawned = gts.Game.Items.Any(
+                    i => i.Position == tree.Position && i.Definition == ItemDefinitions.Wood
+                );
                 return !treesExist && woodSpawned;
             });
         }
@@ -262,14 +289,19 @@ namespace IsekaiWorld
 
             game.AddCharacter("Test guy", HexCubeCoord.Zero);
 
-            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
-            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
-            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
-            
+            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right, HexagonDirection.Left,
+                ConstructionDefinitions.TestWoodenWall);
+            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right,
+                HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
+            game.StartConstruction(
+                HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right + HexagonDirection.Right,
+                HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
+
             game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood, 1);
             game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left + HexagonDirection.Left, ItemDefinitions.Wood, 1);
-            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left + HexagonDirection.Left + HexagonDirection.Left, ItemDefinitions.Wood, 1);
-            
+            game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left + HexagonDirection.Left + HexagonDirection.Left,
+                ItemDefinitions.Wood, 1);
+
             game.UpdateUntil(NoActiveConstructions);
 
             var remainingItems = game.Items.Any();
@@ -283,7 +315,8 @@ namespace IsekaiWorld
 
             game.AddCharacter("Test guy", HexCubeCoord.Zero);
 
-            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
+            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right, HexagonDirection.Left,
+                ConstructionDefinitions.TestWoodenWall);
 
             // wait for game to stabilize (or wait for pawn to not have a valid job)
             for (int i = 0; i < 100; i++)
@@ -298,7 +331,7 @@ namespace IsekaiWorld
             var remainingItems = game.Items.Any();
             remainingItems.Should().BeFalse();
         }
-        
+
         [Fact]
         public void Multiple_constructions_from_single_item_stack()
         {
@@ -306,10 +339,14 @@ namespace IsekaiWorld
 
             game.AddCharacter("Test guy", HexCubeCoord.Zero);
 
-            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
-            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
-            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right + HexagonDirection.Right, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
-            
+            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right, HexagonDirection.Left,
+                ConstructionDefinitions.TestWoodenWall);
+            game.StartConstruction(HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right,
+                HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
+            game.StartConstruction(
+                HexCubeCoord.Zero + HexagonDirection.Right + HexagonDirection.Right + HexagonDirection.Right,
+                HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
+
             game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.Left, ItemDefinitions.Wood, 3);
 
             game.UpdateUntil(NoActiveConstructions);
@@ -317,7 +354,7 @@ namespace IsekaiWorld
             var remainingItems = game.Items.Any();
             remainingItems.Should().BeFalse();
         }
-        
+
         [Fact]
         public void Deconstruct_building()
         {
@@ -325,14 +362,16 @@ namespace IsekaiWorld
 
             var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
 
-            var building = game.SpawnBuilding(new HexCubeCoord(1, 1, -2), HexagonDirection.Left, BuildingDefinitions.WoodenWall);
-            
+            var building = game.SpawnBuilding(new HexCubeCoord(1, 1, -2), HexagonDirection.Left,
+                BuildingDefinitions.WoodenWall);
+            game.Update(); // TODO Remove
+
             game.Designate(building.Position, DesignationDefinitions.Deconstruct);
-            
+
             building.Designation.Should().Be(DesignationDefinitions.Deconstruct);
-            
-            game.UpdateUntil(_=>character.ActivityName == "DeconstructActivity");
-            
+
+            game.UpdateUntil(_ => character.ActivityName == "DeconstructActivity");
+
             game.UpdateUntil(gts => !gts.Game.EntitiesOn(building.Position).Any());
         }
 
@@ -341,11 +380,13 @@ namespace IsekaiWorld
         {
             var game = CreateGame();
 
-            var building = game.SpawnBuilding(new HexCubeCoord(1, 1, -2), HexagonDirection.Left, BuildingDefinitions.WoodenWall);
-            var tree = game.SpawnBuilding(new HexCubeCoord(5, -3, -2), HexagonDirection.Left, BuildingDefinitions.Plant.TreeOak);
+            var building = game.SpawnBuilding(new HexCubeCoord(1, 1, -2), HexagonDirection.Left,
+                BuildingDefinitions.WoodenWall);
+            var tree = game.SpawnBuilding(new HexCubeCoord(5, -3, -2), HexagonDirection.Left,
+                BuildingDefinitions.Plant.TreeOak);
 
             game.Designate(building.Position, DesignationDefinitions.CutWood);
-            
+
             building.Designation.Should().BeNull();
 
             game.Designate(tree.Position, DesignationDefinitions.Deconstruct);
@@ -361,23 +402,23 @@ namespace IsekaiWorld
             game.Paused = true;
 
             game.AddCharacter("Test guy", HexCubeCoord.Zero);
-            
+
             var stockpile = game.SpawnStockpile(new HexCubeCoord(1, 1, -2));
             game.SpawnItem(new HexCubeCoord(-1, -1, 2), ItemDefinitions.Wood, 1);
 
             for (int i = 0; i < 100; i++)
             {
-                game.Update();                
+                game.Update();
             }
 
             var itemInStockpile = game.Items.Any(x => x.Position == stockpile.Position);
             Assert.False(itemInStockpile);
-            
+
             game.Paused = false;
-            
+
             game.UpdateUntil(NoItemsOutsideStockpile);
         }
-        
+
         [Fact]
         public void Pause_stops_construction()
         {
@@ -387,7 +428,8 @@ namespace IsekaiWorld
 
             game.AddCharacter("Test guy", HexCubeCoord.Zero);
 
-            var construction = game.StartConstruction(new HexCubeCoord(1, 1, -2), HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall)!;
+            var construction = game.StartConstruction(new HexCubeCoord(1, 1, -2), HexagonDirection.Left,
+                ConstructionDefinitions.TestWoodenWall)!;
             game.SpawnItem(new HexCubeCoord(-1, -1, 2), ItemDefinitions.Wood, 1);
 
             for (int i = 0; i < 100; i++)
@@ -398,7 +440,7 @@ namespace IsekaiWorld
             Assert.Equal(0, construction.Progress);
 
             game.Paused = false;
-            
+
             game.UpdateUntil(NoActiveConstructions);
         }
 
@@ -408,12 +450,14 @@ namespace IsekaiWorld
             var game = CreateGame();
 
             var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
-            
-            game.UpdateUntil(_=>0.98 < character.Hunger && character.Hunger < 1.0, because: "Character's hunger starts at 1");
 
-            game.UpdateUntil(_=>0.95 < character.Hunger && character.Hunger < 0.98, because: "Character's hunger must decrease");
+            game.UpdateUntil(_ => 0.98 < character.Hunger && character.Hunger < 1.0,
+                because: "Character's hunger starts at 1");
+
+            game.UpdateUntil(_ => 0.95 < character.Hunger && character.Hunger < 0.98,
+                because: "Character's hunger must decrease");
         }
-        
+
         [Fact]
         public void Character_hunger_decrease_stops_when_paused()
         {
@@ -421,14 +465,15 @@ namespace IsekaiWorld
 
             var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
 
-            game.UpdateUntil(_=>0.98 < character.Hunger && character.Hunger < 1.0, because: "Character's hunger starts at 1");
-            
+            game.UpdateUntil(_ => 0.98 < character.Hunger && character.Hunger < 1.0,
+                because: "Character's hunger starts at 1");
+
             game.Paused = true;
 
             var startHunger = character.Hunger;
-            
+
             game.Update();
-            
+
             Assert.Equal(startHunger, character.Hunger);
         }
 
@@ -441,16 +486,18 @@ namespace IsekaiWorld
             game.SpawnItem(HexCubeCoord.Zero, ItemDefinitions.Grains, 1);
 
             character.SetHungerTo(0.31);
-            game.UpdateUntil(_=>0.3 < character.Hunger && character.Hunger < 0.31, because: "Character should be close to hungry");
+            game.UpdateUntil(_ => 0.3 < character.Hunger && character.Hunger < 0.31,
+                because: "Character should be close to hungry");
 
             game.UpdateUntil(_ => character.ActivityName == "EatActivity");
-            
-            game.UpdateUntil(_=>0.98 < character.Hunger && character.Hunger < 1.0, because: "Character was unable to eat");
+
+            game.UpdateUntil(_ => 0.98 < character.Hunger && character.Hunger < 1.0,
+                because: "Character was unable to eat");
             game.Items.Should().BeEmpty();
-            
+
             game.UpdateUntil(_ => character.ActivityName == null);
         }
-        
+
         [Fact]
         public void Hungry_character_waits_for_food_to_be_available()
         {
@@ -459,19 +506,21 @@ namespace IsekaiWorld
             var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
 
             character.SetHungerTo(0.31);
-            
-            game.UpdateUntil(_=>0.27 < character.Hunger && character.Hunger < 0.28, because: "Character should be hungry without food.");
+
+            game.UpdateUntil(_ => 0.27 < character.Hunger && character.Hunger < 0.28,
+                because: "Character should be hungry without food.");
             character.ActivityName.Should().BeNull("Because there is no food to eat.");
 
             game.SpawnItem(HexCubeCoord.Zero, ItemDefinitions.Grains, 1);
-            
+
             game.UpdateUntil(_ => character.ActivityName == "EatActivity");
-            game.UpdateUntil(_=>0.98 < character.Hunger && character.Hunger < 1.0, because: "Character was unable to eat");
+            game.UpdateUntil(_ => 0.98 < character.Hunger && character.Hunger < 1.0,
+                because: "Character was unable to eat");
             game.UpdateUntil(_ => character.ActivityName == null);
-            
+
             game.Items.Should().BeEmpty();
         }
-        
+
         [Fact]
         public void Eating_consumes_only_one_piece()
         {

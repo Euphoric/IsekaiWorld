@@ -12,6 +12,11 @@ public class DesignationDefinition
     public string Id { get; }
     public string TexturePath { get; }
     public string Title { get; }
+
+    public override string ToString()
+    {
+        return $"[{Id}]";
+    }
 }
 
 public static class DesignationDefinitions

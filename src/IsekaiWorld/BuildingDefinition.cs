@@ -21,4 +21,9 @@ public class BuildingDefinition
         Impassable = impassable;
         AllowedDesignations = allowedDesignations ?? new HashSet<DesignationDefinition>();
     }
+
+    public override string ToString()
+    {
+        return $"[{Id}]";
+    }
 }

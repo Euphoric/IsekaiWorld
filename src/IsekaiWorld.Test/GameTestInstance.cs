@@ -13,6 +13,8 @@ public class GameTestInstance
 
     private readonly Dictionary<String, CharacterTestView> _characterTestViews = new();
     private readonly Dictionary<String, ItemTestView> _itemTestViews = new();
+    private readonly Dictionary<String, ConstructionTestView> _constructionTestViews = new();
+    private readonly Dictionary<String, BuildingTestView> _buildingTestViews = new();
 
     public GameTestInstance()
     {
@@ -27,8 +29,8 @@ public class GameTestInstance
     }
 
     public HexagonalMapEntity GameMap => _game.GameMap;
-    public IReadOnlyList<ConstructionEntity> Constructions => _game.Constructions;
-    public IReadOnlyList<BuildingEntity> Buildings => _game.Buildings;
+    public IReadOnlyList<ConstructionTestView> Constructions => _constructionTestViews.Values.ToList();
+    public IReadOnlyList<BuildingTestView> Buildings => _buildingTestViews.Values.ToList();
     public IReadOnlyList<ItemTestView> Items => _itemTestViews.Values.ToList();
 
     public bool Paused
@@ -37,14 +39,16 @@ public class GameTestInstance
         set => _game.Paused = value;
     }
 
-    public BuildingEntity SpawnBuilding(HexCubeCoord position, HexagonDirection direction, BuildingDefinition building)
+    public BuildingTestView SpawnBuilding(HexCubeCoord position, HexagonDirection direction,
+        BuildingDefinition building)
     {
-        return _game.SpawnBuilding(position, direction, building);
+        var buildingEntity = _game.SpawnBuilding(position, direction, building);
+        return _buildingTestViews.GetOrAdd(buildingEntity.Id.ToString(), id => new BuildingTestView(id));
     }
 
-    public CharacterTestView AddCharacter(string name, HexCubeCoord position)
+    public CharacterTestView AddCharacter(string name, HexCubeCoord position, bool disableHunger = false)
     {
-        var character = _game.AddCharacter(name);
+        var character = _game.AddCharacter(name, disableHunger:disableHunger);
         character.Position = position;
 
         var testView = new CharacterTestView(character.Id.ToString(), _messaging);
@@ -63,10 +67,12 @@ public class GameTestInstance
         return _game.CheckForIssues();
     }
 
-    public ConstructionEntity? StartConstruction(HexCubeCoord position, HexagonDirection direction,
+    public ConstructionTestView StartConstruction(HexCubeCoord position, HexagonDirection direction,
         ConstructionDefinition construction)
     {
-        return _game.StartConstruction(position, direction, construction);
+        var constructionEntity = _game.StartConstruction(position, direction, construction) ??
+                                 throw new Exception("Should start construction");
+        return _constructionTestViews.GetOrAdd(constructionEntity.Id.ToString(), id => new ConstructionTestView(id));
     }
 
     public void UpdateUntil(Func<GameTestStep, bool> check, int maxSteps = 1000, string? because = null)
@@ -85,8 +91,7 @@ public class GameTestInstance
         {
             _characterTestViews[cc.EntityId].UpdateFrom(cc);
         }
-
-        if (evnt is CharacterUpdated cu)
+        else if (evnt is CharacterUpdated cu)
         {
             _characterTestViews[cu.EntityId].UpdateFrom(cu);
         }
@@ -97,6 +102,22 @@ public class GameTestInstance
         else if (evnt is ItemPickedUp ipu)
         {
             _itemTestViews.Remove(ipu.EntityId);
+        }
+        else if (evnt is BuildingUpdated bu)
+        {
+            _buildingTestViews.GetOrAdd(bu.EntityId, id => new BuildingTestView(id)).UpdateFrom(bu);
+        }
+        else if (evnt is BuildingRemoved br)
+        {
+            _buildingTestViews.Remove(br.EntityId);
+        }
+        else if (evnt is ConstructionUpdated coUpd)
+        {
+            _constructionTestViews.GetOrAdd(coUpd.EntityId, id => new ConstructionTestView(id)).UpdateFrom(coUpd);
+        }
+        else if (evnt is ConstructionRemoved coRmv)
+        {
+            _constructionTestViews.Remove(coRmv.EntityId);
         }
     }
 
@@ -120,11 +141,9 @@ public class GameTestInstance
         return false;
     }
 
-    public BuildingEntity SpawnStockpile(HexCubeCoord position)
+    public BuildingTestView SpawnStockpile(HexCubeCoord position)
     {
-        var stockpile = new BuildingEntity(position, HexagonDirection.Left, BuildingDefinitions.StockpileZone);
-        _game.AddEntity(stockpile);
-        return stockpile;
+        return SpawnBuilding(position, HexagonDirection.Left, BuildingDefinitions.StockpileZone);
     }
 
     public ItemTestView SpawnItem(HexCubeCoord position, ItemDefinition item, int quantity)
@@ -136,6 +155,7 @@ public class GameTestInstance
     public void Designate(HexCubeCoord position, DesignationDefinition designation)
     {
         _game.Designate(position, designation);
+        Update();
     }
 
     public IReadOnlyList<IEntity> EntitiesOn(HexCubeCoord position)

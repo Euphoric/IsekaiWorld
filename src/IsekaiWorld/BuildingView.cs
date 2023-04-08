@@ -194,7 +194,7 @@ public class BuildingView
 
     private void OnConstructionUpdated(ConstructionUpdated constructionUpdated)
     {
-        var nodeName = constructionUpdated.Id;
+        var nodeName = constructionUpdated.EntityId;
         var constructioNode = EntitiesNode.GetNodeOrNull<HexagonNode>(nodeName);
         if (constructioNode == null)
         {
@@ -216,7 +216,7 @@ public class BuildingView
 
     private void OnConstructionRemoved(ConstructionRemoved constructionRemoved)
     {
-        var constructionNode = EntitiesNode.GetNodeOrNull<HexagonNode>(constructionRemoved.Id);
+        var constructionNode = EntitiesNode.GetNodeOrNull<HexagonNode>(constructionRemoved.EntityId);
         EntitiesNode.RemoveChild(constructionNode);
     }
 }

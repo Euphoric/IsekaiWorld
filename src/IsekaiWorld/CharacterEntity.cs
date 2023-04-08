@@ -22,6 +22,7 @@ public class CharacterEntity : IEntity, IItemHolder
 
     public double Hunger { get; set; }
     public HexagonDirection FacingDirection { get; set; }
+    public bool DisableHunger { get; set; }
 
     public CharacterEntity(GameEntity game, string label)
     {
@@ -57,8 +58,11 @@ public class CharacterEntity : IEntity, IItemHolder
 
         if (!_game.Paused)
         {
-            const double hungerRate = 0.0001;
-            Hunger -= hungerRate;
+            if (!DisableHunger)
+            {
+                const double hungerRate = 0.0001;
+                Hunger -= hungerRate;
+            }
         }
 
         Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Position, FacingDirection, CurrentActivity?.GetType().Name, Hunger));
