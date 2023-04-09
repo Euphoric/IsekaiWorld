@@ -48,7 +48,8 @@ public class GameEntity
         var deconstructJobGiver = new DeconstructJobGiver(this);
         var constructionJobGiver = new ConstructionJobGiver(this);
         var cutWoodJobGiver = new CutWoodJobGiver(this);
-        Jobs = new JobSystem(new IJobGiver[] { eatJobGiver, haulJobGiver, deconstructJobGiver, constructionJobGiver, cutWoodJobGiver });
+        var harvestJobGiver = new GatherJobGiver(this);
+        Jobs = new JobSystem(new IJobGiver[] { eatJobGiver, haulJobGiver, deconstructJobGiver, constructionJobGiver, cutWoodJobGiver, harvestJobGiver });
     }
 
     public void Initialize(IMapGenerator mapGenerator)

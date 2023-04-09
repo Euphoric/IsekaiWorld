@@ -532,5 +532,26 @@ namespace IsekaiWorld
                 .Should()
                 .Contain(new { Position = HexCubeCoord.Zero, Definition = ItemDefinitions.Grains, Count = 2 });
         }
+        
+        [Fact]
+        public void Gather_plant()
+        {
+            var game = CreateGame();
+
+            var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
+            game.SpawnItem(HexCubeCoord.Zero, ItemDefinitions.Grains, 3);
+
+            var riceEntity = game.SpawnBuilding(new HexCubeCoord(-2, 2, 0), HexagonDirection.Left, BuildingDefinitions.Plant.WildRice);
+
+            game.Designate(riceEntity.Position, DesignationDefinitions.Gather);
+
+            game.UpdateUntil(_ => riceEntity.Designation == DesignationDefinitions.Gather);
+            
+            game.UpdateUntil(_ => character.ActivityName == "GatherActivity");
+            game.UpdateUntil(_ => character.ActivityName == null);
+
+            game.Buildings.Should().NotContain(x => x.Position == riceEntity.Position);
+            game.Items.Should().Contain(x => x.Position == riceEntity.Position && x.Definition == ItemDefinitions.Grains && x.Count == 1);
+        }
     }
 }

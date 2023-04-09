@@ -89,7 +89,8 @@ public static class BuildingDefinitions
             new Dictionary<HexagonDirection, string>
             {
                 { HexagonDirection.Left, "res://Textures/Plant/RicePlant_Grown.png" }
-            }
+            },
+            allowedDesignations: new[] { DesignationDefinitions.Gather }.ToImmutableHashSet()
         );
     }
 

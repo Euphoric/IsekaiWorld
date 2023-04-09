@@ -23,10 +23,12 @@ public static class DesignationDefinitions
 {
     public static DesignationDefinition CutWood { get; } = new("Core.Designation.CutWood", "Textures/Designation/CutPlant.png", "Cut wood");
     public static DesignationDefinition Deconstruct { get; } = new("Core.Designation.Deconstruct", "Textures/Designation/Deconstruct.png", "Deconstruct");
-
+    public static DesignationDefinition Gather { get; } = new("Core.Designation.Gather", "Textures/Designation/Gather.png", "Gather");
+    
     public static IReadOnlyList<DesignationDefinition> All { get; } = new[]
     {
         CutWood, 
-        Deconstruct
+        Deconstruct,
+        Gather
     };
 }
