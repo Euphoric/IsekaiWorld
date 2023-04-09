@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+namespace IsekaiWorld;
+
 public static class ConstructionDefinitions
 {
     public static readonly ConstructionDefinition TestWoodenWall = new ConstructionDefinition("Test.Wall.Stone", "Wooden wall", BuildingDefinitions.WoodenWall.Id, null, 60, ItemDefinitions.Wood); 

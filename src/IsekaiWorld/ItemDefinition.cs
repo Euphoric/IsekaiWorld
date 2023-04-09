@@ -1,3 +1,5 @@
+namespace IsekaiWorld;
+
 public class ItemDefinition
 {
     public string Id { get; }

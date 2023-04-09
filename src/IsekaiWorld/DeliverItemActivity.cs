@@ -1,4 +1,4 @@
-using System;
+namespace IsekaiWorld;
 
 public class DeliverItemActivity : Activity
 {

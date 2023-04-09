@@ -1,6 +1,8 @@
 using System;
 using Godot;
 
+namespace IsekaiWorld;
+
 public class BuildingView
 {
     private readonly GameNode _gameNode;

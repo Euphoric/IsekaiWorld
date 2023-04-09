@@ -1,6 +1,7 @@
-using System;
 using System.Collections.Immutable;
 using System.Linq;
+
+namespace IsekaiWorld;
 
 public class HaulJobGiver : IJobGiver
 {

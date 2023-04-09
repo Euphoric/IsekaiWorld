@@ -1,6 +1,7 @@
 using System;
 using Godot;
-using GodotArray = Godot.Collections.Array;
+
+namespace IsekaiWorld;
 
 public partial class UserInterface : CanvasLayer
 {

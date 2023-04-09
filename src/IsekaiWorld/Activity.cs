@@ -1,5 +1,7 @@
 using System;
 
+namespace IsekaiWorld;
+
 public abstract class Activity
 {
     public Guid Id { get; } = Guid.NewGuid();

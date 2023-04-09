@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
+namespace IsekaiWorld;
+
 public partial class HexagonalMap : Node2D
 {
     public MessagingEndpoint Messaging { get; }

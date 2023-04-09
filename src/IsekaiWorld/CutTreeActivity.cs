@@ -1,4 +1,4 @@
-using System.Linq;
+namespace IsekaiWorld;
 
 public class CutTreeActivity : Activity
 {

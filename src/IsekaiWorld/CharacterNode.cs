@@ -1,5 +1,7 @@
 using Godot;
 
+namespace IsekaiWorld;
+
 public partial class CharacterNode : Node2D
 {
     private string _direction = "south";

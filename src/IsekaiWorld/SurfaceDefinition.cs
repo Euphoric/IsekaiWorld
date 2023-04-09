@@ -1,5 +1,7 @@
 using Godot;
 
+namespace IsekaiWorld;
+
 public class SurfaceDefinition
 {
     public string Id { get; }

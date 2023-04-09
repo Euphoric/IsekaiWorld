@@ -1,3 +1,5 @@
+namespace IsekaiWorld;
+
 public class ConstructionDefinition
 {
     public string Id { get; }

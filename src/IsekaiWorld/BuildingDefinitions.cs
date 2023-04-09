@@ -3,6 +3,8 @@ using System.Collections.Immutable;
 using System.Linq;
 using Godot;
 
+namespace IsekaiWorld;
+
 public static class BuildingDefinitions
 {
     public static BuildingDefinition RockWall { get; } = new("Core.Rock.Wall", "Rock Wall", Color.Color8(69, 67, 63),

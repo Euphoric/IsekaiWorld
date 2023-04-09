@@ -1,5 +1,6 @@
-using System;
 using System.Linq;
+
+namespace IsekaiWorld;
 
 public class EatFoodJobGiver : IJobGiver
 {

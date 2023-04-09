@@ -1,5 +1,7 @@
 using Godot;
 
+namespace IsekaiWorld;
+
 public static class SurfaceDefinitions
 {
     public static SurfaceDefinition Empty = new SurfaceDefinition("Core.Empty", Colors.Black, false);

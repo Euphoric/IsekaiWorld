@@ -1,3 +1,5 @@
+namespace IsekaiWorld;
+
 public class DeconstructActivity : Activity
 {
     public CharacterEntity Character { get; }

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+namespace IsekaiWorld;
+
 public interface IItemHolder
 {
     void RemoveItem(ItemEntity itemEntity);

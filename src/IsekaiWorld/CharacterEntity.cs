@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+namespace IsekaiWorld;
+
 public class CharacterEntity : IEntity, IItemHolder
 {
     public Guid Id { get; }

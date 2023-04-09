@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using Godot;
+
+namespace IsekaiWorld;
 
 public class GameUserInterface
 {
@@ -19,7 +21,7 @@ public class GameUserInterface
         }
 
         public String Id { get; }
-        
+
         public string Label { get; }
 
         public bool Update()
@@ -56,13 +58,13 @@ public class GameUserInterface
 
         public bool Update()
         {
-            var progress = Mathf.FloorToInt(_construction.ProgressRelative * 100);
+            var progress = Godot.Mathf.FloorToInt(_construction.ProgressRelative * 100);
             Label = $"Construction: {_construction.Definition.Label} Progress: {progress}";
 
             return true;
         }
     }
-    
+
     private class ItemSelection : ISelection
     {
         private readonly ItemEntity _item;
@@ -81,25 +83,29 @@ public class GameUserInterface
         }
     }
 
-    private readonly GameEntity _game;
+    [Obsolete] private readonly GameEntity _game;
 
     private bool _selectedLabelDirty;
-    
+
     private ISelection? _currentSelection;
 
     public MessagingEndpoint Messaging { get; }
-    
+
     public GameUserInterface(GameEntity game)
     {
         _game = game;
         Messaging = new MessagingEndpoint(HandleMessage);
     }
 
+    private Dictionary<String, int> _selectionEntities = new();
+
     private void HandleMessage(IEntityMessage mssg)
     {
-        if (mssg is DesignationToolSelect msg)
+        switch (mssg)
         {
-            DesignateTool(msg.Designation);
+            case DesignationToolSelect msg:
+                DesignateTool(msg.Designation);
+                break;
         }
     }
 
@@ -171,7 +177,7 @@ public class GameUserInterface
         switch (_currentTool)
         {
             case Tool.Selection:
-                _game.UserInterface.SelectItemOn(clickPosition);
+                SelectItemOn(clickPosition);
                 break;
             case Tool.Construction:
                 _game.StartConstruction(clickPosition, ConstructionRotation, _currentBuildingSelection);
@@ -219,7 +225,7 @@ public class GameUserInterface
         _currentTool = Tool.Designate;
         _currentDesignation = designation;
     }
-    
+
     public void SetSpeed(int speed)
     {
         _game.Speed = speed;
@@ -235,7 +241,7 @@ public class GameUserInterface
         if (_currentSelection is CharacterSelection cs)
         {
             Messaging.Broadcast(new SetCharacterHunger(cs.Id, 0.31));
-        }        
+        }
     }
 }
 

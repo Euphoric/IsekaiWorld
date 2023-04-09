@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+namespace IsekaiWorld;
+
 public class MovementActivity : Activity
 {
     private readonly HexagonPathfinding _pathfinding;

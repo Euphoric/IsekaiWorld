@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+namespace IsekaiWorld;
+
 public interface IEntity
 {
     MessagingEndpoint Messaging { get; }

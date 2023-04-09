@@ -4,6 +4,8 @@ using Roy_T.AStar.Graphs;
 using Roy_T.AStar.Paths;
 using Roy_T.AStar.Primitives;
 
+namespace IsekaiWorld;
+
 public class PathfindingResult
 {
 	public bool Found { get; }

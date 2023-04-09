@@ -1,5 +1,6 @@
 using Godot;
-using System;
+
+namespace IsekaiWorld;
 
 public partial class CharacterTest : Node2D
 {

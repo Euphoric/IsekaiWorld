@@ -1,3 +1,5 @@
+namespace IsekaiWorld;
+
 public enum HexagonDirection
 {
     Right = 0,

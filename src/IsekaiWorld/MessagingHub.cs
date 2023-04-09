@@ -1,6 +1,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
+namespace IsekaiWorld;
+
 public class MessagingHub
 {
     private readonly ConcurrentQueue<IEntityMessage> _receivedMessages = new();

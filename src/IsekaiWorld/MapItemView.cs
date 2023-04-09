@@ -1,5 +1,6 @@
-using System;
 using Godot;
+
+namespace IsekaiWorld;
 
 public class MapItemView
 {

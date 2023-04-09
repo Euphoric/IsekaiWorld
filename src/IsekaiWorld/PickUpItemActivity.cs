@@ -1,3 +1,5 @@
+namespace IsekaiWorld;
+
 public class PickUpItemActivity : Activity
 {
     private readonly CharacterEntity _character;

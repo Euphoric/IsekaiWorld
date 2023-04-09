@@ -1,5 +1,7 @@
 using System;
 
+namespace IsekaiWorld;
+
 public class MessagingEndpoint
 {
     private readonly Action<IEntityMessage> _messageHandler;

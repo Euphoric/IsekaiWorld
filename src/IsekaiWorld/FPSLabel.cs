@@ -1,6 +1,7 @@
-using Godot;
-using System;
 using System.Globalization;
+using Godot;
+
+namespace IsekaiWorld;
 
 public partial class FPSLabel : Label
 {

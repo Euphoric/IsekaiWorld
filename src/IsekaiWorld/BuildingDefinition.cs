@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Godot;
 
+namespace IsekaiWorld;
+
 public class BuildingDefinition
 {
     public string Id { get; }

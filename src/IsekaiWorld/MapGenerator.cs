@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
+namespace IsekaiWorld;
+
 public interface IMapGenerator
 {
     (HexagonalMapEntity, List<IEntity>) GenerateNewMap();
@@ -14,8 +16,8 @@ public class MapGenerator : IMapGenerator
     {
         var map = new HexagonalMapEntity(32);
 
-        var surfaceNoise = new Simplex.Noise() { Seed = 123 };
-        var rockWallNoise = new Simplex.Noise() { Seed = 654 };
+        var surfaceNoise = new Noise() { Seed = 123 };
+        var rockWallNoise = new Noise() { Seed = 654 };
 
         List<IEntity> entities = new List<IEntity>();
         foreach (var cell in map.Cells)

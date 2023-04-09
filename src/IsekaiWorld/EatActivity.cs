@@ -1,5 +1,4 @@
-using System.Linq;
-using System.Net.Http;
+namespace IsekaiWorld;
 
 public class EatActivity : Activity
 {

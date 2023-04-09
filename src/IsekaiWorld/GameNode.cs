@@ -2,6 +2,8 @@ using System;
 using System.Diagnostics;
 using Godot;
 
+namespace IsekaiWorld;
+
 public partial class GameNode : Node
 {
 	private GameEntity _game = null!;

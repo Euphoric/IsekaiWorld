@@ -1,4 +1,6 @@
-﻿public class MapCell
+﻿namespace IsekaiWorld;
+
+public class MapCell
 {
     public HexCubeCoord Position { get; }
 

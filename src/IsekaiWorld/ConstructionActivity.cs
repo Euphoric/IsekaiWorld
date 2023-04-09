@@ -1,5 +1,7 @@
 using System;
 
+namespace IsekaiWorld;
+
 public class ConstructionActivity : Activity
 {
     public CharacterEntity Character { get; }

@@ -1,3 +1,5 @@
+namespace IsekaiWorld;
+
 public class GatherActivity : Activity
 {
     public CharacterEntity Character { get; }

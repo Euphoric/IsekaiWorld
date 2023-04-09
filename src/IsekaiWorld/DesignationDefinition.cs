@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+namespace IsekaiWorld;
+
 public class DesignationDefinition
 {
     public DesignationDefinition(string id, string texturePath, string title)

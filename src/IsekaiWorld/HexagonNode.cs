@@ -1,5 +1,7 @@
 using Godot;
 
+namespace IsekaiWorld;
+
 public partial class HexagonNode : Node2D
 {
     private HexCubeCoord _hexPosition;

@@ -1,5 +1,7 @@
 using System.Linq;
 
+namespace IsekaiWorld;
+
 public class GatherJobGiver : IJobGiver
 {
     private readonly GameEntity _game;

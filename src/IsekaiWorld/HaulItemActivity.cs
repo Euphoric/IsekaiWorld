@@ -1,5 +1,7 @@
 using System.Linq;
 
+namespace IsekaiWorld;
+
 public class HaulItemActivity : Activity
 {
     public CharacterEntity Character { get; }
