@@ -42,6 +42,10 @@ public class ConstructionEntity : IEntity
     public float ProgressRelative => Progress / CompleteProgress;
     public bool IsFinished => Progress >= CompleteProgress;
     public bool MaterialsDelivered { get; set; }
+    
+    public void Initialize()
+    {
+    }
 
     public void Update()
     {

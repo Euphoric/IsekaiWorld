@@ -15,7 +15,9 @@ public class GameEntity
     public IReadOnlyList<ItemEntity> Items => _entities.OfType<ItemEntity>().ToList();
 
     private readonly List<IEntity> _entities = new();
+    private readonly List<IEntity> _entitiesToAdd = new();
     private int _speed;
+
     public int Speed
     {
         get => _speed;
@@ -27,6 +29,7 @@ public class GameEntity
     }
 
     private Boolean _paused;
+
     public Boolean Paused
     {
         get => _paused;
@@ -55,9 +58,9 @@ public class GameEntity
     public void Initialize(IMapGenerator mapGenerator)
     {
         Speed = 1;
-        
+
         Messaging.Register(UserInterface.Messaging);
-        
+
         var (map, entities) = mapGenerator.GenerateNewMap();
         GameMap = map;
         entities.ForEach(AddEntity);
@@ -65,7 +68,7 @@ public class GameEntity
         Pathfinding = new HexagonPathfinding();
         Pathfinding.BuildMap(GameMap);
         Messaging.Register(Pathfinding.Messaging);
-        
+
         // Probably shouldn't be here. Find better place for initial surface update.
         Messaging.Broadcast(new SurfaceChanged(GameMap.Cells));
     }
@@ -86,19 +89,34 @@ public class GameEntity
     public void Update()
     {
         Messaging.DistributeMessages();
-        
+
         Pathfinding.Update();
-        foreach (var entity in _entities.ToList())
+
+        foreach (var entity in _entitiesToAdd)
+        {
+            Messaging.Register(entity.Messaging);
+            entity.Initialize();
+        }
+        _entities.AddRange(_entitiesToAdd);
+        _entitiesToAdd.Clear();
+        
+        foreach (var entity in _entities)
         {
             entity.Update();
         }
 
-        _entities.Where(ent => ent.IsRemoved).ToList().ForEach(RemoveEntity);
+        _entities.Where(ent => ent.IsRemoved).ToList()
+            .ForEach(entity =>
+            {
+                _entities.Remove(entity);
+                Messaging.Unregister(entity.Messaging);
+            });
 
         UserInterface.Update();
     }
 
-    public ConstructionEntity? StartConstruction(HexCubeCoord position, HexagonDirection rotation, ConstructionDefinition construction)
+    public ConstructionEntity? StartConstruction(HexCubeCoord position, HexagonDirection rotation,
+        ConstructionDefinition construction)
     {
         var constructionExists = _entities.OfType<ConstructionEntity>().Any(x => x.Position == position);
         var isTerrainPassable = GameMap.CellForPosition(position).Surface.IsPassable;
@@ -117,12 +135,12 @@ public class GameEntity
         return _entities.Where(c => c.OccupiedCells.Contains(position)).ToList();
     }
 
-    public BuildingEntity SpawnBuilding(HexCubeCoord position, HexagonDirection rotation, BuildingDefinition buildingDefinition)
+    public BuildingEntity SpawnBuilding(HexCubeCoord position, HexagonDirection rotation,
+        BuildingDefinition buildingDefinition)
     {
         var buildingEntity = new BuildingEntity(position, rotation, buildingDefinition);
         AddEntity(buildingEntity);
-        buildingEntity.Initialize();
-        
+
         var stuckCharacter = _entities.OfType<CharacterEntity>().FirstOrDefault(c => c.Position == position);
         if (stuckCharacter != null)
         {
@@ -180,14 +198,7 @@ public class GameEntity
 
     public void AddEntity(IEntity entity)
     {
-        _entities.Add(entity);
-        Messaging.Register(entity.Messaging);
-    }
-
-    public void RemoveEntity(IEntity entity)
-    {
-        _entities.Remove(entity);
-        Messaging.Unregister(entity.Messaging);
+        _entitiesToAdd.Add(entity);
     }
 
     public void Designate(HexCubeCoord position, DesignationDefinition designation)
@@ -195,7 +206,7 @@ public class GameEntity
         var buildingsOnPosition = EntitiesOn(position).OfType<BuildingEntity>();
         foreach (var building in buildingsOnPosition)
         {
-            building.TryDesignate(designation);            
+            building.TryDesignate(designation);
         }
     }
 }

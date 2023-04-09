@@ -36,6 +36,10 @@ public class CharacterEntity : IEntity, IItemHolder
         Hunger = 1;
     }
 
+    public void Initialize()
+    {
+    }
+
     public void Update()
     {
         if (!_initialized)

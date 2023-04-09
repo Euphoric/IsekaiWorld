@@ -8,5 +8,6 @@ public interface IEntity
 
     ISet<HexCubeCoord> OccupiedCells { get; }
 
+    void Initialize();
     void Update();
 }
