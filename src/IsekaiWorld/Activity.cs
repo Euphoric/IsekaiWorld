@@ -1,5 +1,9 @@
+using System;
+
 public abstract class Activity
 {
+    public Guid Id { get; } = Guid.NewGuid();
+    
     protected GameEntity Game { get; }
 
     protected Activity(GameEntity game)

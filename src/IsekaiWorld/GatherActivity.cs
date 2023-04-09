@@ -29,10 +29,11 @@ public class GatherActivity : Activity
         }
         else
         {
+            _movement = null;
+            
             EntityToGather.RemoveEntity();
             Game.SpawnItem(EntityToGather.Position, ItemDefinitions.Grains, 1);
             
-            _movement = null;
             IsFinished = true;
         }
     }
