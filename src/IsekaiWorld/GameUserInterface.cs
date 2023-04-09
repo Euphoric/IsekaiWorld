@@ -6,88 +6,11 @@ namespace IsekaiWorld;
 
 public class GameUserInterface
 {
-    private interface ISelection
-    {
-        string Label { get; }
-        bool Update();
-    }
-
-    private class CharacterSelection : ISelection
-    {
-        public CharacterSelection(CharacterEntityItem character)
-        {
-            Id = character.Id;
-            Label = "Character: " + character.Label;
-        }
-
-        public String Id { get; }
-
-        public string Label { get; }
-
-        public bool Update()
-        {
-            return false;
-        }
-    }
-
-    private class BuildingSelection : ISelection
-    {
-        public BuildingSelection(BuildingEntityItem building)
-        {
-            Label = "Building: " + building.Definition.Label;
-        }
-
-        public string Label { get; }
-
-        public bool Update()
-        {
-            return false;
-        }
-    }
-
-    private class ConstructionSelection : ISelection
-    {
-        private readonly ConstructionEntityItem _construction;
-
-        public ConstructionSelection(ConstructionEntityItem construction)
-        {
-            _construction = construction;
-        }
-
-        public string Label { get; private set; } = "";
-
-        public bool Update()
-        {
-            var progress = Godot.Mathf.FloorToInt(_construction.ProgressRelative * 100);
-            Label = $"Construction: {_construction.Definition.Label} Progress: {progress}";
-
-            return true;
-        }
-    }
-
-    private class ItemSelection : ISelection
-    {
-        private readonly ItemEntityItem _item;
-
-        public ItemSelection(ItemEntityItem item)
-        {
-            _item = item;
-        }
-
-        public string Label { get; private set; } = "";
-
-        public bool Update()
-        {
-            Label = $"Item: {_item.Definition.Label} Count: {_item.Count}";
-            return true;
-        }
-    }
-
     [Obsolete] private readonly GameEntity _game;
 
     private bool _selectedLabelDirty;
 
-    private ISelection? _currentSelection;
+    private EntitySelection? _currentSelection;
 
     public MessagingEndpoint Messaging { get; }
 
@@ -97,24 +20,27 @@ public class GameUserInterface
         Messaging = new MessagingEndpoint(HandleMessage);
     }
 
-    private abstract class EntityItem
+    private abstract class EntitySelection
     {
         public string Id { get; }
 
-        public EntityItem(String id)
+        protected EntitySelection(String id)
         {
             Id = id;
         }
 
-        public void Update(HexCubeCoord position)
+        protected void Update(HexCubeCoord position)
         {
             Position = position;
         }
 
         public HexCubeCoord Position { get; set; }
+        public string TextLabel { get; protected set; } = "";
+
+        public abstract bool Update();
     }
 
-    private class ConstructionEntityItem : EntityItem
+    private class ConstructionEntityItem : EntitySelection
     {
         public ConstructionEntityItem(string id) : base(id)
         {
@@ -130,9 +56,16 @@ public class GameUserInterface
         public ConstructionDefinition Definition { get; set; } = null!;
 
         public float ProgressRelative { get; set; }
+
+        public override bool Update()
+        {
+            var progress = Godot.Mathf.FloorToInt(ProgressRelative * 100);
+            TextLabel = $"Construction: {Definition.Label} Progress: {progress}";
+            return true;
+        }
     }
 
-    private class BuildingEntityItem : EntityItem
+    private class BuildingEntityItem : EntitySelection
     {
         public BuildingEntityItem(string id) : base(id)
         {
@@ -145,11 +78,17 @@ public class GameUserInterface
         }
 
         public BuildingDefinition Definition { get; set; } = null!;
+
+        public override bool Update()
+        {
+            TextLabel = "Building: " + Definition.Label;
+            return true;
+        }
     }
 
-    private class CharacterEntityItem : EntityItem
+    private class CharacterSelection : EntitySelection
     {
-        public CharacterEntityItem(string id) : base(id)
+        public CharacterSelection(string id) : base(id)
         {
         }
 
@@ -160,9 +99,15 @@ public class GameUserInterface
         }
 
         public string Label { get; set; } = null!;
+
+        public override bool Update()
+        {
+            TextLabel = "Character: " + Label;
+            return true;
+        }
     }
 
-    private class ItemEntityItem : EntityItem
+    private class ItemEntityItem : EntitySelection
     {
         public ItemEntityItem(string id) : base(id)
         {
@@ -178,17 +123,24 @@ public class GameUserInterface
         public int Count { get; set; }
 
         public ItemDefinition Definition { get; set; } = null!;
-    }
-    
-    private readonly Dictionary<String, EntityItem> _selectionEntities = new();
 
-    private void UpdateSelectionEntity<TMsg, TSelection>(TMsg msg, Func<TMsg, String> id, Func<String, TSelection> newFunc, Action<TMsg, TSelection> update)
-        where TSelection : EntityItem
+        public override bool Update()
+        {
+            TextLabel = $"Item: {Definition.Label} Count: {Count}";
+            return true;
+        }
+    }
+
+    private readonly Dictionary<String, EntitySelection> _selectionEntities = new();
+
+    private void UpdateSelectionEntity<TMsg, TSelection>(TMsg msg, Func<TMsg, String> id,
+        Func<String, TSelection> newFunc, Action<TMsg, TSelection> update)
+        where TSelection : EntitySelection
     {
         var e = _selectionEntities.GetOrAdd(id(msg), newFunc);
         update(msg, (TSelection)e);
     }
-    
+
     private void HandleMessage(IEntityMessage mssg)
     {
         switch (mssg)
@@ -197,7 +149,7 @@ public class GameUserInterface
                 DesignateTool(msg.Designation);
                 break;
             case BuildingUpdated msg:
-                UpdateSelectionEntity(msg, m=>m.EntityId,
+                UpdateSelectionEntity(msg, m => m.EntityId,
                     id => new BuildingEntityItem(id),
                     (m, s) => s.Update(m));
                 break;
@@ -205,12 +157,12 @@ public class GameUserInterface
                 _selectionEntities.Remove(msg.EntityId);
                 break;
             case CharacterUpdated msg:
-                UpdateSelectionEntity(msg, m=>m.EntityId,
-                    id => new CharacterEntityItem(id),
+                UpdateSelectionEntity(msg, m => m.EntityId,
+                    id => new CharacterSelection(id),
                     (m, s) => s.Update(m));
                 break;
             case ConstructionUpdated msg:
-                UpdateSelectionEntity(msg, m=>m.EntityId,
+                UpdateSelectionEntity(msg, m => m.EntityId,
                     id => new ConstructionEntityItem(id),
                     (m, s) => s.Update(m));
                 break;
@@ -218,7 +170,7 @@ public class GameUserInterface
                 _selectionEntities.Remove(msg.EntityId);
                 break;
             case ItemUpdated msg:
-                UpdateSelectionEntity(msg, m=>m.EntityId,
+                UpdateSelectionEntity(msg, m => m.EntityId,
                     id => new ItemEntityItem(id),
                     (m, s) => s.Update(m));
                 break;
@@ -234,7 +186,7 @@ public class GameUserInterface
     {
         if (_selectedLabelDirty)
         {
-            Messaging.Broadcast(new SelectionChanged(_currentSelection?.Label));
+            Messaging.Broadcast(new SelectionChanged(_currentSelection?.TextLabel));
             _selectedLabelDirty = false;
         }
 
@@ -242,7 +194,7 @@ public class GameUserInterface
         {
             if (_currentSelection.Update())
             {
-                Messaging.Broadcast(new SelectionChanged(_currentSelection?.Label));
+                Messaging.Broadcast(new SelectionChanged(_currentSelection?.TextLabel));
             }
         }
     }
@@ -254,26 +206,7 @@ public class GameUserInterface
         if (selectedEntity != null)
         {
             _selectedLabelDirty = true;
-            if (selectedEntity is CharacterEntityItem selectedCharacter)
-            {
-                _currentSelection = new CharacterSelection(selectedCharacter);
-            }
-            else if (selectedEntity is BuildingEntityItem selectedBuilding)
-            {
-                _currentSelection = new BuildingSelection(selectedBuilding);
-            }
-            else if (selectedEntity is ConstructionEntityItem selectedConstruction)
-            {
-                _currentSelection = new ConstructionSelection(selectedConstruction);
-            }
-            else if (selectedEntity is ItemEntityItem itemEntity)
-            {
-                _currentSelection = new ItemSelection(itemEntity);
-            }
-            else
-            {
-                throw new Exception("Unknown entity type: " + selectedEntity.GetType());
-            }
+            _currentSelection = selectedEntity;
         }
     }
 
