@@ -26,7 +26,6 @@ public class BuildingEntity : IEntity
     public HexCubeCoord Position { get; }
     public ISet<HexCubeCoord> OccupiedCells => new HashSet<HexCubeCoord> { Position };
     public BuildingDefinition Definition { get; }
-    public string Label => Definition.Label;
 
     public HexagonDirection Rotation { get; }
 
@@ -75,36 +74,17 @@ public class BuildingEntity : IEntity
     }
 }
 
-public class BuildingUpdated : IEntityMessage
-{
-    public BuildingUpdated(HexCubeCoord position, BuildingDefinition definition, string entityId, HexagonDirection rotation, DesignationDefinition? designation)
-    {
-        Position = position;
-        Definition = definition;
-        EntityId = entityId;
-        Rotation = rotation;
-        Designation = designation;
-    }
-    
-    public HexCubeCoord Position { get; }
-    public BuildingDefinition Definition { get; }
-    public String EntityId { get; }
-    public HexagonDirection Rotation { get; }
-    public DesignationDefinition? Designation { get; }
-}
+public record BuildingUpdated(
+    HexCubeCoord Position,
+    BuildingDefinition Definition,
+    string EntityId,
+    HexagonDirection Rotation,
+    DesignationDefinition? Designation
+    ) : IEntityMessage;
 
-public class BuildingRemoved : IEntityMessage
-{
-    public BuildingRemoved(HexCubeCoord position, BuildingDefinition definition, string entityId, HexagonDirection rotation)
-    {
-        Position = position;
-        Definition = definition;
-        EntityId = entityId;
-        Rotation = rotation;
-    }
-    
-    public HexCubeCoord Position { get; }
-    public BuildingDefinition Definition { get; }
-    public String EntityId { get; }
-    public HexagonDirection Rotation { get; }
-}
+public record BuildingRemoved(
+    HexCubeCoord Position,
+    BuildingDefinition Definition,
+    string EntityId,
+    HexagonDirection Rotation
+) : IEntityMessage;

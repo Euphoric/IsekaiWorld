@@ -56,7 +56,7 @@ public class ConstructionEntity : IEntity
         }
         else if (_isDirty)
         {
-            Messaging.Broadcast(new ConstructionUpdated(Id.ToString(), Position, ProgressRelative));
+            Messaging.Broadcast(new ConstructionUpdated(Id.ToString(), Definition, Position, ProgressRelative));
             _isDirty = false;
         }
     }
@@ -73,26 +73,6 @@ public class ConstructionEntity : IEntity
     }
 }
 
-public class ConstructionUpdated : IEntityMessage
-{
-    public ConstructionUpdated(string entityId, HexCubeCoord position, float progressRelative)
-    {
-        EntityId = entityId;
-        Position = position;
-        ProgressRelative = progressRelative;
-    }
+public record ConstructionUpdated(string EntityId, ConstructionDefinition Definition, HexCubeCoord Position, float ProgressRelative) : IEntityMessage;
 
-    public String EntityId { get; }
-    public HexCubeCoord Position { get; }
-    public float ProgressRelative { get; }
-}
-
-public class ConstructionRemoved : IEntityMessage
-{
-    public ConstructionRemoved(string entityId)
-    {
-        EntityId = entityId;
-    }
-
-    public String EntityId { get; }
-}
+public record ConstructionRemoved(string EntityId) : IEntityMessage;

@@ -14,9 +14,9 @@ public class GameUserInterface
 
     private class CharacterSelection : ISelection
     {
-        public CharacterSelection(CharacterEntity character)
+        public CharacterSelection(CharacterEntityItem character)
         {
-            Id = character.Id.ToString();
+            Id = character.Id;
             Label = "Character: " + character.Label;
         }
 
@@ -32,9 +32,9 @@ public class GameUserInterface
 
     private class BuildingSelection : ISelection
     {
-        public BuildingSelection(BuildingEntity building)
+        public BuildingSelection(BuildingEntityItem building)
         {
-            Label = "Building: " + building.Label;
+            Label = "Building: " + building.Definition.Label;
         }
 
         public string Label { get; }
@@ -47,9 +47,9 @@ public class GameUserInterface
 
     private class ConstructionSelection : ISelection
     {
-        private readonly ConstructionEntity _construction;
+        private readonly ConstructionEntityItem _construction;
 
-        public ConstructionSelection(ConstructionEntity construction)
+        public ConstructionSelection(ConstructionEntityItem construction)
         {
             _construction = construction;
         }
@@ -67,9 +67,9 @@ public class GameUserInterface
 
     private class ItemSelection : ISelection
     {
-        private readonly ItemEntity _item;
+        private readonly ItemEntityItem _item;
 
-        public ItemSelection(ItemEntity item)
+        public ItemSelection(ItemEntityItem item)
         {
             _item = item;
         }
@@ -97,14 +97,133 @@ public class GameUserInterface
         Messaging = new MessagingEndpoint(HandleMessage);
     }
 
-    private Dictionary<String, int> _selectionEntities = new();
+    private abstract class EntityItem
+    {
+        public string Id { get; }
 
+        public EntityItem(String id)
+        {
+            Id = id;
+        }
+
+        public void Update(HexCubeCoord position)
+        {
+            Position = position;
+        }
+
+        public HexCubeCoord Position { get; set; }
+    }
+
+    private class ConstructionEntityItem : EntityItem
+    {
+        public ConstructionEntityItem(string id) : base(id)
+        {
+        }
+
+        public void Update(ConstructionUpdated msg)
+        {
+            base.Update(msg.Position);
+            Definition = msg.Definition;
+            ProgressRelative = msg.ProgressRelative;
+        }
+
+        public ConstructionDefinition Definition { get; set; } = null!;
+
+        public float ProgressRelative { get; set; }
+    }
+
+    private class BuildingEntityItem : EntityItem
+    {
+        public BuildingEntityItem(string id) : base(id)
+        {
+        }
+
+        public void Update(BuildingUpdated msg)
+        {
+            base.Update(msg.Position);
+            Definition = msg.Definition;
+        }
+
+        public BuildingDefinition Definition { get; set; } = null!;
+    }
+
+    private class CharacterEntityItem : EntityItem
+    {
+        public CharacterEntityItem(string id) : base(id)
+        {
+        }
+
+        public void Update(CharacterUpdated msg)
+        {
+            base.Update(msg.Position);
+            Label = msg.Label;
+        }
+
+        public string Label { get; set; } = null!;
+    }
+
+    private class ItemEntityItem : EntityItem
+    {
+        public ItemEntityItem(string id) : base(id)
+        {
+        }
+
+        public void Update(ItemUpdated msg)
+        {
+            base.Update(msg.Position);
+            Definition = msg.Definition;
+            Count = msg.Count;
+        }
+
+        public int Count { get; set; }
+
+        public ItemDefinition Definition { get; set; } = null!;
+    }
+    
+    private readonly Dictionary<String, EntityItem> _selectionEntities = new();
+
+    private void UpdateSelectionEntity<TMsg, TSelection>(TMsg msg, Func<TMsg, String> id, Func<String, TSelection> newFunc, Action<TMsg, TSelection> update)
+        where TSelection : EntityItem
+    {
+        var e = _selectionEntities.GetOrAdd(id(msg), newFunc);
+        update(msg, (TSelection)e);
+    }
+    
     private void HandleMessage(IEntityMessage mssg)
     {
         switch (mssg)
         {
             case DesignationToolSelect msg:
                 DesignateTool(msg.Designation);
+                break;
+            case BuildingUpdated msg:
+                UpdateSelectionEntity(msg, m=>m.EntityId,
+                    id => new BuildingEntityItem(id),
+                    (m, s) => s.Update(m));
+                break;
+            case BuildingRemoved msg:
+                _selectionEntities.Remove(msg.EntityId);
+                break;
+            case CharacterUpdated msg:
+                UpdateSelectionEntity(msg, m=>m.EntityId,
+                    id => new CharacterEntityItem(id),
+                    (m, s) => s.Update(m));
+                break;
+            case ConstructionUpdated msg:
+                UpdateSelectionEntity(msg, m=>m.EntityId,
+                    id => new ConstructionEntityItem(id),
+                    (m, s) => s.Update(m));
+                break;
+            case ConstructionRemoved msg:
+                _selectionEntities.Remove(msg.EntityId);
+                break;
+            case ItemUpdated msg:
+                UpdateSelectionEntity(msg, m=>m.EntityId,
+                    id => new ItemEntityItem(id),
+                    (m, s) => s.Update(m));
+                break;
+            case ItemPickedUp msg:
+                _selectionEntities.Remove(msg.EntityId);
                 break;
         }
     }
@@ -130,24 +249,24 @@ public class GameUserInterface
 
     private void SelectItemOn(HexCubeCoord position)
     {
-        var selectedEntity = _game.EntitiesOn(position).FirstOrDefault();
+        var selectedEntity = _selectionEntities.Values.FirstOrDefault(x => x.Position == position);
 
         if (selectedEntity != null)
         {
             _selectedLabelDirty = true;
-            if (selectedEntity is CharacterEntity selectedCharacter)
+            if (selectedEntity is CharacterEntityItem selectedCharacter)
             {
                 _currentSelection = new CharacterSelection(selectedCharacter);
             }
-            else if (selectedEntity is BuildingEntity selectedBuilding)
+            else if (selectedEntity is BuildingEntityItem selectedBuilding)
             {
                 _currentSelection = new BuildingSelection(selectedBuilding);
             }
-            else if (selectedEntity is ConstructionEntity selectedConstruction)
+            else if (selectedEntity is ConstructionEntityItem selectedConstruction)
             {
                 _currentSelection = new ConstructionSelection(selectedConstruction);
             }
-            else if (selectedEntity is ItemEntity itemEntity)
+            else if (selectedEntity is ItemEntityItem itemEntity)
             {
                 _currentSelection = new ItemSelection(itemEntity);
             }
