@@ -228,24 +228,19 @@ namespace IsekaiWorld
         {
             var game = CreateGame();
 
-            game.AddCharacter("Test guy", HexCubeCoord.Zero);
-
-            var tree = game.SpawnBuilding(new HexCubeCoord(5, -3, -2), HexagonDirection.Left,
-                BuildingDefinitions.Plant.TreeOak);
+            var tree = game.SpawnBuilding(new HexCubeCoord(5, -3, -2), HexagonDirection.Left, BuildingDefinitions.Plant.TreeOak);
+            
+            var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
 
             game.Designate(tree.Position, DesignationDefinitions.CutWood);
 
             tree.Designation.Should().Be(DesignationDefinitions.CutWood);
 
-            game.UpdateUntil(gts =>
-            {
-                var treesExist = gts.Game.Buildings
-                    .Any(b => b.Position == tree.Position && b.Definition == BuildingDefinitions.Plant.TreeOak);
-                var woodSpawned = gts.Game.Items.Any(
-                    i => i.Position == tree.Position && i.Definition == ItemDefinitions.Wood
-                );
-                return !treesExist && woodSpawned;
-            });
+            game.UpdateUntil(_ => character.ActivityName == "CutTreeActivity");
+            game.UpdateUntil(_ => character.ActivityName == null);
+
+            game.Buildings.Should().NotContain(x => x.Position == tree.Position);
+            game.Items.Should().Contain(x => x.Position == tree.Position && x.Definition == ItemDefinitions.Wood && x.Count == 5);
         }
 
         [Fact(Skip = "TODO: Reimplement without touching character's activity directly")]
@@ -538,10 +533,9 @@ namespace IsekaiWorld
         {
             var game = CreateGame();
 
-            var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
-            game.SpawnItem(HexCubeCoord.Zero, ItemDefinitions.Grains, 3);
-
             var riceEntity = game.SpawnBuilding(new HexCubeCoord(-2, 2, 0), HexagonDirection.Left, BuildingDefinitions.Plant.WildRice);
+
+            var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
 
             game.Designate(riceEntity.Position, DesignationDefinitions.Gather);
 

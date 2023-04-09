@@ -8,7 +8,7 @@ public class CutTreeActivity : Activity
     private MovementActivity? _movement;
 
     public CutTreeActivity(GameEntity game, CharacterEntity character, BuildingEntity tree)
-        :base(game)
+        : base(game)
     {
         Character = character;
         Tree = tree;
@@ -20,24 +20,28 @@ public class CutTreeActivity : Activity
         {
             _movement.Update();
         }
-        
+
         var canCut = Character.Position.IsNextTo(Tree.Position);
-        if (canCut)
+        if (!canCut)
         {
-            _movement = null;
-
-            Tree.RemoveEntity();
-            Game.SpawnItem(Tree.Position, ItemDefinitions.Wood, 5);
-            
-            IsFinished = true;
-        }
-        else
-        {
-
             if (_movement == null)
             {
                 // move on item
                 _movement = new MovementActivity(Game, Game.Pathfinding, Character, Tree.Position, true);
+            }
+        }
+        else
+        {
+            _movement = null;
+
+            if (!Tree.IsRemoved)
+            {
+                Tree.RemoveEntity();
+                Game.SpawnItem(Tree.Position, ItemDefinitions.Wood, 5);
+            }
+            else
+            {
+                IsFinished = true;
             }
         }
     }

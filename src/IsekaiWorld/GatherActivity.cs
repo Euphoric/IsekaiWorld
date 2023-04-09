@@ -30,11 +30,16 @@ public class GatherActivity : Activity
         else
         {
             _movement = null;
-            
-            EntityToGather.RemoveEntity();
-            Game.SpawnItem(EntityToGather.Position, ItemDefinitions.Grains, 1);
-            
-            IsFinished = true;
+
+            if (!EntityToGather.IsRemoved)
+            {
+                EntityToGather.RemoveEntity();
+                Game.SpawnItem(EntityToGather.Position, ItemDefinitions.Grains, 1);
+            }
+            else
+            {
+                IsFinished = true;
+            }
         }
     }
 }
