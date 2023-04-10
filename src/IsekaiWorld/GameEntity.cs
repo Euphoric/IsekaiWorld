@@ -69,6 +69,9 @@ public class GameEntity
             case TogglePause:
                 Paused = !Paused;
                 break;
+            case StartConstruction msg:
+                StartConstruction(msg.Position, msg.Rotation, msg.Definition);
+                break;
         }
     }
 

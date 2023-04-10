@@ -232,7 +232,7 @@ public class GameUserInterface
                 SelectItemOn(clickPosition);
                 break;
             case Tool.Construction:
-                _game.StartConstruction(clickPosition, ConstructionRotation, _currentBuildingSelection);
+                Messaging.Broadcast(new StartConstruction(clickPosition, ConstructionRotation, _currentBuildingSelection));
                 break;
             case Tool.PlaceBuilding:
                 // TODO: Fix
@@ -296,6 +296,8 @@ public class GameUserInterface
         }
     }
 }
+
+public record StartConstruction(HexCubeCoord Position, HexagonDirection Rotation, ConstructionDefinition Definition) : IEntityMessage;
 
 record SelectionChanged(string? SelectionLabel) : IEntityMessage;
 
