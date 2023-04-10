@@ -66,6 +66,9 @@ public class GameEntity
             case SetSpeed msg:
                 Speed = msg.Speed;
                 break;
+            case TogglePause:
+                Paused = !Paused;
+                break;
         }
     }
 

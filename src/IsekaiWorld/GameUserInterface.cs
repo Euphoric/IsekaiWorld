@@ -285,7 +285,7 @@ public class GameUserInterface
 
     public void TogglePause()
     {
-        _game.Paused = !_game.Paused;
+        Messaging.Broadcast(new TogglePause());
     }
 
     public void SetCharacterHealth()
@@ -302,3 +302,5 @@ record SelectionChanged(string? SelectionLabel) : IEntityMessage;
 record DesignationToolSelect(DesignationDefinition Designation) : IEntityMessage;
 
 record SetSpeed(int Speed) : IEntityMessage;
+
+record TogglePause : IEntityMessage;
