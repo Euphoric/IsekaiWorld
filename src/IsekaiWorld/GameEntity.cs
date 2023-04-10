@@ -72,6 +72,9 @@ public class GameEntity
             case StartConstruction msg:
                 StartConstruction(msg.Position, msg.Rotation, msg.Definition);
                 break;
+            case SpawnItem msg:
+                SpawnItem(msg.Position, msg.Definition, msg.Count);
+                break;
         }
     }
 

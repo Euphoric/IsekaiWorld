@@ -239,7 +239,7 @@ public class GameUserInterface
                 // _game.SpawnBuilding(clickPosition, _currentBuildingSelection);
                 break;
             case Tool.PlaceItem:
-                _game.SpawnItem(clickPosition, _currentItemSelection, 1);
+                Messaging.Broadcast(new SpawnItem(clickPosition, _currentItemSelection, 1));
                 break;
             case Tool.Designate:
                 _game.Designate(clickPosition, _currentDesignation);
@@ -296,6 +296,8 @@ public class GameUserInterface
         }
     }
 }
+
+public record SpawnItem(HexCubeCoord Position, ItemDefinition Definition, int Count) : IEntityMessage;
 
 public record StartConstruction(HexCubeCoord Position, HexagonDirection Rotation, ConstructionDefinition Definition) : IEntityMessage;
 
