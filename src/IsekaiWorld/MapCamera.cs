@@ -59,7 +59,7 @@ public partial class MapCamera : Camera2D
 
     private void UpdateLabel()
     {
-        var label = GetNode<Label>("/root/GameNode/UserInterface/Container/DebugLabel");
+        var label = GetNode<Label>("/root/GameNode/UserInterface/TopMenuArea/Container/DebugLabel");
         label.Text = Position + " / " + Zoom;
     }
 }

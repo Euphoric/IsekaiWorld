@@ -220,9 +220,10 @@ public class GameUserInterface
     }
 
     private Tool _currentTool = Tool.Selection;
-    private ConstructionDefinition _currentBuildingSelection = null!;
-    private ItemDefinition _currentItemSelection = null!;
-    private DesignationDefinition _currentDesignation = null!;
+    private ConstructionDefinition? _currentConstructionSelection;
+    private BuildingDefinition? _currentBuildingSelection;
+    private ItemDefinition? _currentItemSelection;
+    private DesignationDefinition? _currentDesignation;
 
     public void MouseClickOnMap(HexCubeCoord clickPosition)
     {
@@ -232,17 +233,16 @@ public class GameUserInterface
                 SelectItemOn(clickPosition);
                 break;
             case Tool.Construction:
-                Messaging.Broadcast(new StartConstruction(clickPosition, ConstructionRotation, _currentBuildingSelection));
+                Messaging.Broadcast(new StartConstruction(clickPosition, ConstructionRotation, _currentConstructionSelection!));
                 break;
             case Tool.PlaceBuilding:
-                // TODO: Fix
-                // _game.SpawnBuilding(clickPosition, _currentBuildingSelection);
+                Messaging.Broadcast(new SpawnBuilding(clickPosition, ConstructionRotation, _currentBuildingSelection!));
                 break;
             case Tool.PlaceItem:
-                Messaging.Broadcast(new SpawnItem(clickPosition, _currentItemSelection, 1));
+                Messaging.Broadcast(new SpawnItem(clickPosition, _currentItemSelection!, 1));
                 break;
             case Tool.Designate:
-                Messaging.Broadcast(new Designate(clickPosition, _currentDesignation));
+                Messaging.Broadcast(new Designate(clickPosition, _currentDesignation!));
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -257,14 +257,14 @@ public class GameUserInterface
     public void ConstructionSelected(ConstructionDefinition definition)
     {
         _currentTool = Tool.Construction;
-        _currentBuildingSelection = definition;
+        _currentConstructionSelection = definition;
     }
 
-    // public void PlaceBuildingSelected(BuildingDefinition buildingDefinition)
-    // {
-    //     _currentTool = Tool.PlaceBuilding;
-    //     _currentBuildingSelection = buildingDefinition;
-    // }
+    public void PlaceBuildingSelected(BuildingDefinition buildingDefinition)
+    {
+        _currentTool = Tool.PlaceBuilding;
+        _currentBuildingSelection = buildingDefinition;
+    }
 
     public void PlaceItemSelected(ItemDefinition itemDefinition)
     {
@@ -296,6 +296,8 @@ public class GameUserInterface
         }
     }
 }
+
+public record SpawnBuilding(HexCubeCoord Position, HexagonDirection Rotation, BuildingDefinition Building) : IEntityMessage;
 
 public record Designate(HexCubeCoord Position, DesignationDefinition Designation) : IEntityMessage;
 

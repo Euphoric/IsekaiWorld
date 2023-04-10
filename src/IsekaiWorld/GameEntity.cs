@@ -76,6 +76,9 @@ public class GameEntity
             case Designate msg:
                 Designate(msg.Position, msg.Designation);
                 break;
+            case SpawnBuilding msg:
+                SpawnBuilding(msg.Position, msg.Rotation, msg.Building);
+                break;
         }
     }
 

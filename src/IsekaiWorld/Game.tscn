@@ -27,51 +27,50 @@ y_sort_enabled = true
 [node name="UserInterface" type="CanvasLayer" parent="."]
 script = ExtResource("5")
 
-[node name="Container" type="HBoxContainer" parent="UserInterface"]
-offset_right = 153.0
-offset_bottom = 14.0
+[node name="TopMenuArea" type="VBoxContainer" parent="UserInterface"]
+offset_right = 40.0
+offset_bottom = 40.0
 
-[node name="FPSLabel" type="Label" parent="UserInterface/Container"]
+[node name="Container" type="HBoxContainer" parent="UserInterface/TopMenuArea"]
+layout_mode = 2
+
+[node name="FPSLabel" type="Label" parent="UserInterface/TopMenuArea/Container"]
 layout_mode = 2
 text = "FPS"
 script = ExtResource("3")
 
-[node name="SpeedLabel" type="Label" parent="UserInterface/Container"]
+[node name="SpeedLabel" type="Label" parent="UserInterface/TopMenuArea/Container"]
 layout_mode = 2
 text = "Speed"
 
-[node name="TpsLabel" type="Label" parent="UserInterface/Container"]
+[node name="TpsLabel" type="Label" parent="UserInterface/TopMenuArea/Container"]
 layout_mode = 2
 text = "TPS"
 
-[node name="DebugLabel" type="Label" parent="UserInterface/Container"]
+[node name="DebugLabel" type="Label" parent="UserInterface/TopMenuArea/Container"]
 layout_mode = 2
 text = "Debug label"
 
-[node name="ConstructionContainer" type="GridContainer" parent="UserInterface"]
-offset_top = 37.0
-offset_right = 418.0
-offset_bottom = 527.0
-
-[node name="PlaceDirectlyButton" type="CheckButton" parent="UserInterface/ConstructionContainer"]
-layout_mode = 2
-text = "Place directly"
-
-[node name="RotationOptionButton" type="OptionButton" parent="UserInterface/ConstructionContainer"]
+[node name="RotationOptionButton" type="OptionButton" parent="UserInterface/TopMenuArea"]
 layout_mode = 2
 
-[node name="PlaceItemContainer" type="GridContainer" parent="UserInterface"]
-offset_top = 31.0
-offset_right = 392.0
-offset_bottom = 533.0
+[node name="Menus" type="PanelContainer" parent="UserInterface/TopMenuArea"]
+layout_mode = 2
 
-[node name="DesignationContainer" type="GridContainer" parent="UserInterface"]
-offset_top = 31.0
-offset_bottom = 31.0
+[node name="ConstructionContainer" type="GridContainer" parent="UserInterface/TopMenuArea/Menus"]
+layout_mode = 2
 
-[node name="DebugContainer" type="GridContainer" parent="UserInterface"]
-offset_top = 31.0
-offset_bottom = 31.0
+[node name="BuildingContainer" type="GridContainer" parent="UserInterface/TopMenuArea/Menus"]
+layout_mode = 2
+
+[node name="PlaceItemContainer" type="GridContainer" parent="UserInterface/TopMenuArea/Menus"]
+layout_mode = 2
+
+[node name="DesignationContainer" type="GridContainer" parent="UserInterface/TopMenuArea/Menus"]
+layout_mode = 2
+
+[node name="DebugContainer" type="GridContainer" parent="UserInterface/TopMenuArea/Menus"]
+layout_mode = 2
 
 [node name="BottomMenuArea" type="VBoxContainer" parent="UserInterface"]
 anchors_preset = 12
@@ -101,6 +100,10 @@ text = "Selection"
 layout_mode = 2
 text = "Construction"
 
+[node name="BuildingButton" type="Button" parent="UserInterface/BottomMenuArea/BottomMenu"]
+layout_mode = 2
+text = "Building"
+
 [node name="PlaceItemButton" type="Button" parent="UserInterface/BottomMenuArea/BottomMenu"]
 layout_mode = 2
 text = "Place item"
@@ -115,4 +118,5 @@ text = "Debug"
 
 [connection signal="pressed" from="UserInterface/BottomMenuArea/BottomMenu/SelectionButton" to="UserInterface" method="_on_SelectionButton_pressed"]
 [connection signal="pressed" from="UserInterface/BottomMenuArea/BottomMenu/ConstructionButton" to="UserInterface" method="_on_ConstructionButton_pressed"]
+[connection signal="pressed" from="UserInterface/BottomMenuArea/BottomMenu/BuildingButton" to="UserInterface" method="_on_BuildingButton_pressed"]
 [connection signal="pressed" from="UserInterface/BottomMenuArea/BottomMenu/PlaceItemButton" to="UserInterface" method="_on_PlaceItemButton_pressed"]

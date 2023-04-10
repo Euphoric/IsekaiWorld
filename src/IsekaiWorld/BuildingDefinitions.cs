@@ -108,7 +108,11 @@ public static class BuildingDefinitions
             { WoodenChair.Id, WoodenChair },
             { WoodenBed.Id, WoodenBed },
             { TableStoveFueled.Id, TableStoveFueled },
-            { CraftingDesk.Id, CraftingDesk }
+            { CraftingDesk.Id, CraftingDesk },
+            
+            { Plant.Haygrass.Id, Plant.Haygrass },
+            { Plant.TreeOak.Id, Plant.TreeOak },
+            { Plant.WildRice.Id, Plant.WildRice },
         };
 
     public static IReadOnlyList<BuildingDefinition> Definitions => DefinitionsMap.Values.ToList();

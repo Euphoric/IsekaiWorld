@@ -6,14 +6,14 @@ namespace IsekaiWorld;
 public partial class UserInterface : CanvasLayer
 {
     public MessagingEndpoint Messaging { get; }
-    
+
     private GameUserInterface _gameUserInterface = null!;
 
     public UserInterface()
     {
         Messaging = new MessagingEndpoint(MessageHandler);
     }
-    
+
     public void Initialize(GameUserInterface gameUserInterface)
     {
         _gameUserInterface = gameUserInterface;
@@ -29,7 +29,7 @@ public partial class UserInterface : CanvasLayer
             {
                 Text = definition.Label,
             };
-            button.Pressed += () => _on_ConstructionSelectionButton_pressed(definition.Id);
+            button.Pressed += () => _on_ConstructionSelectionButton_pressed(definition);
             ConstructionContainer.AddChild(button);
         }
 
@@ -39,8 +39,18 @@ public partial class UserInterface : CanvasLayer
             {
                 Text = definition.Label,
             };
-            button.Pressed += () => _on_PlaceItemSelectionButton_pressed(definition.Id);
+            button.Pressed += () => _on_PlaceItemSelectionButton_pressed(definition);
             PlaceItemContainer.AddChild(button);
+        }
+
+        foreach (var definition in BuildingDefinitions.Definitions)
+        {
+            var button = new Button
+            {
+                Text = definition.Label,
+            };
+            button.Pressed += () => _on_BuildingSelectionButton_pressed(definition);
+            BuildingContainer.AddChild(button);
         }
 
         foreach (HexagonDirection rotation in Enum.GetValues(typeof(HexagonDirection)))
@@ -65,6 +75,7 @@ public partial class UserInterface : CanvasLayer
 
 
         ConstructionContainer.Visible = false;
+        BuildingContainer.Visible = false;
         PlaceItemContainer.Visible = false;
         DesignationContainer.Visible = false;
         DebugContainer.Visible = false;
@@ -91,12 +102,12 @@ public partial class UserInterface : CanvasLayer
     }
 
     public Label ToolLabel => GetNode<Label>("BottomMenuArea/ToolLabel");
-    public Container ConstructionContainer => GetNode<Container>("ConstructionContainer");
-    public CheckButton PlaceDirectlyButton => ConstructionContainer.GetNode<CheckButton>("PlaceDirectlyButton");
-    public OptionButton RotationOptionButton => ConstructionContainer.GetNode<OptionButton>("RotationOptionButton");
-    public Container DesignationContainer => GetNode<Container>("DesignationContainer");
-    public Container PlaceItemContainer => GetNode<Container>("PlaceItemContainer");
-    public Container DebugContainer => GetNode<Container>("DebugContainer");
+    public Container ConstructionContainer => GetNode<Container>("TopMenuArea/Menus/ConstructionContainer");
+    public Container BuildingContainer => GetNode<Container>("TopMenuArea/Menus/BuildingContainer");
+    public OptionButton RotationOptionButton => GetNode<OptionButton>("TopMenuArea/RotationOptionButton");
+    public Container DesignationContainer => GetNode<Container>("TopMenuArea/Menus/DesignationContainer");
+    public Container PlaceItemContainer => GetNode<Container>("TopMenuArea/Menus/PlaceItemContainer");
+    public Container DebugContainer => GetNode<Container>("TopMenuArea/Menus/DebugContainer");
 
     private void MessageHandler(IEntityMessage message)
     {
@@ -117,7 +128,7 @@ public partial class UserInterface : CanvasLayer
     public override void _Process(double delta)
     {
         _gameUserInterface.Update();
-        
+
         base._Process(delta);
     }
 
@@ -162,13 +173,13 @@ public partial class UserInterface : CanvasLayer
 
     private void OnTpsChanged(TpsChanged tpsChanged)
     {
-        var tpsLabel = GetNode<Label>("Container/TpsLabel");
+        var tpsLabel = GetNode<Label>("TopMenuArea/Container/TpsLabel");
         tpsLabel.Text = tpsChanged.Tps.ToString("F0");
     }
 
     private void OnSpeedChanged(SpeedChanged speedChanged)
     {
-        var speedLabel = GetNode<Label>("Container/SpeedLabel");
+        var speedLabel = GetNode<Label>("TopMenuArea/Container/SpeedLabel");
 
         String label;
         if (speedChanged.Paused)
@@ -200,6 +211,7 @@ public partial class UserInterface : CanvasLayer
         PlaceItemContainer.Visible = false;
         DesignationContainer.Visible = false;
         DebugContainer.Visible = false;
+        BuildingContainer.Visible = false;
         ConstructionContainer.Visible = !ConstructionContainer.Visible;
     }
 
@@ -209,6 +221,7 @@ public partial class UserInterface : CanvasLayer
         ConstructionContainer.Visible = false;
         DesignationContainer.Visible = false;
         DebugContainer.Visible = false;
+        BuildingContainer.Visible = false;
         PlaceItemContainer.Visible = !PlaceItemContainer.Visible;
     }
 
@@ -217,38 +230,45 @@ public partial class UserInterface : CanvasLayer
         ConstructionContainer.Visible = false;
         PlaceItemContainer.Visible = false;
         DebugContainer.Visible = false;
+        BuildingContainer.Visible = false;
         DesignationContainer.Visible = !DesignationContainer.Visible;
     }
-    
+
     private void _on_DebugButton_pressed()
     {
         ConstructionContainer.Visible = false;
         PlaceItemContainer.Visible = false;
         DebugContainer.Visible = !DebugContainer.Visible;
         DesignationContainer.Visible = false;
+        BuildingContainer.Visible = false;
+    }
+    
+    private void _on_BuildingButton_pressed()
+    {
+        ConstructionContainer.Visible = false;
+        PlaceItemContainer.Visible = false;
+        DebugContainer.Visible = false;
+        DesignationContainer.Visible = false;
+        BuildingContainer.Visible = !BuildingContainer.Visible;
     }
 
-    public void _on_ConstructionSelectionButton_pressed(string constructionDefinitionId)
+
+    public void _on_ConstructionSelectionButton_pressed(ConstructionDefinition definition)
     {
-        var definition = ConstructionDefinitions.GetById(constructionDefinitionId);
-        if (!PlaceDirectlyButton.ButtonPressed)
-        {
-            _gameUserInterface.ConstructionSelected(definition);
-            ToolLabel.Text = "Construction: " + definition.Label;
-        }
-        else
-        {
-            // TODO: Fix
-            // _game.UserInterface.PlaceBuildingSelected(definition);
-            // ToolLabel.Text = "Place building: " + definition.Label;
-        }
+        _gameUserInterface.ConstructionSelected(definition);
+        ToolLabel.Text = "Construction: " + definition.Label;
     }
 
-    public void _on_PlaceItemSelectionButton_pressed(string itemDefinitionId)
+    public void _on_PlaceItemSelectionButton_pressed(ItemDefinition itemDefinition)
     {
-        var itemDefinition = ItemDefinitions.GetById(itemDefinitionId);
         _gameUserInterface.PlaceItemSelected(itemDefinition);
         ToolLabel.Text = "Place item";
+    }
+
+    public void _on_BuildingSelectionButton_pressed(BuildingDefinition definition)
+    {
+        _gameUserInterface.PlaceBuildingSelected(definition);
+        ToolLabel.Text = "Place building: " + definition.Label;
     }
 
     public void _on_rotation_selected(long index)
