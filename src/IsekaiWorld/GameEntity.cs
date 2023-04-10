@@ -75,6 +75,9 @@ public class GameEntity
             case SpawnItem msg:
                 SpawnItem(msg.Position, msg.Definition, msg.Count);
                 break;
+            case Designate msg:
+                Designate(msg.Position, msg.Designation);
+                break;
         }
     }
 

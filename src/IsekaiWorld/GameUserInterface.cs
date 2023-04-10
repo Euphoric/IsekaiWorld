@@ -242,7 +242,7 @@ public class GameUserInterface
                 Messaging.Broadcast(new SpawnItem(clickPosition, _currentItemSelection, 1));
                 break;
             case Tool.Designate:
-                _game.Designate(clickPosition, _currentDesignation);
+                Messaging.Broadcast(new Designate(clickPosition, _currentDesignation));
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -296,6 +296,8 @@ public class GameUserInterface
         }
     }
 }
+
+public record Designate(HexCubeCoord Position, DesignationDefinition Designation) : IEntityMessage;
 
 public record SpawnItem(HexCubeCoord Position, ItemDefinition Definition, int Count) : IEntityMessage;
 
