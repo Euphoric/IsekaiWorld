@@ -77,7 +77,7 @@ public partial class UserInterface : CanvasLayer
 
         void OnDesignationToolButtonPressed(DesignationDefinition designation)
         {
-            Messaging.Broadcast(new DesignationToolSelect(designation));
+            _gameUserInterface.DesignateTool(designation);
             ToolLabel.Text = designation.Title;
         }
 

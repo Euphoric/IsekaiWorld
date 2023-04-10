@@ -142,9 +142,6 @@ public class GameUserInterface
     {
         switch (mssg)
         {
-            case DesignationToolSelect msg:
-                DesignateTool(msg.Designation);
-                break;
             case BuildingUpdated msg:
                 UpdateSelectionEntity(msg, m => m.EntityId,
                     id => new BuildingEntityItem(id),
@@ -269,7 +266,7 @@ public class GameUserInterface
         _currentItemSelection = itemDefinition;
     }
 
-    private void DesignateTool(DesignationDefinition designation)
+    public void DesignateTool(DesignationDefinition designation)
     {
         _currentTool = Tool.Designate;
         _currentDesignation = designation;
@@ -301,8 +298,6 @@ public record SpawnItem(HexCubeCoord Position, ItemDefinition Definition, int Co
 public record StartConstruction(HexCubeCoord Position, HexagonDirection Rotation, ConstructionDefinition Definition) : IEntityMessage;
 
 record SelectionChanged(string? SelectionLabel) : IEntityMessage;
-
-record DesignationToolSelect(DesignationDefinition Designation) : IEntityMessage;
 
 record SetSpeed(int Speed) : IEntityMessage;
 
