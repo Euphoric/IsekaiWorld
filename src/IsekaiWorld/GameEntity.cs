@@ -8,10 +8,11 @@ public class GameEntity
 {
     public HexagonalMapEntity GameMap { get; private set; } = null!;
     public HexagonPathfinding Pathfinding { get; private set; } = null!;
-    public GameUserInterface UserInterface { get; private set; }
+    public GameUserInterface UserInterface { get; }
     public JobSystem Jobs { get; }
-    public MessagingHub Messaging { get; }
-
+    public MessagingHub MessagingHub { get; }
+    public MessagingEndpoint Messaging { get; }
+    
     public IReadOnlyList<ConstructionEntity> Constructions => _entities.OfType<ConstructionEntity>().ToList();
     public IReadOnlyList<BuildingEntity> Buildings => _entities.OfType<BuildingEntity>().ToList();
     public IReadOnlyList<ItemEntity> Items => _entities.OfType<ItemEntity>().ToList();
@@ -46,7 +47,8 @@ public class GameEntity
 
     public GameEntity()
     {
-        Messaging = new MessagingHub();
+        MessagingHub = new MessagingHub();
+        Messaging = new MessagingEndpoint(HandleMessage);
         UserInterface = new GameUserInterface(this);
         var eatJobGiver = new EatFoodJobGiver(this);
         var haulJobGiver = new HaulJobGiver(this);
@@ -57,11 +59,24 @@ public class GameEntity
         Jobs = new JobSystem(new IJobGiver[] { eatJobGiver, haulJobGiver, deconstructJobGiver, constructionJobGiver, cutWoodJobGiver, harvestJobGiver });
     }
 
+    private void HandleMessage(IEntityMessage mssg)
+    {
+        switch (mssg)
+        {
+            case SetSpeed msg:
+                Speed = msg.Speed;
+                break;
+        }
+    }
+
+
     public void Initialize(IMapGenerator mapGenerator)
     {
+        MessagingHub.Register(Messaging);
+        
         Speed = 1;
 
-        Messaging.Register(UserInterface.Messaging);
+        MessagingHub.Register(UserInterface.Messaging);
 
         var (map, entities) = mapGenerator.GenerateNewMap();
         GameMap = map;
@@ -69,7 +84,7 @@ public class GameEntity
 
         Pathfinding = new HexagonPathfinding();
         Pathfinding.BuildMap(GameMap);
-        Messaging.Register(Pathfinding.Messaging);
+        MessagingHub.Register(Pathfinding.Messaging);
 
         // Probably shouldn't be here. Find better place for initial surface update.
         Messaging.Broadcast(new SurfaceChanged(GameMap.Cells));
@@ -90,13 +105,13 @@ public class GameEntity
 
     public void Update()
     {
-        Messaging.DistributeMessages();
+        MessagingHub.DistributeMessages();
 
         Pathfinding.Update();
 
         foreach (var entity in _entitiesToAdd)
         {
-            Messaging.Register(entity.Messaging);
+            MessagingHub.Register(entity.Messaging);
             entity.Initialize();
         }
         _entities.AddRange(_entitiesToAdd);
@@ -111,7 +126,7 @@ public class GameEntity
             .ForEach(entity =>
             {
                 _entities.Remove(entity);
-                Messaging.Unregister(entity.Messaging);
+                MessagingHub.Unregister(entity.Messaging);
             });
 
         UserInterface.Update();

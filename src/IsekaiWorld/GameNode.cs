@@ -24,7 +24,7 @@ public partial class GameNode : Node
 	public override void _EnterTree()
 	{
 		_game = new GameEntity();
-		_game.Messaging.ConnectMessageHub(_viewMessagingHub);
+		_game.MessagingHub.ConnectMessageHub(_viewMessagingHub);
 
 		_gameThread = new System.Threading.Thread(GameLoop);
 
@@ -85,7 +85,7 @@ public partial class GameNode : Node
 				loopCounter = 0;
 				lastUpdate = now;
 				
-				_game.Messaging.Broadcast(new TpsChanged(tps));
+				_game.MessagingHub.Broadcast(new TpsChanged(tps));
 			}
 		}
 	}

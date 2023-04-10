@@ -280,7 +280,7 @@ public class GameUserInterface
 
     public void SetSpeed(int speed)
     {
-        _game.Speed = speed;
+        Messaging.Broadcast(new SetSpeed(speed));
     }
 
     public void TogglePause()
@@ -300,3 +300,5 @@ public class GameUserInterface
 record SelectionChanged(string? SelectionLabel) : IEntityMessage;
 
 record DesignationToolSelect(DesignationDefinition Designation) : IEntityMessage;
+
+record SetSpeed(int Speed) : IEntityMessage;

@@ -22,7 +22,7 @@ public class GameTestInstance
         _game.Initialize(new EmptyMapGenerator());
 
         _messageHub = new MessagingHub();
-        _game.Messaging.ConnectMessageHub(_messageHub);
+        _game.MessagingHub.ConnectMessageHub(_messageHub);
 
         _messaging = new MessagingEndpoint(MessageHandler);
         _messageHub.Register(_messaging);
