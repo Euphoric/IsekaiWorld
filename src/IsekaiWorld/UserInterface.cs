@@ -118,6 +118,13 @@ public partial class UserInterface : CanvasLayer
         }
     }
 
+    public override void _Process(double delta)
+    {
+        _gameUserInterface.Update();
+        
+        base._Process(delta);
+    }
+
     public override void _Input(InputEvent evnt)
     {
         if (evnt.IsPressed())
