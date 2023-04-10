@@ -90,10 +90,6 @@ text = "Tool label"
 layout_mode = 2
 text = "Selection label"
 
-[node name="CharacterSelectionLabel" type="Label" parent="UserInterface/BottomMenuArea"]
-layout_mode = 2
-text = "Character Selection label"
-
 [node name="BottomMenu" type="HBoxContainer" parent="UserInterface/BottomMenuArea"]
 layout_mode = 2
 

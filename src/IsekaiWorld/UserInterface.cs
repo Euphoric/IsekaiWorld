@@ -91,7 +91,6 @@ public partial class UserInterface : CanvasLayer
     }
 
     public Label ToolLabel => GetNode<Label>("BottomMenuArea/ToolLabel");
-    public Label CharacterSelectionLabel => GetNode<Label>("BottomMenuArea/CharacterSelectionLabel");
     public Container ConstructionContainer => GetNode<Container>("ConstructionContainer");
     public CheckButton PlaceDirectlyButton => ConstructionContainer.GetNode<CheckButton>("PlaceDirectlyButton");
     public OptionButton RotationOptionButton => ConstructionContainer.GetNode<OptionButton>("RotationOptionButton");
@@ -105,9 +104,6 @@ public partial class UserInterface : CanvasLayer
         {
             case SelectionChanged selectedEntityChanged:
                 OnSelectedEntityChanged(selectedEntityChanged);
-                break;
-            case CharacterUpdated characterUpdated:
-                OnCharacterUpdated(characterUpdated);
                 break;
             case TpsChanged tpsChanged:
                 OnTpsChanged(tpsChanged);
@@ -156,11 +152,6 @@ public partial class UserInterface : CanvasLayer
         }
 
         base._Input(evnt);
-    }
-    
-    private void OnCharacterUpdated(CharacterUpdated characterUpdated)
-    {
-        CharacterSelectionLabel.Text = $"Activity: {characterUpdated.ActivityName} / Hunger: {(characterUpdated.Hunger*100):F1}";
     }
 
     private void OnSelectedEntityChanged(SelectionChanged message)

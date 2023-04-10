@@ -93,13 +93,19 @@ public class GameUserInterface
         {
             base.Update(msg.Position);
             Label = msg.Label;
+            ActivityName = msg.ActivityName;
+            Hunger = msg.Hunger;
         }
+
+        public double Hunger { get; set; }
+
+        public string? ActivityName { get; set; }
 
         public string Label { get; set; } = null!;
 
         public override bool Update()
         {
-            TextLabel = "Character: " + Label;
+            TextLabel = $"Character: {Label} / Activity: {ActivityName} / Hunger: {Hunger * 100:F1}";
             return true;
         }
     }
