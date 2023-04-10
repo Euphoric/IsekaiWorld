@@ -6,17 +6,14 @@ namespace IsekaiWorld;
 
 public class GameUserInterface
 {
-    [Obsolete] private readonly GameEntity _game;
-
     private bool _selectedLabelDirty;
 
     private EntitySelection? _currentSelection;
 
     public MessagingEndpoint Messaging { get; }
 
-    public GameUserInterface(GameEntity game)
+    public GameUserInterface()
     {
-        _game = game;
         Messaging = new MessagingEndpoint(HandleMessage);
     }
 

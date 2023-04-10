@@ -18,6 +18,8 @@ public partial class HexagonalMap : Node2D
     [Obsolete("Use messaging")]
     private GameEntity _game = null!;
 
+    private GameUserInterface _gui = null!;
+    
     public HexagonalMap()
     {
         TextureRepeat = TextureRepeatEnum.Enabled;
@@ -37,7 +39,8 @@ public partial class HexagonalMap : Node2D
     {
         var gameNode = GetNode<GameNode>("/root/GameNode");
         _game = gameNode.GameEntity;
-
+        _gui = gameNode.Gui;
+            
         base._EnterTree();
     }
 
@@ -384,7 +387,7 @@ public partial class HexagonalMap : Node2D
             if (mouseButton.ButtonIndex == MouseButton.Left && mouseButton.Pressed)
             {
                 var clickPosition = _mouseoverHexagon.HexPosition;
-                _game.UserInterface.MouseClickOnMap(clickPosition);
+                _gui.MouseClickOnMap(clickPosition);
             }
         }
 

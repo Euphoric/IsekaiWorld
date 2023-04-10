@@ -18,6 +18,8 @@ public partial class GameNode : Node
 	
 	[Obsolete("Should not be accessible to view layer")]
 	public GameEntity GameEntity => _game;
+
+	public GameUserInterface Gui { get; private set; } = null!;
 	
 	public Node2D EntitiesNode { get; private set; } = null!;
 
@@ -28,6 +30,9 @@ public partial class GameNode : Node
 
 		_gameThread = new System.Threading.Thread(GameLoop);
 
+		Gui = new GameUserInterface();
+		_viewMessagingHub.Register(Gui.Messaging);
+		
 		_characterView = new CharacterView(this);
 		_viewMessagingHub.Register(_characterView.Messaging);
 		_buildingView = new BuildingView(this);
@@ -35,7 +40,7 @@ public partial class GameNode : Node
 		_mapItemView = new MapItemView(this);
 		_viewMessagingHub.Register(_mapItemView.Messaging);
 		_userInterface = GetNode<UserInterface>("UserInterface");
-		_userInterface.Initialize(_game);
+		_userInterface.Initialize(Gui);
 		_viewMessagingHub.Register(_userInterface.Messaging);
 		var mapNode = GetNode<HexagonalMap>("Map/HexagonalMap");
 		_viewMessagingHub.Register(mapNode.Messaging);

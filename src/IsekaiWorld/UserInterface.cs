@@ -6,19 +6,17 @@ namespace IsekaiWorld;
 public partial class UserInterface : CanvasLayer
 {
     public MessagingEndpoint Messaging { get; }
-
-    [Obsolete("Do not use. Replace by messaging.")]
+    
     private GameUserInterface _gameUserInterface = null!;
 
     public UserInterface()
     {
         Messaging = new MessagingEndpoint(MessageHandler);
     }
-
-    [Obsolete("Do not use. Replace by messaging.")]
-    public void Initialize(GameEntity gameEntity)
+    
+    public void Initialize(GameUserInterface gameUserInterface)
     {
-        _gameUserInterface = gameEntity.UserInterface;
+        _gameUserInterface = gameUserInterface;
     }
 
     public override void _Ready()

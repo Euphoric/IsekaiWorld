@@ -8,7 +8,6 @@ public class GameEntity
 {
     public HexagonalMapEntity GameMap { get; private set; } = null!;
     public HexagonPathfinding Pathfinding { get; private set; } = null!;
-    public GameUserInterface UserInterface { get; }
     public JobSystem Jobs { get; }
     public MessagingHub MessagingHub { get; }
     public MessagingEndpoint Messaging { get; }
@@ -49,7 +48,6 @@ public class GameEntity
     {
         MessagingHub = new MessagingHub();
         Messaging = new MessagingEndpoint(HandleMessage);
-        UserInterface = new GameUserInterface(this);
         var eatJobGiver = new EatFoodJobGiver(this);
         var haulJobGiver = new HaulJobGiver(this);
         var deconstructJobGiver = new DeconstructJobGiver(this);
@@ -87,8 +85,6 @@ public class GameEntity
         MessagingHub.Register(Messaging);
         
         Speed = 1;
-
-        MessagingHub.Register(UserInterface.Messaging);
 
         var (map, entities) = mapGenerator.GenerateNewMap();
         GameMap = map;
@@ -140,8 +136,6 @@ public class GameEntity
                 _entities.Remove(entity);
                 MessagingHub.Unregister(entity.Messaging);
             });
-
-        UserInterface.Update();
     }
 
     public ConstructionEntity? StartConstruction(HexCubeCoord position, HexagonDirection rotation,
