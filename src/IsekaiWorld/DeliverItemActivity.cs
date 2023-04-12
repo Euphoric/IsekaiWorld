@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace IsekaiWorld;
 
 public class DeliverItemActivity : Activity
@@ -5,8 +7,7 @@ public class DeliverItemActivity : Activity
     private readonly CharacterEntity _character;
     private readonly ItemEntity _item;
     private readonly ConstructionEntity _construction;
-
-    private ItemEntity? _carriedItem;
+    
     private MovementActivity? _moveToConstructionActivity;
     private PickUpItemActivity? _pickUpItemActivity;
 
@@ -21,7 +22,8 @@ public class DeliverItemActivity : Activity
 
     protected override void UpdateInner()
     {
-        if (_carriedItem == null)
+        var carriedItem = _character.CarriedItems.FirstOrDefault(x => x.Definition == _item.Definition && x.Count == 1);
+        if (carriedItem == null)
         {
             if (_pickUpItemActivity == null)
             {
@@ -33,7 +35,6 @@ public class DeliverItemActivity : Activity
 
                 if (_pickUpItemActivity.IsFinished)
                 {
-                    _carriedItem = _pickUpItemActivity.PickedUpItem;
                     _pickUpItemActivity = null;
                 }
             }
@@ -52,8 +53,8 @@ public class DeliverItemActivity : Activity
                 {
                     _moveToConstructionActivity = null;
 
-                    _carriedItem.Remove();
-                    _carriedItem = null;
+                    (_character as IItemHolder).RemoveItem(carriedItem); // TODO: Remove carried item when item is removed?
+                    carriedItem.Remove();
 
                     _construction.MaterialsDelivered = true;
 

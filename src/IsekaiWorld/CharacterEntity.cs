@@ -26,6 +26,8 @@ public class CharacterEntity : IEntity, IItemHolder
     public HexagonDirection FacingDirection { get; set; }
     public bool DisableHunger { get; set; }
 
+    public IReadOnlyList<ItemEntity> CarriedItems => _carriedItems;
+
     public CharacterEntity(GameEntity game, string label)
     {
         Messaging = new(MessageHandler);
@@ -88,7 +90,7 @@ public class CharacterEntity : IEntity, IItemHolder
         }
     }
     
-    private List<ItemEntity> _carriedItems = new();
+    private readonly List<ItemEntity> _carriedItems = new();
 
     void IItemHolder.RemoveItem(ItemEntity itemEntity)
     {

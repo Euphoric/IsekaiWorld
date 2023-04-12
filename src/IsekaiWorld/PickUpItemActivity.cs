@@ -6,8 +6,6 @@ public class PickUpItemActivity : Activity
     private readonly ItemEntity _item;
     private MovementActivity? _movement;
 
-    public ItemEntity? PickedUpItem { get; private set; }
-
     public PickUpItemActivity(GameEntity game, CharacterEntity character, ItemEntity item) : base(game)
     {
         _character = character;
@@ -33,9 +31,8 @@ public class PickUpItemActivity : Activity
         _movement = null;
 
         var pickedItem = _item.PickUpItem(1);
-
         pickedItem.SetHolder(_character);
-        PickedUpItem = pickedItem;
+        
         IsFinished = true;
     }
 }

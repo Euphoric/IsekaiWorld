@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace IsekaiWorld;
 
 public class EatActivity : Activity
@@ -6,8 +8,7 @@ public class EatActivity : Activity
     private readonly ItemEntity _foodItem;
 
     private PickUpItemActivity? _pickUpItemActivity;
-    private ItemEntity? _carriedFood;
-    
+
     public EatActivity(GameEntity game, CharacterEntity character, ItemEntity foodItem) : base(game)
     {
         _character = character;
@@ -16,7 +17,8 @@ public class EatActivity : Activity
 
     protected override void UpdateInner()
     {
-        if (_carriedFood == null)
+        var carriedFood = _character.CarriedItems.FirstOrDefault(x => x.Definition == _foodItem.Definition && x.Count == 1);
+        if (carriedFood == null)
         {
             if (_pickUpItemActivity == null)
             {
@@ -27,7 +29,6 @@ public class EatActivity : Activity
                 _pickUpItemActivity.Update();
                 if (_pickUpItemActivity.IsFinished)
                 {
-                    _carriedFood = _pickUpItemActivity.PickedUpItem;
                     _pickUpItemActivity = null;
                 }
             }
@@ -35,7 +36,7 @@ public class EatActivity : Activity
         else
         {
             _character.Hunger = 1;
-            _carriedFood.Remove();
+            carriedFood.Remove();
             IsFinished = true;            
         }
     }
