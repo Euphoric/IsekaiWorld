@@ -24,7 +24,12 @@ public class ConstructionJobGiver : IJobGiver
             if (itemToDeliver == null)
                 return null;
 
-            return new[] { new DeliverItemActivity(_game, character, itemToDeliver, construction) };
+            return new Activity[]
+            {
+                new PickUpItemActivity(_game, character, itemToDeliver),
+                new MovementActivity(_game, _game.Pathfinding, character, construction.Position, false),
+                new DeliverItemActivity(_game, character, itemToDeliver, construction)
+            };
         }
         else
         {
