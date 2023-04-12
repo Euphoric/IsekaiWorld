@@ -20,6 +20,10 @@ public class CutWoodJobGiver : IJobGiver
         if (tree == null)
             return null;
 
-        return new[] { new CutTreeActivity(_game, character, tree) };
+        return new Activity[]
+        {
+            new MovementActivity(_game, _game.Pathfinding, character, tree.Position, true),
+            new CutTreeActivity(_game, character, tree)
+        };
     }
 }

@@ -1,11 +1,11 @@
+using System;
+
 namespace IsekaiWorld;
 
 public class CutTreeActivity : Activity
 {
     public CharacterEntity Character { get; }
     public BuildingEntity Tree { get; }
-
-    private MovementActivity? _movement;
 
     public CutTreeActivity(GameEntity game, CharacterEntity character, BuildingEntity tree)
         : base(game)
@@ -16,33 +16,20 @@ public class CutTreeActivity : Activity
 
     protected override void UpdateInner()
     {
-        if (_movement != null)
+        bool isNextToEntity = Character.Position.IsNextTo(Tree.Position);
+        if (!isNextToEntity)
         {
-            _movement.Update();
+            throw new Exception("TODO Handle case when activity is not in neighbor of target entity.");
         }
-
-        var canCut = Character.Position.IsNextTo(Tree.Position);
-        if (!canCut)
+        
+        if (!Tree.IsRemoved)
         {
-            if (_movement == null)
-            {
-                // move on item
-                _movement = new MovementActivity(Game, Game.Pathfinding, Character, Tree.Position, true);
-            }
+            Tree.RemoveEntity();
+            Game.SpawnItem(Tree.Position, ItemDefinitions.Wood, 5);
         }
         else
         {
-            _movement = null;
-
-            if (!Tree.IsRemoved)
-            {
-                Tree.RemoveEntity();
-                Game.SpawnItem(Tree.Position, ItemDefinitions.Wood, 5);
-            }
-            else
-            {
-                IsFinished = true;
-            }
+            IsFinished = true;
         }
     }
 }

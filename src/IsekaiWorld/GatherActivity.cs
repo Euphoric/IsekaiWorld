@@ -16,10 +16,7 @@ public class GatherActivity : Activity
 
     protected override void UpdateInner()
     {
-        bool isNextToEntity =
-            EntityToGather.Position == Character.Position ||
-            Character.Position.IsNextTo(EntityToGather.Position);
-        
+        bool isNextToEntity = Character.Position.IsNextTo(EntityToGather.Position);
         if (!isNextToEntity)
         {
             throw new Exception("TODO Handle case when activity is not in neighbor of target entity.");

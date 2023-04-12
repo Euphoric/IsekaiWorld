@@ -241,6 +241,7 @@ namespace IsekaiWorld
             tree.Designation.Should().Be(DesignationDefinitions.CutWood);
 
             game.UpdateUntil(_ => character.ActivityName == "CutTreeActivity");
+            game.UpdateUntil(_ => character.Position.IsNextTo(tree.Position));
             game.UpdateUntil(_ => character.ActivityName == null);
 
             game.Buildings.Should().NotContain(x => x.Position == tree.Position);
