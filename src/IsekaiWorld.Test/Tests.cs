@@ -480,7 +480,7 @@ namespace IsekaiWorld
             var game = CreateGame();
 
             var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
-            game.SpawnItem(HexCubeCoord.Zero, ItemDefinitions.Grains, 1);
+            game.SpawnItem(new HexCubeCoord(-3, -2, 5), ItemDefinitions.Grains, 1);
             game.Update(); // TODO Remove
             
             character.SetHungerTo(0.31);

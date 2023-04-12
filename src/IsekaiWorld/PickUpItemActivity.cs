@@ -1,10 +1,11 @@
+using System;
+
 namespace IsekaiWorld;
 
 public class PickUpItemActivity : Activity
 {
     private readonly CharacterEntity _character;
     private readonly ItemEntity _item;
-    private MovementActivity? _movement;
 
     public PickUpItemActivity(GameEntity game, CharacterEntity character, ItemEntity item) : base(game)
     {
@@ -14,25 +15,14 @@ public class PickUpItemActivity : Activity
 
     protected override void UpdateInner()
     {
-        if (_movement == null)
+        if (_character.Position != _item.Position)
         {
-            // move on item
-            _movement = new MovementActivity(Game, Game.Pathfinding, _character, _item.Position, false);
+            throw new Exception("Character must stand on top of the item.");
         }
-
-        if (_movement != null)
-        {
-            _movement.Update();
-            
-            if (!_movement.IsFinished)
-                return;
-        }
-
-        _movement = null;
 
         var pickedItem = _item.PickUpItem(1);
         pickedItem.SetHolder(_character);
-        
+
         IsFinished = true;
     }
 }

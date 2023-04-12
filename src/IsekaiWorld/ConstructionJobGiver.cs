@@ -26,6 +26,7 @@ public class ConstructionJobGiver : IJobGiver
 
             return new Activity[]
             {
+                new MovementActivity(_game, _game.Pathfinding, character, itemToDeliver.Position, false),
                 new PickUpItemActivity(_game, character, itemToDeliver),
                 new MovementActivity(_game, _game.Pathfinding, character, construction.Position, false),
                 new DeliverItemActivity(_game, character, itemToDeliver, construction)

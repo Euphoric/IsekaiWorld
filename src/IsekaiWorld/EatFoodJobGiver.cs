@@ -11,7 +11,7 @@ public class EatFoodJobGiver : IJobGiver
     {
         _game = game;
     }
-    
+
     public IReadOnlyList<Activity>? GetJobActivity(CharacterEntity character)
     {
         if (character.Hunger < 0.3)
@@ -21,12 +21,13 @@ public class EatFoodJobGiver : IJobGiver
             {
                 return new Activity[]
                 {
+                    new MovementActivity(_game, _game.Pathfinding, character, foodItem.Position, false),
                     new PickUpItemActivity(_game, character, foodItem),
                     new EatActivity(_game, character, foodItem)
                 };
             }
         }
-        
+
         return null;
     }
 }
