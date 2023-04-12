@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IsekaiWorld;
@@ -10,8 +11,8 @@ public class ConstructionJobGiver : IJobGiver
     {
         _game = game;
     }
-    
-    public Activity? GetJobActivity(CharacterEntity character)
+
+    public IReadOnlyList<Activity>? GetJobActivity(CharacterEntity character)
     {
         var construction = _game.Constructions.FirstOrDefault();
         if (construction == null)
@@ -22,12 +23,12 @@ public class ConstructionJobGiver : IJobGiver
             var itemToDeliver = _game.Items.FirstOrDefault(x => x.Definition == construction.Definition.Material);
             if (itemToDeliver == null)
                 return null;
-            
-            return new DeliverItemActivity(_game, character, itemToDeliver, construction);
+
+            return new[] { new DeliverItemActivity(_game, character, itemToDeliver, construction) };
         }
         else
         {
-            return new ConstructionActivity(_game, character, construction);
+            return new[] { new ConstructionActivity(_game, character, construction) };
         }
     }
 }

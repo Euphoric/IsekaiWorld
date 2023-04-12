@@ -4,7 +4,7 @@ namespace IsekaiWorld;
 
 public interface IJobGiver
 {
-    Activity? GetJobActivity(CharacterEntity character);
+    IReadOnlyList<Activity>? GetJobActivity(CharacterEntity character);
 }
 
 public class JobSystem : IJobGiver
@@ -16,7 +16,7 @@ public class JobSystem : IJobGiver
         _jobGivers = jobGivers;
     }
 
-    public Activity? GetJobActivity(CharacterEntity character)
+    public IReadOnlyList<Activity>? GetJobActivity(CharacterEntity character)
     {
         foreach (var jobGiver in _jobGivers)
         {

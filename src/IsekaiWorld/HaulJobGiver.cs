@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
@@ -12,7 +13,7 @@ public class HaulJobGiver : IJobGiver
         _game = game;
     }
 
-    public Activity? GetJobActivity(CharacterEntity character)
+    public IReadOnlyList<Activity>? GetJobActivity(CharacterEntity character)
     {
         var stockpilePositions = _game.Buildings.Where(x => x.Definition == BuildingDefinitions.StockpileZone)
             .SelectMany(x => x.OccupiedCells).Distinct().ToImmutableHashSet();
@@ -24,7 +25,7 @@ public class HaulJobGiver : IJobGiver
         var targetStockpile = _game.Buildings.FirstOrDefault(x => x.Definition == BuildingDefinitions.StockpileZone && (x.ReservedForItem == null || x.ReservedForItem == itemToHaul.Definition));
         if (targetStockpile == null) 
             return null;
-        
-        return new HaulItemActivity(_game, character, itemToHaul, targetStockpile);
+
+        return new[] { new HaulItemActivity(_game, character, itemToHaul, targetStockpile) };
     }
 }

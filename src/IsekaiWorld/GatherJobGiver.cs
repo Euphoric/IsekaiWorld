@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IsekaiWorld;
@@ -11,12 +12,12 @@ public class GatherJobGiver : IJobGiver
         _game = game;
     }
     
-    public Activity? GetJobActivity(CharacterEntity character)
+    public IReadOnlyList<Activity>? GetJobActivity(CharacterEntity character)
     {
         var toGather= _game.Buildings.FirstOrDefault(x => x.Designation == DesignationDefinitions.Gather);
         if (toGather == null)
             return null;
 
-        return new GatherActivity(_game, character, toGather);
+        return new []{ new GatherActivity(_game, character, toGather) };
     }
 }

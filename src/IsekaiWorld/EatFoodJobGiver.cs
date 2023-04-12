@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IsekaiWorld;
@@ -11,14 +12,14 @@ public class EatFoodJobGiver : IJobGiver
         _game = game;
     }
     
-    public Activity? GetJobActivity(CharacterEntity character)
+    public IReadOnlyList<Activity>? GetJobActivity(CharacterEntity character)
     {
         if (character.Hunger < 0.3)
         {
             var foodItem = _game.Items.FirstOrDefault(x => x.Definition == ItemDefinitions.Grains);
             if (foodItem != null)
             {
-                return new EatActivity(_game, character, foodItem);
+                return new[] { new EatActivity(_game, character, foodItem) };
             }
         }
         

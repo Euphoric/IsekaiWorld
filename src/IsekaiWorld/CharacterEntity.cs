@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IsekaiWorld;
 
@@ -14,10 +15,9 @@ public class CharacterEntity : IEntity, IItemHolder
 
     public HexCubeCoord Position { get; set; }
     public ISet<HexCubeCoord> OccupiedCells => new HashSet<HexCubeCoord> { Position };
-    
-    public bool IsIdle => CurrentActivity == null;
 
-    public Activity? CurrentActivity { get; private set; }
+    private List<Activity> _activityList = new();
+
     public string Label { get; }
 
     private bool _initialized;
@@ -50,16 +50,19 @@ public class CharacterEntity : IEntity, IItemHolder
             _initialized = true;
         }
         
-        if (CurrentActivity == null)
+        if (!_activityList.Any())
         {
-            CurrentActivity = _game.Jobs.GetJobActivity(this);
+            _activityList = _game.Jobs.GetJobActivity(this)?.ToList() ?? new List<Activity>();
         }
+
+        var currentActivity = _activityList.FirstOrDefault();
         
-        CurrentActivity?.Update();
+        currentActivity?.Update();
         
-        if (CurrentActivity != null && CurrentActivity.IsFinished)
+        if (currentActivity != null && currentActivity.IsFinished)
         {
-            CurrentActivity = null;
+            _activityList.Remove(currentActivity);
+            currentActivity = null;
         }
 
         if (!_game.Paused)
@@ -71,7 +74,7 @@ public class CharacterEntity : IEntity, IItemHolder
             }
         }
 
-        Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Label, Position, FacingDirection, CurrentActivity?.GetType().Name, Hunger));
+        Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Label, Position, FacingDirection, currentActivity?.GetType().Name, Hunger));
     }
     
     private void MessageHandler(IEntityMessage msgg)

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IsekaiWorld;
@@ -11,14 +12,14 @@ public class CutWoodJobGiver : IJobGiver
         _game = game;
     }
 
-    public Activity? GetJobActivity(CharacterEntity character)
+    public IReadOnlyList<Activity>? GetJobActivity(CharacterEntity character)
     {
         var treesToCut = _game.Buildings.Where(x => x.Definition == BuildingDefinitions.Plant.TreeOak && x.Designation == DesignationDefinitions.CutWood);
         
         var tree = treesToCut.FirstOrDefault();
         if (tree == null)
             return null;
-        
-        return new CutTreeActivity(_game, character, tree);
+
+        return new[] { new CutTreeActivity(_game, character, tree) };
     }
 }
