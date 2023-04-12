@@ -551,6 +551,7 @@ namespace IsekaiWorld
             game.UpdateUntil(_ => riceEntity.Designation == DesignationDefinitions.Gather);
             
             game.UpdateUntil(_ => character.ActivityName == "GatherActivity");
+            game.UpdateUntil(_ => character.Position.IsNextTo(riceEntity.Position));
             game.UpdateUntil(_ => character.ActivityName == null);
 
             game.Buildings.Should().NotContain(x => x.Position == riceEntity.Position);

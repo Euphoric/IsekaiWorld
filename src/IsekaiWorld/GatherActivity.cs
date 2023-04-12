@@ -1,11 +1,11 @@
+using System;
+
 namespace IsekaiWorld;
 
 public class GatherActivity : Activity
 {
     public CharacterEntity Character { get; }
     public BuildingEntity EntityToGather { get; }
-
-    private MovementActivity? _movement;
 
     public GatherActivity(GameEntity game, CharacterEntity character, BuildingEntity entityToGather)
         :base(game)
@@ -19,29 +19,20 @@ public class GatherActivity : Activity
         bool isNextToEntity =
             EntityToGather.Position == Character.Position ||
             Character.Position.IsNextTo(EntityToGather.Position);
-
+        
         if (!isNextToEntity)
         {
-            if (_movement == null)
-            {
-                _movement = new MovementActivity(Game, Game.Pathfinding, Character, EntityToGather.Position, true);
-            }
-
-            _movement.Update();
+            throw new Exception("TODO Handle case when activity is not in neighbor of target entity.");
+        }
+        
+        if (!EntityToGather.IsRemoved)
+        {
+            EntityToGather.RemoveEntity();
+            Game.SpawnItem(EntityToGather.Position, ItemDefinitions.Grains, 1);
         }
         else
         {
-            _movement = null;
-
-            if (!EntityToGather.IsRemoved)
-            {
-                EntityToGather.RemoveEntity();
-                Game.SpawnItem(EntityToGather.Position, ItemDefinitions.Grains, 1);
-            }
-            else
-            {
-                IsFinished = true;
-            }
+            IsFinished = true;
         }
     }
 }

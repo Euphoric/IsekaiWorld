@@ -18,6 +18,10 @@ public class GatherJobGiver : IJobGiver
         if (toGather == null)
             return null;
 
-        return new []{ new GatherActivity(_game, character, toGather) };
+        return new Activity[]
+        {
+            new MovementActivity(_game, _game.Pathfinding, character, toGather.Position, true),
+            new GatherActivity(_game, character, toGather)
+        };
     }
 }
