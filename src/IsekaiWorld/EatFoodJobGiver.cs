@@ -19,7 +19,11 @@ public class EatFoodJobGiver : IJobGiver
             var foodItem = _game.Items.FirstOrDefault(x => x.Definition == ItemDefinitions.Grains);
             if (foodItem != null)
             {
-                return new[] { new EatActivity(_game, character, foodItem) };
+                return new Activity[]
+                {
+                    new PickUpItemActivity(_game, character, foodItem),
+                    new EatActivity(_game, character, foodItem)
+                };
             }
         }
         
