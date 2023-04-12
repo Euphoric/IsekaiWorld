@@ -16,7 +16,9 @@ public class ConstructionActivity : Activity
 
     protected override void UpdateInner()
     {
-        bool isNextToEntity = Character.Position.IsNextTo(Construction.Position);
+        bool isNextToEntity =
+            Character.Position == Construction.Position ||
+            Character.Position.IsNextTo(Construction.Position);
         if (!isNextToEntity)
         {
             throw new Exception("TODO Handle case when activity is not in neighbor of target entity.");
