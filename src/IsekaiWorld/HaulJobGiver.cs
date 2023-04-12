@@ -12,20 +12,19 @@ public class HaulJobGiver : IJobGiver
         _game = game;
     }
 
-    public bool SetJobActivity(CharacterEntity character)
+    public Activity? GetJobActivity(CharacterEntity character)
     {
         var stockpilePositions = _game.Buildings.Where(x => x.Definition == BuildingDefinitions.StockpileZone)
             .SelectMany(x => x.OccupiedCells).Distinct().ToImmutableHashSet();
 
         var itemToHaul = _game.Items.FirstOrDefault(it => !stockpilePositions.Contains(it.Position));
         if (itemToHaul == null) 
-            return false;
+            return null;
         
         var targetStockpile = _game.Buildings.FirstOrDefault(x => x.Definition == BuildingDefinitions.StockpileZone && (x.ReservedForItem == null || x.ReservedForItem == itemToHaul.Definition));
         if (targetStockpile == null) 
-            return false;
+            return null;
         
-        character.StartActivity(new HaulItemActivity(_game, character, itemToHaul, targetStockpile));
-        return true;
+        return new HaulItemActivity(_game, character, itemToHaul, targetStockpile);
     }
 }

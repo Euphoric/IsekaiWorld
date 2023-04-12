@@ -4,7 +4,7 @@ namespace IsekaiWorld;
 
 public interface IJobGiver
 {
-    bool SetJobActivity(CharacterEntity character);
+    Activity? GetJobActivity(CharacterEntity character);
 }
 
 public class JobSystem : IJobGiver
@@ -16,14 +16,15 @@ public class JobSystem : IJobGiver
         _jobGivers = jobGivers;
     }
 
-    public bool SetJobActivity(CharacterEntity character)
+    public Activity? GetJobActivity(CharacterEntity character)
     {
         foreach (var jobGiver in _jobGivers)
         {
-            if (jobGiver.SetJobActivity(character))
-                return true;
+            var a = jobGiver.GetJobActivity(character);
+            if (a != null)
+                return a;
         }
 
-        return false;
+        return null;
     }
 }

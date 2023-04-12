@@ -52,7 +52,7 @@ public class CharacterEntity : IEntity, IItemHolder
         
         if (CurrentActivity == null)
         {
-            _game.Jobs.SetJobActivity(this);
+            CurrentActivity = _game.Jobs.GetJobActivity(this);
         }
         
         CurrentActivity?.Update();
@@ -84,12 +84,7 @@ public class CharacterEntity : IEntity, IItemHolder
             }
         }
     }
-
-    public void StartActivity(Activity activity)
-    {
-        CurrentActivity = activity;
-    }
-
+    
     private List<ItemEntity> _carriedItems = new();
 
     void IItemHolder.RemoveItem(ItemEntity itemEntity)

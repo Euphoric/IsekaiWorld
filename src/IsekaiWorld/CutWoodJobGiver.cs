@@ -11,15 +11,14 @@ public class CutWoodJobGiver : IJobGiver
         _game = game;
     }
 
-    public bool SetJobActivity(CharacterEntity character)
+    public Activity? GetJobActivity(CharacterEntity character)
     {
         var treesToCut = _game.Buildings.Where(x => x.Definition == BuildingDefinitions.Plant.TreeOak && x.Designation == DesignationDefinitions.CutWood);
         
         var tree = treesToCut.FirstOrDefault();
         if (tree == null)
-            return false;
+            return null;
         
-        character.StartActivity(new CutTreeActivity(_game, character, tree));
-        return true;
+        return new CutTreeActivity(_game, character, tree);
     }
 }

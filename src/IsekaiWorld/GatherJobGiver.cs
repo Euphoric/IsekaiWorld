@@ -11,13 +11,12 @@ public class GatherJobGiver : IJobGiver
         _game = game;
     }
     
-    public bool SetJobActivity(CharacterEntity character)
+    public Activity? GetJobActivity(CharacterEntity character)
     {
         var toGather= _game.Buildings.FirstOrDefault(x => x.Designation == DesignationDefinitions.Gather);
         if (toGather == null)
-            return false;
+            return null;
 
-        character.StartActivity(new GatherActivity(_game, character, toGather));
-        return true;
+        return new GatherActivity(_game, character, toGather);
     }
 }

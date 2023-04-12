@@ -11,18 +11,17 @@ public class EatFoodJobGiver : IJobGiver
         _game = game;
     }
     
-    public bool SetJobActivity(CharacterEntity character)
+    public Activity? GetJobActivity(CharacterEntity character)
     {
         if (character.Hunger < 0.3)
         {
             var foodItem = _game.Items.FirstOrDefault(x => x.Definition == ItemDefinitions.Grains);
             if (foodItem != null)
             {
-                character.StartActivity(new EatActivity(_game, character, foodItem));
-                return true;
+                return new EatActivity(_game, character, foodItem);
             }
         }
         
-        return false;
+        return null;
     }
 }

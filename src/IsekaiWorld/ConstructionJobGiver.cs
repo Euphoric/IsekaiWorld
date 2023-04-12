@@ -11,25 +11,23 @@ public class ConstructionJobGiver : IJobGiver
         _game = game;
     }
     
-    public bool SetJobActivity(CharacterEntity character)
+    public Activity? GetJobActivity(CharacterEntity character)
     {
         var construction = _game.Constructions.FirstOrDefault();
         if (construction == null)
-            return false;
+            return null;
 
         if (construction.Definition.Material != null && !construction.MaterialsDelivered)
         {
             var itemToDeliver = _game.Items.FirstOrDefault(x => x.Definition == construction.Definition.Material);
             if (itemToDeliver == null)
-                return false;
+                return null;
             
-            character.StartActivity(new DeliverItemActivity(_game, character, itemToDeliver, construction));
-            return true;
+            return new DeliverItemActivity(_game, character, itemToDeliver, construction);
         }
         else
         {
-            character.StartActivity(new ConstructionActivity(_game, character, construction));
-            return true;
+            return new ConstructionActivity(_game, character, construction);
         }
     }
 }

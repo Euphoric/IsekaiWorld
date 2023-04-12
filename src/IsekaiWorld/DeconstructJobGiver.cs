@@ -11,16 +11,15 @@ public class DeconstructJobGiver : IJobGiver
         _game = game;
     }
 
-    public bool SetJobActivity(CharacterEntity character)
+    public Activity? GetJobActivity(CharacterEntity character)
     {
         var buildingsToDeconstruct = 
             _game.Buildings.Where(x => x.Designation == DesignationDefinitions.Deconstruct);
         
         var building = buildingsToDeconstruct.FirstOrDefault();
         if (building == null)
-            return false;
+            return null;
         
-        character.StartActivity(new DeconstructActivity(_game, character, building));
-        return true;
+        return new DeconstructActivity(_game, character, building);
     }
 }
