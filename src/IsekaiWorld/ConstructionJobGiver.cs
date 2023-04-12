@@ -28,7 +28,11 @@ public class ConstructionJobGiver : IJobGiver
         }
         else
         {
-            return new[] { new ConstructionActivity(_game, character, construction) };
+            return new Activity[]
+            {
+                new MovementActivity(_game, _game.Pathfinding, character, construction.Position, true),
+                new ConstructionActivity(_game, character, construction)
+            };
         }
     }
 }

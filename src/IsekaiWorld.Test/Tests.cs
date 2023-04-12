@@ -53,12 +53,15 @@ namespace IsekaiWorld
         {
             var game = CreateGame();
 
-            game.AddCharacter("Test guy", HexCubeCoord.Zero);
+            var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
 
             var position = new HexCubeCoord(-4, 3, 1);
-            game.StartConstruction(position, HexagonDirection.Left, ConstructionDefinitions.StoneWall);
+            var construction = game.StartConstruction(position, HexagonDirection.Left, ConstructionDefinitions.StoneWall);
 
-            game.UpdateUntil(NoActiveConstructions);
+            game.UpdateUntil(_ => character.ActivityName == "ConstructionActivity");
+            game.UpdateUntil(_ => character.Position.IsNextTo(construction.Position));
+            game.UpdateUntil(_ => character.ActivityName == null);
+            
             game.Update(); // TODO Remove
             
             game.Buildings
