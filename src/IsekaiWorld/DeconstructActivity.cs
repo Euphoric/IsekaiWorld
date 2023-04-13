@@ -1,3 +1,5 @@
+using System;
+
 namespace IsekaiWorld;
 
 public class DeconstructActivity : Activity
@@ -5,8 +7,8 @@ public class DeconstructActivity : Activity
     public CharacterEntity Character { get; }
     public BuildingEntity Building { get; }
 
-    private MovementActivity? _movement;
-
+    private bool _hasStarted;
+    
     public DeconstructActivity(GameEntity game, CharacterEntity character, BuildingEntity building)
         :base(game)
     {
@@ -16,21 +18,20 @@ public class DeconstructActivity : Activity
 
     protected override void UpdateInner()
     {
-        _movement?.Update();
-
         var canWork = Character.Position.IsNextTo(Building.Position);
-        if (canWork)
+        if (!canWork)
         {
-            _movement = null;
+            throw new Exception("Cannot work when not next to.");
+        }
 
+        if (_hasStarted)
+        {
             Building.RemoveEntity();
-
             IsFinished = true;
         }
         else
         {
-            // move on item
-            _movement ??= new MovementActivity(Game, Game.Pathfinding, Character, Building.Position, true);
+            _hasStarted = true;
         }
     }
 }

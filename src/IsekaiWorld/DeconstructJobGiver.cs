@@ -21,6 +21,10 @@ public class DeconstructJobGiver : IJobGiver
         if (building == null)
             return null;
 
-        return new[] { new DeconstructActivity(_game, character, building) };
+        return new Activity[]
+        {
+            new MovementActivity(_game, _game.Pathfinding, character, building.Position, true),
+            new DeconstructActivity(_game, character, building)
+        };
     }
 }
