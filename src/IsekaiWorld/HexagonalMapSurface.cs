@@ -9,13 +9,14 @@ public partial class HexagonalMapSurface : Node2D
 {
     public MessagingEndpoint Messaging { get; }
 
-    private readonly Dictionary<SurfaceDefinition, ArrayMesh> _surfaceMeshes = new();
-
-    private Texture2D _grassTexture = null!;
-    private Texture2D _dirtTexture = null!;
-    private Texture2D _tileTexture = null!;
-    private Texture2D _roughStone = null!;
+    private class SurfaceData
+    {
+        public ArrayMesh Mesh { get; set; } = null!;
+        public Texture2D? Texture { get; set; }
+    }
     
+    private readonly Dictionary<SurfaceDefinition, SurfaceData> _surfaceMeshes = new();
+
     private Boolean _isDirty;
 
     private record MapCell(HexCubeCoord Position, SurfaceDefinition Surface);
@@ -46,17 +47,8 @@ public partial class HexagonalMapSurface : Node2D
 
         base._EnterTree();
     }
-
-    // Called when the node enters the scene tree for the first time.
-    public override void _Ready()
-    {
-        _grassTexture = ResourceLoader.Load<Texture2D>("res://Textures/Surface/grass.png");
-        _dirtTexture = ResourceLoader.Load<Texture2D>("res://Textures/Surface/dirt.jpg");
-        _tileTexture = ResourceLoader.Load<Texture2D>("res://Textures/Surface/TilePatternEven_Floor.png");
-        _roughStone = ResourceLoader.Load<Texture2D>("res://Textures/Surface/RoughStone.png");
-    }
-
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    
+    
     public override void _Process(double delta)
     {
         if (_isDirty)
@@ -68,35 +60,9 @@ public partial class HexagonalMapSurface : Node2D
 
     public override void _Draw()
     {
-        foreach (var pair in _surfaceMeshes)
+        foreach (var (_, data) in _surfaceMeshes)
         {
-            var surface = pair.Key;
-            var mesh = pair.Value;
-
-            Texture2D? texture;
-
-            if (surface == SurfaceDefinitions.Grass)
-            {
-                texture = _grassTexture;
-            }
-            else if (surface == SurfaceDefinitions.Dirt)
-            {
-                texture = _dirtTexture;
-            }
-            else if (surface == SurfaceDefinitions.TileFloor)
-            {
-                texture = _tileTexture;
-            }
-            else if (surface == SurfaceDefinitions.RoughStone)
-            {
-                texture = _roughStone;
-            }
-            else
-            {
-                texture = null;
-            }
-
-            DrawMesh(mesh, texture);
+            DrawMesh(data.Mesh, data.Texture);
         }
     }
 
@@ -109,17 +75,21 @@ public partial class HexagonalMapSurface : Node2D
             var surface = surfaceGroup.Key;
             var cells = surfaceGroup.ToList();
 
-            if (!_surfaceMeshes.TryGetValue(surface, out var mesh))
+            if (!_surfaceMeshes.TryGetValue(surface, out var data))
             {
-                mesh = new ArrayMesh();
-                _surfaceMeshes[surface] = mesh;
+                data = new SurfaceData
+                {
+                    Mesh = new ArrayMesh(),
+                    Texture = surface.Texture?.Let(t => ResourceLoader.Load<Texture2D>(t))
+                };
+                _surfaceMeshes[surface] = data;
             }
             else
             {
-                mesh.ClearSurfaces();
+                data.Mesh.ClearSurfaces();
             }
 
-            RegenerateSurfaceMesh(surface, cells, mesh);
+            RegenerateSurfaceMesh(surface, cells, data.Mesh);
         }
         
         QueueRedraw();
@@ -127,37 +97,8 @@ public partial class HexagonalMapSurface : Node2D
 
     private void RegenerateSurfaceMesh(SurfaceDefinition surface, List<MapCell> cells, ArrayMesh mesh)
     {
-        Color hexColor;
-        if (surface == SurfaceDefinitions.Grass || surface == SurfaceDefinitions.Dirt)
-        {
-            hexColor = Colors.White;
-        }
-        else
-        {
-            hexColor = surface.Color;
-        }
-
-        float textureScale;
-        if (surface == SurfaceDefinitions.Grass)
-        {
-            textureScale = 0.2f;
-        }
-        else if (surface == SurfaceDefinitions.Dirt)
-        {
-            textureScale = 1.0f;
-        }
-        else if (surface == SurfaceDefinitions.TileFloor)
-        {
-            textureScale = 0.05f;
-        }
-        else if (surface == SurfaceDefinitions.RoughStone)
-        {
-            textureScale = 0.4f;
-        }
-        else
-        {
-            textureScale = 1;
-        }
+        var hexColor = surface.Color;
+        float textureScale = surface.TextureScale;
 
 // ReSharper disable InconsistentNaming
         var verticesCount = 3 * 6 * cells.Count;

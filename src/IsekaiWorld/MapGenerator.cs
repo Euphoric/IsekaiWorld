@@ -16,8 +16,8 @@ public class MapGenerator : IMapGenerator
     {
         var map = new HexagonalMapEntity(32);
 
-        var surfaceNoise = new Noise() { Seed = 123 };
-        var rockWallNoise = new Noise() { Seed = 654 };
+        var surfaceNoise = new Noise { Seed = 123 };
+        var rockWallNoise = new Noise { Seed = 654 };
 
         List<IEntity> entities = new List<IEntity>();
         foreach (var cell in map.Cells)
