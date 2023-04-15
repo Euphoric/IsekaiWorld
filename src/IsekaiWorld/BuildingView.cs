@@ -110,7 +110,7 @@ public class BuildingView
                 sprite.Offset = new Vector2(0, -200);
             }
             
-            if (message.Definition == BuildingDefinitions.Plant.Haygrass)
+            if (message.Definition == BuildingDefinitions.Plant.Grass)
             {
                 var plantSize = 1.5f;
                 sprite.Scale = Vector2.One / texture.GetSize() * plantSize;

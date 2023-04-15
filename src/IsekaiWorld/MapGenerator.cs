@@ -52,12 +52,12 @@ public class MapGenerator : IMapGenerator
             allowedPlantCells.RemoveAt(cellIndex);
         }
 
-        var haygrassCount = (int)(grassCellsCount * (1f / 6));
+        var haygrassCount = (int)(grassCellsCount * (1f / 2));
         for (int i = 0; i < haygrassCount; i++)
         {
             var cellIndex = plantRandom.Next(0, allowedPlantCells.Count - 1);
             var position = allowedPlantCells[cellIndex].Position;
-            entities.Add(new BuildingEntity(position, HexagonDirection.Left, BuildingDefinitions.Plant.Haygrass));
+            entities.Add(new BuildingEntity(position, HexagonDirection.Left, BuildingDefinitions.Plant.Grass));
             allowedPlantCells.RemoveAt(cellIndex);
         }
 

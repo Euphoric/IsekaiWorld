@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b0flujcv7e43w"
-path.s3tc="res://.godot/imported/RicePlant_Immature.png-762221713f2364b960b8b4fa9d3ca396.s3tc.ctex"
+uid="uid://durxbrnw5yxtd"
+path.s3tc="res://.godot/imported/GrassB.png-a96d2b9a989af941f6273dedaef345ce.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Textures/Plant/RicePlant_Immature.png"
-dest_files=["res://.godot/imported/RicePlant_Immature.png-762221713f2364b960b8b4fa9d3ca396.s3tc.ctex"]
+source_file="res://Textures/Plant/GrassB.png"
+dest_files=["res://.godot/imported/GrassB.png-a96d2b9a989af941f6273dedaef345ce.s3tc.ctex"]
 
 [params]
 

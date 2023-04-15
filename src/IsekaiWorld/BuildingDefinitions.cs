@@ -80,10 +80,10 @@ public static class BuildingDefinitions
             allowedDesignations: new[] { DesignationDefinitions.CutWood }.ToImmutableHashSet()
         );
 
-        public static BuildingDefinition Haygrass { get; } = new("Core.Plant.Haygrass", "Haygrass", Colors.White,
+        public static BuildingDefinition Grass { get; } = new("Core.Plant.Grass", "Grass", Colors.White,
             new Dictionary<HexagonDirection, string>
             {
-                { HexagonDirection.Left, "res://Textures/Plant/Haygrass.png" }
+                { HexagonDirection.Left, "res://Textures/Plant/GrassA.png" }
             }
         );
         
@@ -110,7 +110,7 @@ public static class BuildingDefinitions
             { TableStoveFueled.Id, TableStoveFueled },
             { CraftingDesk.Id, CraftingDesk },
             
-            { Plant.Haygrass.Id, Plant.Haygrass },
+            { Plant.Grass.Id, Plant.Grass },
             { Plant.TreeOak.Id, Plant.TreeOak },
             { Plant.WildRice.Id, Plant.WildRice },
         };
