@@ -25,7 +25,11 @@ public class GatherActivity : Activity
         if (!EntityToGather.IsRemoved)
         {
             EntityToGather.RemoveEntity();
-            Game.SpawnItem(EntityToGather.Position, ItemDefinitions.Grains, 1);
+            var dropItem = EntityToGather.Definition.GatherDrop;
+            if (dropItem != null)
+            {
+                Game.SpawnItem(EntityToGather.Position, dropItem, 1);
+            }
         }
         else
         {

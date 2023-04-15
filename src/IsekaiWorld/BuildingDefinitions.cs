@@ -84,7 +84,8 @@ public static class BuildingDefinitions
             new Dictionary<HexagonDirection, string>
             {
                 { HexagonDirection.Left, "res://Textures/Plant/GrassA.png" }
-            }
+            },
+            allowedDesignations: new[] { DesignationDefinitions.Gather }.ToImmutableHashSet()
         );
         
         public static BuildingDefinition WildRice { get; } = new("Core.Plant.Rice", "Rice", Colors.White,
@@ -92,7 +93,8 @@ public static class BuildingDefinitions
             {
                 { HexagonDirection.Left, "res://Textures/Plant/RicePlant_Grown.png" }
             },
-            allowedDesignations: new[] { DesignationDefinitions.Gather }.ToImmutableHashSet()
+            allowedDesignations: new[] { DesignationDefinitions.Gather }.ToImmutableHashSet(),
+            gatherDrop: ItemDefinitions.Grains
         );
     }
 
