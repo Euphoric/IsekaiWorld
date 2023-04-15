@@ -183,13 +183,20 @@ public class BuildingView
             }
         }
 
-        if (message.Designation != null)
+        var designation = message.Designation;
+        if (designation != null)
         {
-            var designationNode = new Sprite2D();
-            var texture = ResourceLoader.Load<Texture2D>(message.Designation.TexturePath);
-            designationNode.Texture = texture;
-            designationNode.Scale = Vector2.One / texture.GetSize();
-            buildingNode.AddChild(designationNode);
+            var designationNodeName = "Designation-" + designation.Id.Replace('.', '-');
+            var existingDesignationNode = buildingNode.GetNodeOrNull<Sprite2D>(designationNodeName);
+            if (existingDesignationNode == null)
+            {
+                var designationNode = new Sprite2D();
+                designationNode.Name = designationNodeName;
+                var texture = ResourceLoader.Load<Texture2D>(designation.TexturePath);
+                designationNode.Texture = texture;
+                designationNode.Scale = Vector2.One / texture.GetSize();
+                buildingNode.AddChild(designationNode);
+            }
         }
     }
 
