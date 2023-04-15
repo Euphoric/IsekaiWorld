@@ -69,13 +69,27 @@ public class GameTestInstance
         return _game.CheckForIssues();
     }
 
+    public ConstructionTestView? TryStartConstruction(
+        HexCubeCoord position,
+        HexagonDirection direction,
+        ConstructionDefinition construction)
+    {
+        var constructionEntity = _game.StartConstruction(position, direction, construction);
+        if (constructionEntity == null)
+            return null;
+        return _constructionTestViews.GetOrAdd(
+            constructionEntity.Id.ToString(),
+            id => new ConstructionTestView(id));
+    }
+    
     public ConstructionTestView StartConstruction(HexCubeCoord position, HexagonDirection direction,
         ConstructionDefinition construction)
     {
-        var constructionEntity = _game.StartConstruction(position, direction, construction) ??
-                                 throw new Exception("Should start construction");
-        return _constructionTestViews.GetOrAdd(constructionEntity.Id.ToString(), id => new ConstructionTestView(id));
+        return TryStartConstruction(position, direction, construction) ??
+               throw new Exception("Should start construction");
     }
+    
+    
 
     public void UpdateUntil(Func<GameTestStep, bool> check, int maxSteps = 1000, string? because = null)
     {

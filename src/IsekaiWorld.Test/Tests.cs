@@ -583,5 +583,25 @@ namespace IsekaiWorld
             game.Buildings.Should().NotContain(x => x.Position == plantEntity.Position);
             game.Items.Should().BeEmpty();
         }
+        
+        [Fact]
+        public void Cannot_start_construction_on_existing_building()
+        {
+            var game = CreateGame();
+
+            game.AddCharacter("Test guy", HexCubeCoord.Zero);
+
+            var position = new HexCubeCoord(-4, 3, 1);
+            game.SpawnBuilding(position, HexagonDirection.Left, BuildingDefinitions.StoneWall);
+            game.Update(); // TODO Remove
+            game.TryStartConstruction(position, HexagonDirection.Left, ConstructionDefinitions.StoneWall);
+
+            game.Update();
+
+            game.Constructions
+                .Select(x => new { x.Definition, x.Position })
+                .Should()
+                .NotContain(new { Definition = ConstructionDefinitions.StoneWall, Position = position });
+        }
     }
 }
