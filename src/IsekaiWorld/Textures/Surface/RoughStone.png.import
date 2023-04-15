@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://vtlrcll133x5"
-path.s3tc="res://.godot/imported/TilePatternEven_Floor.png-961c38bba308aa42e4a738ab2b2031db.s3tc.ctex"
+uid="uid://bbgqr3w5w50ys"
+path.s3tc="res://.godot/imported/RoughStone.png-c732aca8e645cdcac1a3410bd9915425.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Textures/Surface/TilePatternEven_Floor.png"
-dest_files=["res://.godot/imported/TilePatternEven_Floor.png-961c38bba308aa42e4a738ab2b2031db.s3tc.ctex"]
+source_file="res://Textures/Surface/RoughStone.png"
+dest_files=["res://.godot/imported/RoughStone.png-c732aca8e645cdcac1a3410bd9915425.s3tc.ctex"]
 
 [params]
 

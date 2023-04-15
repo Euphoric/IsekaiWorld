@@ -14,7 +14,8 @@ public partial class HexagonalMapSurface : Node2D
     private Texture2D _grassTexture = null!;
     private Texture2D _dirtTexture = null!;
     private Texture2D _tileTexture = null!;
-
+    private Texture2D _roughStone = null!;
+    
     private Boolean _isDirty;
 
     private record MapCell(HexCubeCoord Position, SurfaceDefinition Surface);
@@ -52,6 +53,7 @@ public partial class HexagonalMapSurface : Node2D
         _grassTexture = ResourceLoader.Load<Texture2D>("res://Textures/Surface/grass.png");
         _dirtTexture = ResourceLoader.Load<Texture2D>("res://Textures/Surface/dirt.jpg");
         _tileTexture = ResourceLoader.Load<Texture2D>("res://Textures/Surface/TilePatternEven_Floor.png");
+        _roughStone = ResourceLoader.Load<Texture2D>("res://Textures/Surface/RoughStone.png");
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -84,6 +86,10 @@ public partial class HexagonalMapSurface : Node2D
             else if (surface == SurfaceDefinitions.TileFloor)
             {
                 texture = _tileTexture;
+            }
+            else if (surface == SurfaceDefinitions.RoughStone)
+            {
+                texture = _roughStone;
             }
             else
             {
@@ -143,6 +149,10 @@ public partial class HexagonalMapSurface : Node2D
         else if (surface == SurfaceDefinitions.TileFloor)
         {
             textureScale = 0.05f;
+        }
+        else if (surface == SurfaceDefinitions.RoughStone)
+        {
+            textureScale = 0.4f;
         }
         else
         {

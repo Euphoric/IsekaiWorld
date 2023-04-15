@@ -23,14 +23,16 @@ public class MapGenerator : IMapGenerator
         foreach (var cell in map.Cells)
         {
             var center = cell.Position.Center(1000);
-            var isRockWall = rockWallNoise.CalcPixel2D(
+            var elevation = rockWallNoise.CalcPixel2D(
                 Mathf.CeilToInt(center.X),
-                Mathf.CeilToInt(center.Y), 1 / 1000f * 0.04f) < -0.5;
-
+                Mathf.CeilToInt(center.Y), 1 / 1000f * 0.03f);
+            var isRockWall = elevation < -0.6;
+            var isRockSurface = elevation < -0.4;
+            
             var isGrass =
-                surfaceNoise.CalcPixel2D(Mathf.CeilToInt(center.X), Mathf.CeilToInt(center.Y), 1 / 1000f * 0.04f) < 0;
+                surfaceNoise.CalcPixel2D(Mathf.CeilToInt(center.X), Mathf.CeilToInt(center.Y), 1 / 1000f * 0.04f) < 0.3f;
 
-            var surface = isGrass ? SurfaceDefinitions.Grass : SurfaceDefinitions.Dirt;
+            var surface = isRockSurface ? SurfaceDefinitions.RoughStone : isGrass ? SurfaceDefinitions.Grass : SurfaceDefinitions.Dirt;
             cell.Surface = surface;
 
             if (isRockWall)
