@@ -17,7 +17,7 @@ public class GameEntity
     public IReadOnlyList<ItemEntity> Items => _entities.OfType<ItemEntity>().ToList();
 
     private readonly List<IEntity> _entities = new();
-    private readonly List<IEntity> _entitiesToAdd = new();
+    
     private int _speed;
 
     public int Speed
@@ -120,17 +120,10 @@ public class GameEntity
 
         Pathfinding.Update();
 
-        foreach (var entity in _entitiesToAdd)
+        // ReSharper disable once ForCanBeConvertedToForeach
+        for (int i = 0; i < _entities.Count; i++)
         {
-            MessagingHub.Register(entity.Messaging);
-            entity.Initialize();
-        }
-        _entities.AddRange(_entitiesToAdd);
-        _entitiesToAdd.Clear();
-        
-        foreach (var entity in _entities)
-        {
-            entity.Update();
+            _entities[i].Update();
         }
 
         _entities.Where(ent => ent.IsRemoved).ToList()
@@ -232,7 +225,9 @@ public class GameEntity
 
     public void AddEntity(IEntity entity)
     {
-        _entitiesToAdd.Add(entity);
+        MessagingHub.Register(entity.Messaging);
+        _entities.Add(entity);
+        entity.Initialize();
     }
 
     public void Designate(HexCubeCoord position, DesignationDefinition designation)

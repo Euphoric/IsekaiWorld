@@ -61,9 +61,7 @@ namespace IsekaiWorld
             game.UpdateUntil(_ => character.ActivityName == "ConstructionActivity");
             game.UpdateUntil(_ => character.Position.IsNextTo(construction.Position));
             game.UpdateUntil(_ => character.ActivityName == null);
-            
-            game.Update(); // TODO Remove
-            
+
             game.Buildings
                 .Select(x => new { x.Definition, x.Position })
                 .Should().Contain(new { Definition = BuildingDefinitions.StoneWall, Position = position });
@@ -88,8 +86,7 @@ namespace IsekaiWorld
             }
 
             game.UpdateUntil(NoActiveConstructions, maxSteps: 10000);
-            game.Update(); // TODO Remove
-            
+
             var buildingPositions = game.Buildings.Select(x => x.Position).ToHashSet();
 
             buildingPositions.Should().BeEquivalentTo(constructions.Select(x => x.Position));
@@ -180,7 +177,6 @@ namespace IsekaiWorld
                     game.SpawnItem(mapCell.Position, typeDivide ? ItemDefinitions.Wood : ItemDefinitions.Grains, 1);
                 }
             }
-            game.Update(); // TODO Remove
 
             var totalItemCountStart = game.Items.GroupBy(x => x.Definition)
                 .Select(grp => new { Definition = grp.Key, Count = grp.Sum(x => x.Count) }).ToList();
@@ -236,9 +232,7 @@ namespace IsekaiWorld
 
             var tree = game.SpawnBuilding(new HexCubeCoord(5, -3, -2), HexagonDirection.Left, BuildingDefinitions.Plant.TreeOak);
             var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
-            
-            game.Update();// TODO Remove
-            
+
             game.Designate(tree.Position, DesignationDefinitions.CutWood);
 
             tree.Designation.Should().Be(DesignationDefinitions.CutWood);
@@ -480,8 +474,7 @@ namespace IsekaiWorld
 
             var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
             game.SpawnItem(new HexCubeCoord(-3, -2, 5), ItemDefinitions.Grains, 1);
-            game.Update(); // TODO Remove
-            
+
             character.SetHungerTo(0.31);
             game.UpdateUntil(_ => 0.3 < character.Hunger && character.Hunger < 0.31,
                 because: "Character should be close to hungry");
@@ -501,8 +494,7 @@ namespace IsekaiWorld
             var game = CreateGame();
 
             var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
-            game.Update(); // TODO Remove
-            
+
             character.SetHungerTo(0.31);
 
             game.UpdateUntil(_ => 0.27 < character.Hunger && character.Hunger < 0.28,
@@ -527,8 +519,6 @@ namespace IsekaiWorld
             var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
             game.SpawnItem(HexCubeCoord.Zero, ItemDefinitions.Grains, 3);
 
-            game.Update();// TODO Remove
-            
             character.SetHungerTo(0.31);
 
             game.UpdateUntil(_ => character.ActivityName == "EatActivity");
@@ -547,8 +537,6 @@ namespace IsekaiWorld
             var riceEntity = game.SpawnBuilding(new HexCubeCoord(-2, 2, 0), HexagonDirection.Left, BuildingDefinitions.Plant.WildRice);
             var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
 
-            game.Update();// TODO Remove
-            
             game.Designate(riceEntity.Position, DesignationDefinitions.Gather);
 
             game.UpdateUntil(_ => riceEntity.Designation == DesignationDefinitions.Gather);
@@ -569,8 +557,6 @@ namespace IsekaiWorld
             var plantEntity = game.SpawnBuilding(new HexCubeCoord(-2, 2, 0), HexagonDirection.Left, BuildingDefinitions.Plant.Grass);
             var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
 
-            game.Update();// TODO Remove
-            
             game.Designate(plantEntity.Position, DesignationDefinitions.Gather);
 
             game.UpdateUntil(_ => plantEntity.Designation == DesignationDefinitions.Gather);
@@ -592,7 +578,6 @@ namespace IsekaiWorld
 
             var position = new HexCubeCoord(-4, 3, 1);
             game.SpawnBuilding(position, HexagonDirection.Left, BuildingDefinitions.StoneWall);
-            game.Update(); // TODO Remove
             game.TryStartConstruction(position, HexagonDirection.Left, ConstructionDefinitions.StoneWall);
 
             game.Update();
@@ -620,8 +605,6 @@ namespace IsekaiWorld
             game.UpdateUntil(_ => character.ActivityName == "ConstructionActivity");
             game.UpdateUntil(_ => character.Position.IsNextTo(construction.Position));
             game.UpdateUntil(_ => character.ActivityName == null);
-            
-            game.Update(); // TODO Remove
 
             var surfaceCell = game.Surface.Single(x => x.Position == position);
             surfaceCell.Surface.Should().Be(SurfaceDefinitions.TileFloor);
