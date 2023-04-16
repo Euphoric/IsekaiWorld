@@ -79,7 +79,7 @@ public class MapGenerator : IMapGenerator
             if (isNearOrigin)
             {
                 entities.RemoveAll(x => x.OccupiedCells.Contains(cell.Position));
-                cell.Surface = SurfaceDefinitions.TileFloor;
+                cell.Surface = SurfaceDefinitions.StoneTileFloor;
             }
 
             var isOriginEdge = cell.Position.DistanceFrom(HexCubeCoord.Zero) == 6;

@@ -598,14 +598,14 @@ namespace IsekaiWorld
             
             var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
             
-            var construction = game.StartConstruction(position, HexagonDirection.Left, ConstructionDefinitions.TileFloor);
+            var construction = game.StartConstruction(position, HexagonDirection.Left, ConstructionDefinitions.StoneTileFloor);
 
             game.UpdateUntil(_ => character.ActivityName == "ConstructionActivity");
             game.UpdateUntil(_ => character.Position.IsNextTo(construction.Position));
             game.UpdateUntil(_ => character.ActivityName == null);
 
             var surfaceCell = game.Surface.Single(x => x.Position == position);
-            surfaceCell.Surface.Should().Be(SurfaceDefinitions.TileFloor);
+            surfaceCell.Surface.Should().Be(SurfaceDefinitions.StoneTileFloor);
         }
         
         [Fact]
@@ -615,16 +615,16 @@ namespace IsekaiWorld
             
             var game = CreateGame();
 
-            game.SetFloor(position, SurfaceDefinitions.TileFloor);
+            game.SetFloor(position, SurfaceDefinitions.StoneTileFloor);
 
-            game.TryStartConstruction(position, HexagonDirection.Left, ConstructionDefinitions.TileFloor);
+            game.TryStartConstruction(position, HexagonDirection.Left, ConstructionDefinitions.StoneTileFloor);
 
             game.Update();
 
             game.Constructions
                 .Select(x => new { x.Definition, x.Position })
                 .Should()
-                .NotContain(new { Definition = ConstructionDefinitions.TileFloor, Position = position });
+                .NotContain(new { Definition = ConstructionDefinitions.StoneTileFloor, Position = position });
         }
     }
 }
