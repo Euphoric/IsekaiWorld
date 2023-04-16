@@ -2,4 +2,4 @@ using System.Collections.Generic;
 
 namespace IsekaiWorld;
 
-record SurfaceChanged(IReadOnlyList<MapCell> MapCells) : IEntityMessage;
+public record SurfaceChanged(IReadOnlyList<MapCell> MapCells) : IEntityMessage;

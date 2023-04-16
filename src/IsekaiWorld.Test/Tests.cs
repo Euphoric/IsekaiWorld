@@ -425,8 +425,7 @@ namespace IsekaiWorld
 
             game.AddCharacter("Test guy", HexCubeCoord.Zero);
 
-            var construction = game.StartConstruction(new HexCubeCoord(1, 1, -2), HexagonDirection.Left,
-                ConstructionDefinitions.TestWoodenWall)!;
+            var construction = game.StartConstruction(new HexCubeCoord(1, 1, -2), HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
             game.SpawnItem(new HexCubeCoord(-1, -1, 2), ItemDefinitions.Wood, 1);
 
             for (int i = 0; i < 100; i++)
@@ -602,6 +601,30 @@ namespace IsekaiWorld
                 .Select(x => new { x.Definition, x.Position })
                 .Should()
                 .NotContain(new { Definition = ConstructionDefinitions.StoneWall, Position = position });
+        }
+        
+        [Fact]
+        public void Constructing_Floor()
+        {
+            var position = new HexCubeCoord(-4, 3, 1);
+            
+            var game = CreateGame();
+
+            var originalSurface = game.Surface.Single(x => x.Position == position);
+            originalSurface.Surface.Should().Be(SurfaceDefinitions.Dirt);
+            
+            var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
+            
+            var construction = game.StartConstruction(position, HexagonDirection.Left, ConstructionDefinitions.TileFloor);
+
+            game.UpdateUntil(_ => character.ActivityName == "ConstructionActivity");
+            game.UpdateUntil(_ => character.Position.IsNextTo(construction.Position));
+            game.UpdateUntil(_ => character.ActivityName == null);
+            
+            game.Update(); // TODO Remove
+
+            var surfaceCell = game.Surface.Single(x => x.Position == position);
+            surfaceCell.Surface.Should().Be(SurfaceDefinitions.TileFloor);
         }
     }
 }

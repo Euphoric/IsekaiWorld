@@ -19,19 +19,22 @@ public class GameTestInstance
     public GameTestInstance()
     {
         _game = new GameEntity();
-        _game.Initialize(new EmptyMapGenerator());
 
         _messageHub = new MessagingHub();
         _game.MessagingHub.ConnectMessageHub(_messageHub);
 
         _messaging = new MessagingEndpoint(MessageHandler);
         _messageHub.Register(_messaging);
+        
+        _game.Initialize(new EmptyMapGenerator());
+        _messageHub.DistributeMessages();
     }
 
     public HexagonalMapEntity GameMap => _game.GameMap;
     public IReadOnlyList<ConstructionTestView> Constructions => _constructionTestViews.Values.ToList();
     public IReadOnlyList<BuildingTestView> Buildings => _buildingTestViews.Values.ToList();
     public IReadOnlyList<ItemTestView> Items => _itemTestViews.Values.ToList();
+    public IReadOnlyList<MapCell> Surface { get; private set; } = null!;
 
     public bool Paused
     {
@@ -103,37 +106,35 @@ public class GameTestInstance
 
     private void MessageHandler(IEntityMessage evnt)
     {
-        if (evnt is CharacterCreated cc)
+        switch (evnt)
         {
-            _characterTestViews[cc.EntityId].UpdateFrom(cc);
-        }
-        else if (evnt is CharacterUpdated cu)
-        {
-            _characterTestViews[cu.EntityId].UpdateFrom(cu);
-        }
-        else if (evnt is ItemUpdated iu)
-        {
-            _itemTestViews.GetOrAdd(iu.EntityId, id => new ItemTestView(id)).UpdateFrom(iu);
-        }
-        else if (evnt is ItemPickedUp ipu)
-        {
-            _itemTestViews.Remove(ipu.EntityId);
-        }
-        else if (evnt is BuildingUpdated bu)
-        {
-            _buildingTestViews.GetOrAdd(bu.EntityId, id => new BuildingTestView(id)).UpdateFrom(bu);
-        }
-        else if (evnt is BuildingRemoved br)
-        {
-            _buildingTestViews.Remove(br.EntityId);
-        }
-        else if (evnt is ConstructionUpdated coUpd)
-        {
-            _constructionTestViews.GetOrAdd(coUpd.EntityId, id => new ConstructionTestView(id)).UpdateFrom(coUpd);
-        }
-        else if (evnt is ConstructionRemoved coRmv)
-        {
-            _constructionTestViews.Remove(coRmv.EntityId);
+            case CharacterCreated cc:
+                _characterTestViews[cc.EntityId].UpdateFrom(cc);
+                break;
+            case CharacterUpdated cu:
+                _characterTestViews[cu.EntityId].UpdateFrom(cu);
+                break;
+            case ItemUpdated iu:
+                _itemTestViews.GetOrAdd(iu.EntityId, id => new ItemTestView(id)).UpdateFrom(iu);
+                break;
+            case ItemPickedUp ipu:
+                _itemTestViews.Remove(ipu.EntityId);
+                break;
+            case BuildingUpdated bu:
+                _buildingTestViews.GetOrAdd(bu.EntityId, id => new BuildingTestView(id)).UpdateFrom(bu);
+                break;
+            case BuildingRemoved br:
+                _buildingTestViews.Remove(br.EntityId);
+                break;
+            case ConstructionUpdated coUpd:
+                _constructionTestViews.GetOrAdd(coUpd.EntityId, id => new ConstructionTestView(id)).UpdateFrom(coUpd);
+                break;
+            case ConstructionRemoved coRmv:
+                _constructionTestViews.Remove(coRmv.EntityId);
+                break;
+            case SurfaceChanged evt:
+                Surface = evt.MapCells;
+                break;
         }
     }
 

@@ -23,4 +23,9 @@ public class SurfaceDefinition
         IsPassable = isPassable;
         TextureScale = textureScale;
     }
+
+    public override string ToString()
+    {
+        return $"[Surface:{Id}]";
+    }
 }

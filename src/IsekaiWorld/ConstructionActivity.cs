@@ -36,7 +36,7 @@ public class ConstructionActivity : Activity
             }
             else if (Construction.Definition.PlaceFloor != null)
             {
-                // TODO
+                Game.SetFloor(Construction.Position, Construction.Definition.PlaceFloor);
             }
             else
             {

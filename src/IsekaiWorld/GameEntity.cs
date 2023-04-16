@@ -182,6 +182,12 @@ public class GameEntity
 
         return buildingEntity;
     }
+    
+    public void SetFloor(HexCubeCoord position, SurfaceDefinition surface)
+    {
+        GameMap.SetCellSurface(position, surface);
+        Messaging.Broadcast(new SurfaceChanged(GameMap.Cells));
+    }
 
     public IEnumerable<string> CheckForIssues()
     {
