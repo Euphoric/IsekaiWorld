@@ -30,12 +30,11 @@ public class ConstructionActivity : Activity
         {
             IsFinished = true;
             Construction.RemoveEntity();
-            if (Construction.Definition.PlaceBuildingId != null)
+            if (Construction.Definition.PlaceBuilding != null)
             {
-                var buildingDefinition = BuildingDefinitions.GetById(Construction.Definition.PlaceBuildingId);
-                Game.SpawnBuilding(Construction.Position, Construction.Rotation, buildingDefinition);
+                Game.SpawnBuilding(Construction.Position, Construction.Rotation, Construction.Definition.PlaceBuilding);
             }
-            else if (Construction.Definition.PlaceFloorId != null)
+            else if (Construction.Definition.PlaceFloor != null)
             {
                 // TODO
             }
