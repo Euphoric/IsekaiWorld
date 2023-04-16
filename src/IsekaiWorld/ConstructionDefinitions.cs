@@ -13,7 +13,8 @@ public static class ConstructionDefinitions
     public static readonly ConstructionDefinition StockpileZone = new("Core.Zone.Stockpile", "Stockpile", BuildingDefinitions.StockpileZone, null, 0);
     
     public static readonly ConstructionDefinition StoneTileFloor = new("Core.Floor.StoneTile", "Stone tile Floor", null, SurfaceDefinitions.StoneTileFloor, 360);
-    public static readonly ConstructionDefinition WoodPlankFloor = new("Core.Floor.WoodPLank", "Wooden plank Floor", null, SurfaceDefinitions.WoodPlankFloor, 60);
+
+    public static readonly ConstructionDefinition WoodPlankFloor = new("Core.Floor.WoodPLank", "Wooden plank Floor", null, SurfaceDefinitions.WoodPlankFloor, 60, ItemDefinitions.Wood);
     
     public static readonly ConstructionDefinition WoodenChair = new("Core.Furniture.Chair.Wood", "Wooden Chair", BuildingDefinitions.WoodenChair, null, 120, ItemDefinitions.Wood);
     public static readonly ConstructionDefinition WoodenBed = new("Core.Furniture.Bed.Wood", "Wooden Bed", BuildingDefinitions.WoodenBed, null, 120, ItemDefinitions.Wood);
