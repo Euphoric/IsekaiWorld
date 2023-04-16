@@ -46,8 +46,10 @@ public class MessagingHub
     {
         while (_receivedMessages.TryDequeue(out var message))
         {
-            foreach (var recipient in _messageRecipients)
+            // ReSharper disable once ForCanBeConvertedToForeach
+            for (var i = 0; i < _messageRecipients.Count; i++)
             {
+                var recipient = _messageRecipients[i];
                 recipient.HandleMessage(message);
             }
         }
