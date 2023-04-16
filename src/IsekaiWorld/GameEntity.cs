@@ -140,9 +140,11 @@ public class GameEntity
         var constructionExists = _entities.OfType<ConstructionEntity>().Any(x => x.Position == position);
         var isTerrainPassable = GameMap.CellForPosition(position).Surface.IsPassable;
         var buildingExists = _entities.OfType<BuildingEntity>().Any(x => x.Position == position);
-        
+
+        var canPlaceSurface = GameMap.CellForPosition(position).Surface != construction.PlaceFloor;
+
         ConstructionEntity? constructionEntity = null;
-        if (!constructionExists && !buildingExists && isTerrainPassable)
+        if (!constructionExists && !buildingExists && isTerrainPassable && canPlaceSurface)
         {
             constructionEntity = new ConstructionEntity(position, rotation, construction);
             AddEntity(constructionEntity);

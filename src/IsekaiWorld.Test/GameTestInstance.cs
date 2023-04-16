@@ -181,4 +181,9 @@ public class GameTestInstance
     {
         return _game.EntitiesOn(position);
     }
+
+    public void SetFloor(HexCubeCoord position, SurfaceDefinition surface)
+    {
+        _game.SetFloor(position, surface);
+    }
 }

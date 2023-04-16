@@ -574,8 +574,6 @@ namespace IsekaiWorld
         {
             var game = CreateGame();
 
-            game.AddCharacter("Test guy", HexCubeCoord.Zero);
-
             var position = new HexCubeCoord(-4, 3, 1);
             game.SpawnBuilding(position, HexagonDirection.Left, BuildingDefinitions.StoneWall);
             game.TryStartConstruction(position, HexagonDirection.Left, ConstructionDefinitions.StoneWall);
@@ -608,6 +606,25 @@ namespace IsekaiWorld
 
             var surfaceCell = game.Surface.Single(x => x.Position == position);
             surfaceCell.Surface.Should().Be(SurfaceDefinitions.TileFloor);
+        }
+        
+        [Fact]
+        public void Cannot_construct_floor_on_same_floor()
+        {
+            var position = new HexCubeCoord(-4, 3, 1);
+            
+            var game = CreateGame();
+
+            game.SetFloor(position, SurfaceDefinitions.TileFloor);
+
+            game.TryStartConstruction(position, HexagonDirection.Left, ConstructionDefinitions.TileFloor);
+
+            game.Update();
+
+            game.Constructions
+                .Select(x => new { x.Definition, x.Position })
+                .Should()
+                .NotContain(new { Definition = ConstructionDefinitions.TileFloor, Position = position });
         }
     }
 }
