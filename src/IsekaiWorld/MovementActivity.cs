@@ -26,6 +26,10 @@ public class MovementActivity : Activity
         return targetAll;
     }
 
+    public MovementActivity(GameEntity game, HexagonPathfinding pathfinding, CharacterEntity charater, HexCubeCoord target)
+        :this(game, pathfinding, charater, new []{target})
+    { }
+    
     public MovementActivity(GameEntity game, HexagonPathfinding pathfinding, CharacterEntity charater, IReadOnlyList<HexCubeCoord> anyTargets)
         :base(game)
     {
