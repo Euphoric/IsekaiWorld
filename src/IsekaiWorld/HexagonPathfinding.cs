@@ -115,9 +115,11 @@ public class HexagonPathfinding
 		var neighbors = position.Neighbors();
 		foreach (var neighbor in neighbors)
 		{
-			var neighborNode = _nodes[neighbor];
-			centerNode.Disconnect(neighborNode);
-			neighborNode.Disconnect(centerNode);
+			if (_nodes.TryGetValue(neighbor, out var neighborNode))
+			{
+				centerNode.Disconnect(neighborNode);
+				neighborNode.Disconnect(centerNode);
+			}
 		}
 	}
 
