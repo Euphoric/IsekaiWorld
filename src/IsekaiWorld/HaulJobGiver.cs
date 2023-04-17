@@ -26,6 +26,12 @@ public class HaulJobGiver : IJobGiver
         if (targetStockpile == null) 
             return null;
 
-        return new[] { new HaulItemActivity(_game, character, itemToHaul, targetStockpile) };
+        return new Activity[]
+        {
+            new MovementActivity(_game, _game.Pathfinding, character, itemToHaul.Position),
+            new PickUpItemActivity(_game, character, itemToHaul),
+            new MovementActivity(_game, _game.Pathfinding, character, targetStockpile.Position),
+            new DropItemActivity(_game, character, itemToHaul, targetStockpile)
+        };
     }
 }
