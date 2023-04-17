@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IsekaiWorld;
 
@@ -12,6 +14,8 @@ public class CharacterTestView
     public string? ActivityName { get; private set; }
     public double Hunger { get; private set; }
 
+    public List<ItemTestView> CarriedItems { get; } = new();
+    
     public CharacterTestView(string id, MessagingEndpoint messaging)
     {
         _messaging = messaging;
@@ -33,5 +37,17 @@ public class CharacterTestView
     public void SetHungerTo(double hunger)
     {
         _messaging.Broadcast(new SetCharacterHunger(Id, hunger));
+    }
+
+    public void AddCarriedItem(ItemTestView item)
+    {
+        CarriedItems.Add(item);
+    }
+
+    public ItemTestView DropItem(string itemId)
+    {
+        var item = CarriedItems.First(x => x.Id == itemId);
+        CarriedItems.Remove(item);
+        return item;
     }
 }

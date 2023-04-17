@@ -25,7 +25,10 @@ public class MapItemView
                 OnItemUpdated(itemUpdated);
                 break;
             case ItemPickedUp itemPickedUp:
-                OnItemPickedUp(itemPickedUp);
+                RemoveItem(itemPickedUp.EntityId);
+                break;
+            case ItemRemoved itemRemoved:
+                RemoveItem(itemRemoved.EntityId);
                 break;
         }
     }
@@ -72,11 +75,11 @@ public class MapItemView
         }
     }
 
-    private void OnItemPickedUp(ItemPickedUp itemPickedUp)
+    private void RemoveItem(string itemEntityId)
     {
         var mapNode = _gameNode.GetNode<Node2D>("Map");
 
-        var existingNode = mapNode.GetNodeOrNull<HexagonNode>(itemPickedUp.EntityId);
+        var existingNode = mapNode.GetNodeOrNull<HexagonNode>(itemEntityId);
         existingNode?.GetParent().RemoveChild(existingNode);
     }
 }

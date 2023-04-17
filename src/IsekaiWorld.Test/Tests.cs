@@ -133,13 +133,13 @@ namespace IsekaiWorld
         {
             var game = CreateGame();
 
-            var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
+            game.AddCharacter("Test guy", HexCubeCoord.Zero);
 
             var stockpile = game.SpawnStockpile(new HexCubeCoord(1, 1, -2));
             game.SpawnItem(new HexCubeCoord(-1, -1, 2), ItemDefinitions.Wood, 1);
 
             game.UpdateUntil(NoItemsOutsideStockpile);
-            game.UpdateUntil(_ => character.ActivityName == null);
+            game.UpdateUntil(NoCarriedItems);
 
             game.Items.Select(x => new { x.Position, x.Definition, x.Count })
                 .Should()
@@ -149,6 +149,11 @@ namespace IsekaiWorld
         private bool NoItemsOutsideStockpile(GameTestStep gts)
         {
             return !ItemsOutsideStockpiles(gts.Game).Any();
+        }
+
+        private bool NoCarriedItems(GameTestStep gts)
+        {
+            return !gts.Game.Characters.SelectMany(x=>x.CarriedItems).Any();
         }
 
         [Fact]
@@ -175,8 +180,8 @@ namespace IsekaiWorld
                 .Select(grp => new { Definition = grp.Key, Count = grp.Sum(x => x.Count) }).ToList();
 
             game.UpdateUntil(NoItemsOutsideStockpile, maxSteps: 10000);
-            game.UpdateUntil(_ => character.ActivityName == null);
-
+            game.UpdateUntil(NoCarriedItems);
+            
             var multipleItemsOnSamePositions =
                 game.Items.GroupBy(it => it.Position)
                     .Where(grp => grp.Count() > 1)
@@ -206,6 +211,7 @@ namespace IsekaiWorld
             game.SpawnStockpile(new HexCubeCoord(1, 1, -2));
 
             game.UpdateUntil(NoItemsOutsideStockpile);
+            game.UpdateUntil(NoCarriedItems);
         }
 
         private static List<ItemTestView> ItemsOutsideStockpiles(GameTestInstance game)
@@ -401,6 +407,7 @@ namespace IsekaiWorld
             game.Paused = false;
 
             game.UpdateUntil(NoItemsOutsideStockpile);
+            game.UpdateUntil(NoCarriedItems);
         }
 
         [Fact]

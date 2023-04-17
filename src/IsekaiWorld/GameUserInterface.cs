@@ -177,6 +177,9 @@ public class GameUserInterface
             case ItemPickedUp msg:
                 _selectionEntities.Remove(msg.EntityId);
                 break;
+            case ItemRemoved msg:
+                _selectionEntities.Remove(msg.EntityId);
+                break;
         }
     }
 

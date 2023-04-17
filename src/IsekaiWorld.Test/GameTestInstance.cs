@@ -34,6 +34,7 @@ public class GameTestInstance
     public IReadOnlyList<ConstructionTestView> Constructions => _constructionTestViews.Values.ToList();
     public IReadOnlyList<BuildingTestView> Buildings => _buildingTestViews.Values.ToList();
     public IReadOnlyList<ItemTestView> Items => _itemTestViews.Values.ToList();
+    public IReadOnlyList<CharacterTestView> Characters => _characterTestViews.Values.ToList();
     public IReadOnlyList<MapCell> Surface { get; private set; } = null!;
 
     public bool Paused
@@ -117,7 +118,15 @@ public class GameTestInstance
             case ItemUpdated iu:
                 _itemTestViews.GetOrAdd(iu.EntityId, id => new ItemTestView(id)).UpdateFrom(iu);
                 break;
+            case ItemRemoved ir:
+                _itemTestViews.Remove(ir.EntityId);
+                break;
+            case ItemDropped id:
+                var item = _characterTestViews[id.CharacterId].DropItem(id.EntityId);
+                _itemTestViews.Add(item.Id, item);
+                break;
             case ItemPickedUp ipu:
+                _characterTestViews[ipu.CharacterId].AddCarriedItem(_itemTestViews[ipu.EntityId]);
                 _itemTestViews.Remove(ipu.EntityId);
                 break;
             case BuildingUpdated bu:

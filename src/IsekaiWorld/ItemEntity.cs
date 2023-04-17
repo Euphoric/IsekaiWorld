@@ -19,6 +19,7 @@ public class ItemEntity : IEntity
 
     private bool _isDirty = true;
 
+    private IItemHolder? _previousHolder;
     private IItemHolder? _holder;
     private HexCubeCoord _position;
 
@@ -33,6 +34,7 @@ public class ItemEntity : IEntity
 
     public void SetHolder(IItemHolder holder)
     {
+        _previousHolder = _holder;
         if (_holder != null)
         {
             _holder.RemoveItem(this);
@@ -80,20 +82,34 @@ public class ItemEntity : IEntity
 
         if (_toRemove)
         {
-            Messaging.Broadcast(new ItemPickedUp(EntityId.ToString()));
+            if (_holder is CharacterEntity ce)
+            {
+                Messaging.Broadcast(new ItemDropped(EntityId.ToString(), ce.Id.ToString()));
+            }
+            Messaging.Broadcast(new ItemRemoved(EntityId.ToString()));
             IsRemoved = true;
         }
 
         if (_isDirty)
         {
             _isDirty = false;
+            // TODO: Refactor this holder mess
             if (_holder is MapItems)
             {
-                Messaging.Broadcast(new ItemUpdated(EntityId.ToString(), Definition, Count, Position));
+                if (_previousHolder is CharacterEntity ce)
+                {
+                    Messaging.Broadcast(new ItemDropped(EntityId.ToString(), ce.Id.ToString()));
+                    Messaging.Broadcast(new ItemUpdated(EntityId.ToString(), Definition, Count, Position));
+                    _previousHolder = null;
+                }
+                else
+                {
+                    Messaging.Broadcast(new ItemUpdated(EntityId.ToString(), Definition, Count, Position));
+                }
             }
-            else
+            else if (_holder is CharacterEntity ce)
             {
-                Messaging.Broadcast(new ItemPickedUp(EntityId.ToString()));
+                Messaging.Broadcast(new ItemPickedUp(EntityId.ToString(), ce.Id.ToString()));
             }
         }
     }
@@ -122,28 +138,10 @@ public class ItemEntity : IEntity
     }
 }
 
-public class ItemUpdated : IEntityMessage
-{
-    public ItemUpdated(string entityId, ItemDefinition definition, int count, HexCubeCoord position)
-    {
-        EntityId = entityId;
-        Definition = definition;
-        Count = count;
-        Position = position;
-    }
+public record ItemUpdated(string EntityId, ItemDefinition Definition, int Count, HexCubeCoord Position) : IEntityMessage;
 
-    public String EntityId { get; }
-    public ItemDefinition Definition { get; }
-    public int Count { get; }
-    public HexCubeCoord Position { get; }
-}
+public record ItemRemoved(string EntityId) : IEntityMessage;
 
-public class ItemPickedUp : IEntityMessage
-{
-    public ItemPickedUp(string entityId)
-    {
-        EntityId = entityId;
-    }
+public record ItemPickedUp(string EntityId, string CharacterId) : IEntityMessage;
 
-    public String EntityId { get; }
-}
+public record ItemDropped(string EntityId, string CharacterId) : IEntityMessage;
