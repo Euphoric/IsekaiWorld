@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 namespace IsekaiWorld;
@@ -7,19 +9,29 @@ public class MovementActivity : Activity
 {
     private readonly HexagonPathfinding _pathfinding;
     private readonly CharacterEntity _charater;
-    private readonly HexCubeCoord _target;
-    private readonly bool _stopNextTo;
+    private readonly IReadOnlyList<HexCubeCoord> _anyTargets;
 
     private float _movementTimer;
     private Queue<HexCubeCoord>? _movementQueue;
 
+    [Obsolete("Use constructor with targets list")]
     public MovementActivity(GameEntity game, HexagonPathfinding pathfinding, CharacterEntity charater, HexCubeCoord target, bool stopNextTo)
+        :this(game, pathfinding, charater, AllTargets(target, stopNextTo))
+    { }
+
+    private static List<HexCubeCoord> AllTargets(HexCubeCoord target, bool stopNextTo)
+    {
+        var stopNeighbors = stopNextTo ? target.Neighbors() : ImmutableList<HexCubeCoord>.Empty;
+        var targetAll = new List<HexCubeCoord> { target }.Concat(stopNeighbors).ToList();
+        return targetAll;
+    }
+
+    public MovementActivity(GameEntity game, HexagonPathfinding pathfinding, CharacterEntity charater, IReadOnlyList<HexCubeCoord> anyTargets)
         :base(game)
     {
         _pathfinding = pathfinding;
         _charater = charater;
-        _target = target;
-        _stopNextTo = stopNextTo;
+        _anyTargets = anyTargets;
     }
 
     protected override void UpdateInner()
@@ -37,16 +49,10 @@ public class MovementActivity : Activity
         if (_movementQueue == null)
         {
             _movementQueue = new Queue<HexCubeCoord>();
-            var pathResult = _pathfinding.FindPath(_charater.Position, _target);
+            var pathResult = _pathfinding.FindPathToAny(_charater.Position, _anyTargets);
             if (pathResult.Found)
             {
-                IEnumerable<HexCubeCoord> movementPath = pathResult.Path;
-                if (_stopNextTo)
-                {
-                    movementPath = movementPath.Take(movementPath.Count() - 1);
-                }
-
-                foreach (var coord in movementPath)
+                foreach (var coord in pathResult.Path)
                 {
                     _movementQueue.Enqueue(coord);
                 }

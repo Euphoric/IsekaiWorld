@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Roy_T.AStar.Graphs;
 using Roy_T.AStar.Paths;
@@ -79,15 +80,25 @@ public class HexagonPathfinding
 		}
 	}
 
-	public PathfindingResult FindPath(HexCubeCoord from, HexCubeCoord to)
+	public PathfindingResult FindPathToAny(HexCubeCoord from, IReadOnlyList<HexCubeCoord> toAny)
 	{
-		var fromNode = _nodes[from];
-		var toNode = _nodes[to];
+		var path = toAny.Select(to =>
+			{
+				var fromNode = _nodes[from];
+				var toNode = _nodes[to];
 
-		var pathFinder = new PathFinder();
-		var path = pathFinder.FindPath(fromNode, toNode, Velocity.FromKilometersPerHour(1));
+				var pathFinder = new PathFinder();
+				return pathFinder.FindPath(fromNode, toNode, Velocity.FromKilometersPerHour(1));
+			}).Where(path => path.Type == PathType.Complete)
+			.MinBy(path => path.Distance);
+
+		if (path == null)
+		{
+			return new PathfindingResult(false, ImmutableList<HexCubeCoord>.Empty);
+		}
+
 		var hexPath = path.Edges.Select(x => _nodeToHexPosition[x.End]);
-		return new PathfindingResult(path.Type == PathType.Complete, hexPath.ToList());
+		return new PathfindingResult(true, hexPath.ToList());
 	}
 
 	private void OnBuildingUpdated(BuildingUpdated message)
