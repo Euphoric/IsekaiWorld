@@ -26,9 +26,7 @@ public class DeliverItemActivity : Activity
             throw new Exception("TODO Not carrying necessary items");
         }
         
-        bool isNextToEntity =
-            _character.Position == _construction.Position ||
-            _character.Position.IsNextTo(_construction.Position);
+        bool isNextToEntity = _character.Position.IsNextTo(_construction.Position);
         if (!isNextToEntity)
         {
             throw new Exception("TODO Handle case when activity is not in neighbor of target entity.");
