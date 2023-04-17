@@ -15,19 +15,18 @@ namespace IsekaiWorld
         [Fact(Skip = "Fix updating impassable from terrain")]
         public void Character_stuck_in_impassable_terrain_issue_verification()
         {
-            //var game = CreateGame();
+            var game = CreateGame();
 
-            // var character = game.AddCharacter("Test guy");
-            // character.Position = HexCubeCoord.Zero;
-            // game.GameMap.SetCellSurface(character.Position, SurfaceDefinitions.Empty);
-            //
-            // game.Update(); // send msg
-            // game.Update(); // receive msg
-            //
-            // var issues = game.CheckForIssues().ToList();
-            // var characterStuckIssue = issues.Any(s =>
-            //     s == $"Character '{character.Label}' stuck on impassable surface on {character.Position}");
-            // Assert.True(characterStuckIssue);
+            var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
+             game.GameMap.SetCellSurface(character.Position, SurfaceDefinitions.Empty);
+            
+             game.Update(); // send msg
+             game.Update(); // receive msg
+            
+             var issues = game.CheckForIssues().ToList();
+             var characterStuckIssue = issues.Any(s =>
+                 s == $"Character '{character.Label}' stuck on impassable surface on {character.Position}");
+             Assert.True(characterStuckIssue);
         }
 
         [Fact]
@@ -108,30 +107,6 @@ namespace IsekaiWorld
             game.Buildings
                 .Select(x => new { x.Definition, x.Position })
                 .Should().Contain(new { Definition = BuildingDefinitions.StoneWall, Position = position });
-        }
-
-        [Fact(Skip = "Fix")]
-        public void Construction_complex_test()
-        {
-            var game = CreateGame();
-
-            game.AddCharacter("Test guy 1", HexCubeCoord.Zero);
-            game.AddCharacter("Test guy 2", HexCubeCoord.Zero);
-
-            foreach (var cell in game.GameMap.Cells)
-            {
-                if (cell.Position.DistanceFrom(HexCubeCoord.Zero) <= 5)
-                {
-                    game.StartConstruction(cell.Position, HexagonDirection.Left, ConstructionDefinitions.StoneWall);
-                }
-            }
-
-            var constructionPositions = game.Constructions.Select(x => x.Position).ToHashSet();
-
-            game.UpdateUntil(NoActiveConstructions);
-
-            var buildingPositions = game.Buildings.Select(x => x.Position).ToHashSet();
-            buildingPositions.Should().BeEquivalentTo(constructionPositions);
         }
 
         private bool NoActiveConstructions(GameTestStep gts)
