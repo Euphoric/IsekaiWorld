@@ -23,8 +23,8 @@ public class HexagonPathfinding
 {
 	public MessagingEndpoint Messaging { get; }
 
-	private readonly Dictionary<HexCubeCoord, Node> _nodes = new Dictionary<HexCubeCoord, Node>();
-	private readonly Dictionary<INode, HexCubeCoord> _nodeToHexPosition = new Dictionary<INode, HexCubeCoord>();
+	private readonly Dictionary<HexCubeCoord, Node> _nodes = new();
+	private readonly Dictionary<INode, HexCubeCoord> _nodeToHexPosition = new();
 
 	public HexagonPathfinding()
 	{
@@ -112,8 +112,13 @@ public class HexagonPathfinding
 	private void SetImpassable(HexCubeCoord position)
 	{
 		var centerNode = _nodes[position];
-		centerNode.Incoming.Clear();
-		centerNode.Outgoing.Clear();
+		var neighbors = position.Neighbors();
+		foreach (var neighbor in neighbors)
+		{
+			var neighborNode = _nodes[neighbor];
+			centerNode.Disconnect(neighborNode);
+			neighborNode.Disconnect(centerNode);
+		}
 	}
 
 	public bool IsPassable(HexCubeCoord position)
