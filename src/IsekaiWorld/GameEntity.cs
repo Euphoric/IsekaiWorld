@@ -164,17 +164,6 @@ public class GameEntity
         var buildingEntity = new BuildingEntity(position, rotation, buildingDefinition);
         AddEntity(buildingEntity);
 
-        var stuckCharacter = _entities.OfType<CharacterEntity>().FirstOrDefault(c => c.Position == position);
-        if (stuckCharacter != null)
-        {
-            var unstuckCell = stuckCharacter.Position.Neighbors().Where(p => Pathfinding.IsPassable(p))
-                .Select(c => GameMap.CellForPosition(c)).FirstOrDefault();
-            if (unstuckCell != null)
-            {
-                stuckCharacter.Position = unstuckCell.Position;
-            }
-        }
-
         return buildingEntity;
     }
     

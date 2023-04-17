@@ -35,16 +35,15 @@ namespace IsekaiWorld
         {
             var game = CreateGame();
 
-            var building = game.SpawnBuilding(HexCubeCoord.Zero, HexagonDirection.Left, BuildingDefinitions.StoneWall);
-
-            var character = game.AddCharacter("Test guy", building.Position);
+            var position = HexCubeCoord.Zero;
+            game.SpawnBuilding(position, HexagonDirection.Left, BuildingDefinitions.StoneWall);
+            var character = game.AddCharacter("Test guy", position);
 
             game.Update(); // send msg
             game.Update(); // receive msg
-
+            
             var issues = game.CheckForIssues().ToList();
-            var characterStuckIssue = issues.Any(s =>
-                s == $"Character '{character.Label}' stuck on impassable surface on {character.Position}");
+            var characterStuckIssue = issues.Any(s => s == $"Character '{character.Label}' stuck on impassable surface on {position}");
             Assert.True(characterStuckIssue);
         }
 
@@ -90,6 +89,25 @@ namespace IsekaiWorld
             var buildingPositions = game.Buildings.Select(x => x.Position).ToHashSet();
 
             buildingPositions.Should().BeEquivalentTo(constructions.Select(x => x.Position));
+        }
+        
+        [Fact]
+        public void Construction_pawn_starts_at_same_position()
+        {
+            var game = CreateGame();
+            
+            var position = new HexCubeCoord(-4, 3, 1);
+            
+            var character = game.AddCharacter("Test guy", position);
+            var construction = game.StartConstruction(position, HexagonDirection.Left, ConstructionDefinitions.StoneWall);
+
+            game.UpdateUntil(_ => character.ActivityName == "ConstructionActivity");
+            game.UpdateUntil(_ => character.Position.IsNextTo(construction.Position));
+            game.UpdateUntil(_ => character.ActivityName == null);
+
+            game.Buildings
+                .Select(x => new { x.Definition, x.Position })
+                .Should().Contain(new { Definition = BuildingDefinitions.StoneWall, Position = position });
         }
 
         [Fact(Skip = "Fix")]
