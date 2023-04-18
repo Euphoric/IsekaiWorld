@@ -6,7 +6,7 @@ public partial class MapCamera : Camera2D
 {
     public override void _Ready()
     {
-        Zoom = Vector2.One * 4f;
+        Zoom = Vector2.One * 32f;
     }
 
     public override void _Input(InputEvent @event)
