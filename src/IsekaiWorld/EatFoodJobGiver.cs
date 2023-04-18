@@ -22,7 +22,7 @@ public class EatFoodJobGiver : IJobGiver
                 return new Activity[]
                 {
                     new MovementActivity(_game, _game.Pathfinding, character, foodItem.Position),
-                    new PickUpItemActivity(_game, character, foodItem),
+                    new PickUpItemActivity(_game, character, foodItem, 1),
                     new EatActivity(_game, character, foodItem)
                 };
             }

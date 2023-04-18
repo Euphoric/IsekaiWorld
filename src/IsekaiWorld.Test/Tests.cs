@@ -145,6 +145,24 @@ namespace IsekaiWorld
                 .Should()
                 .Contain(new { stockpile.Position, Definition = ItemDefinitions.Wood, Count = 1 });
         }
+        
+        [Fact]
+        public void Items_hauling_stack()
+        {
+            var game = CreateGame();
+
+            game.AddCharacter("Test guy", HexCubeCoord.Zero);
+
+            var stockpile = game.SpawnStockpile(new HexCubeCoord(1, 1, -2));
+            game.SpawnItem(new HexCubeCoord(-1, -1, 2), ItemDefinitions.Wood, 5);
+
+            game.UpdateUntil(NoItemsOutsideStockpile);
+            game.UpdateUntil(NoCarriedItems);
+
+            game.Items.Select(x => new { x.Position, x.Definition, x.Count })
+                .Should()
+                .Contain(new { stockpile.Position, Definition = ItemDefinitions.Wood, Count = 5 });
+        }
 
         private bool NoItemsOutsideStockpile(GameTestStep gts)
         {

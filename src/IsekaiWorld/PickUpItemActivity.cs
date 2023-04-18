@@ -6,12 +6,14 @@ public class PickUpItemActivity : Activity
 {
     private readonly CharacterEntity _character;
     private readonly ItemEntity _item;
+    private readonly int _count;
     private bool _executing;
     
-    public PickUpItemActivity(GameEntity game, CharacterEntity character, ItemEntity item) : base(game)
+    public PickUpItemActivity(GameEntity game, CharacterEntity character, ItemEntity item, int count) : base(game)
     {
         _character = character;
         _item = item;
+        _count = count;
     }
 
     protected override void UpdateInner()
@@ -25,7 +27,7 @@ public class PickUpItemActivity : Activity
         {
             _executing = true;
             
-            var pickedItem = _item.PickUpItem(1);
+            var pickedItem = _item.PickUpItem(_count);
             pickedItem.SetHolder(_character);
         }
         else

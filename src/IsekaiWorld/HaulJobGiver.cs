@@ -29,7 +29,7 @@ public class HaulJobGiver : IJobGiver
         return new Activity[]
         {
             new MovementActivity(_game, _game.Pathfinding, character, itemToHaul.Position),
-            new PickUpItemActivity(_game, character, itemToHaul),
+            new PickUpItemActivity(_game, character, itemToHaul, itemToHaul.Count),
             new MovementActivity(_game, _game.Pathfinding, character, targetStockpile.Position),
             new DropItemActivity(_game, character, itemToHaul, targetStockpile)
         };
