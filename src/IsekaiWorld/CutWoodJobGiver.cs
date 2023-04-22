@@ -22,7 +22,7 @@ public class CutWoodJobGiver : IJobGiver
 
         return new Activity[]
         {
-            new MovementActivity(_game, _game.Pathfinding, character, tree.Position, true),
+            new MovementActivity(_game, _game.Pathfinding, character, tree.Position.Neighbors()),
             new CutTreeActivity(_game, character, tree)
         };
     }
