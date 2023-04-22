@@ -14,7 +14,6 @@ public partial class HexagonalMap : Node2D
     private readonly Dictionary<BuildingDefinition, Texture2D> _buildingTextures = new();
 
     private bool _isDirty;
-    private HexagonNode _mouseoverHexagon = null!;
     [Obsolete("Use messaging")] private GameEntity _game = null!;
 
     private GameUserInterface _gui = null!;
@@ -27,11 +26,6 @@ public partial class HexagonalMap : Node2D
 
     public override void _Ready()
     {
-        _mouseoverHexagon = new HexagonNode
-        {
-            Color = Colors.Red
-        };
-        AddChild(_mouseoverHexagon);
     }
 
     public override void _EnterTree()
@@ -395,10 +389,8 @@ public partial class HexagonalMap : Node2D
     public override void _Process(double delta)
     {
         var mousePosition = GetLocalMousePosition();
-        var mouseHexPosition = HexCubeCoord.FromPosition(mousePosition, 1);
-        _gui.MousePositionChanged(mousePosition, mouseHexPosition);
-        _mouseoverHexagon.HexPosition = _gui.MouseHexPosition;
-        
+        _gui.MousePositionChanged(mousePosition);
+
         if (_isDirty)
         {
             RefreshGameMap();

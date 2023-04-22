@@ -45,6 +45,8 @@ public partial class GameNode : Node
 		var mapNode = GetNode<HexagonalMap>("Map/HexagonalMap");
 		_viewMessagingHub.Register(mapNode.Messaging);
 		EntitiesNode = GetNode<Node2D>("Map/Entities");
+		var uiOverlay = GetNode<UIOverlay>("Map/UIOverlay");
+		uiOverlay.Initialize(Gui);
 		
 		base._EnterTree();
 	}

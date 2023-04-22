@@ -320,10 +320,10 @@ public class GameUserInterface
         }
     }
 
-    public void MousePositionChanged(Vector2 mousePosition, HexCubeCoord mouseHexPosition)
+    public void MousePositionChanged(Vector2 mousePosition)
     {
         MousePosition = mousePosition;
-        MouseHexPosition = mouseHexPosition;
+        MouseHexPosition = HexCubeCoord.FromPosition(mousePosition, 1);;
 
         if (SelectionRectangle != null)
         {

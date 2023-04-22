@@ -129,7 +129,7 @@ public partial class UserInterface : CanvasLayer
     public override void _Process(double delta)
     {
         _gameUserInterface.Update();
-        
+
         var hexagonMap = GetNode<Node2D>("/root/GameNode/Map/HexagonalMap");
         
         var selectionRectangle = GetNode<Line2D>("SelectionRectangle");
