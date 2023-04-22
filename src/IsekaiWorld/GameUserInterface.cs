@@ -232,7 +232,8 @@ public class GameUserInterface
     public Vector2 MousePosition { get; private set; }
     public HexCubeCoord MouseHexPosition { get; private set; }
     public Rect2? SelectionRectangle { get; private set; }
-
+    public List<HexCubeCoord> HighlightedHexes { get; } = new();
+    
     public void MouseClickOnMap(bool isPressed)
     {
         if (isPressed)
@@ -323,13 +324,35 @@ public class GameUserInterface
     public void MousePositionChanged(Vector2 mousePosition)
     {
         MousePosition = mousePosition;
-        MouseHexPosition = HexCubeCoord.FromPosition(mousePosition, 1);;
+        MouseHexPosition = HexCubeCoord.FromPosition(mousePosition, 1);
 
+        HighlightedHexes.Clear();
         if (SelectionRectangle != null)
         {
-            var x = SelectionRectangle.Value;
-            x.End = mousePosition;
-            SelectionRectangle = x;
+            var rect = SelectionRectangle.Value;
+            rect.End = mousePosition;
+            SelectionRectangle = rect;
+
+            var fromHex = HexCubeCoord.FromPosition(rect.Position, 1);
+            var toHex = HexCubeCoord.FromPosition(rect.End, 1);
+            FillRectangleBetweenHexes(fromHex, toHex, HighlightedHexes);
+        }
+    }
+
+    private static void FillRectangleBetweenHexes(HexCubeCoord fromHex, HexCubeCoord toHex, ICollection<HexCubeCoord> list)
+    {
+        var fromHexOffset = fromHex.ToOffset();
+        var toHexOffset = toHex.ToOffset();
+        for (int col = Math.Min(fromHexOffset.Column, toHexOffset.Column);
+             col <= Math.Max(fromHexOffset.Column, toHexOffset.Column);
+             col++)
+        {
+            for (int row = Math.Min(fromHexOffset.Row, toHexOffset.Row);
+                 row <= Math.Max(fromHexOffset.Row, toHexOffset.Row);
+                 row++)
+            {
+                list.Add(new HexOffsetCoord(col, row).ToCube());
+            }
         }
     }
 }

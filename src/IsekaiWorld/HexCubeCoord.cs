@@ -204,4 +204,11 @@ public readonly struct HexCubeCoord : IEquatable<HexCubeCoord>
 
         throw new ArgumentException("Neighbor must be cell next to this one.");
     }
+
+    public HexOffsetCoord ToOffset()
+    {
+        var col = Q + (R - (R & 1)) / 2;
+        var row = R;
+        return new HexOffsetCoord(col, row);
+    }
 }
