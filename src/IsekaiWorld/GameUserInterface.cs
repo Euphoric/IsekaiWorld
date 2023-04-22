@@ -244,30 +244,32 @@ public class GameUserInterface
         {
             SelectionRectangle = null;
             
-            HexCubeCoord clickPosition = MouseHexPosition;
-            ApplyCurrentTool(clickPosition);
+            ApplyCurrentTool();
         }
     }
 
-    private void ApplyCurrentTool(HexCubeCoord clickPosition)
+    private void ApplyCurrentTool()
     {
         switch (_currentTool)
         {
             case Tool.Selection:
-                SelectItemOn(clickPosition);
+                SelectItemOn(MouseHexPosition);
                 break;
             case Tool.Construction:
-                Messaging.Broadcast(new StartConstruction(clickPosition, ConstructionRotation,
+                Messaging.Broadcast(new StartConstruction(MouseHexPosition, ConstructionRotation,
                     _currentConstructionSelection!));
                 break;
             case Tool.PlaceBuilding:
-                Messaging.Broadcast(new SpawnBuilding(clickPosition, ConstructionRotation, _currentBuildingSelection!));
+                Messaging.Broadcast(new SpawnBuilding(MouseHexPosition, ConstructionRotation, _currentBuildingSelection!));
                 break;
             case Tool.PlaceItem:
-                Messaging.Broadcast(new SpawnItem(clickPosition, _currentItemSelection!, 1));
+                Messaging.Broadcast(new SpawnItem(MouseHexPosition, _currentItemSelection!, 1));
                 break;
             case Tool.Designate:
-                Messaging.Broadcast(new Designate(clickPosition, _currentDesignation!));
+                foreach (var hexPosition in HighlightedHexes)
+                {
+                    Messaging.Broadcast(new Designate(hexPosition, _currentDesignation!));   
+                }
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
