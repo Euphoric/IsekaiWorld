@@ -129,6 +129,30 @@ public partial class UserInterface : CanvasLayer
     public override void _Process(double delta)
     {
         _gameUserInterface.Update();
+        
+        var hexagonMap = GetNode<Node2D>("/root/GameNode/Map/HexagonalMap");
+        
+        var selectionRectangle = GetNode<Line2D>("SelectionRectangle");
+
+        if (_gameUserInterface.SelectionRectangle == null)
+        {
+            selectionRectangle.Visible = false;
+        }
+        else
+        {
+            selectionRectangle.Visible = true;
+            var transform = hexagonMap.GetGlobalTransformWithCanvas();
+            var rectangle = _gameUserInterface.SelectionRectangle.Value;
+            selectionRectangle.Points
+                = new []
+                {
+                    transform * new Vector2(rectangle.Position.X, rectangle.Position.Y),
+                    transform * new Vector2(rectangle.Position.X, rectangle.End.Y),
+                    transform * new Vector2(rectangle.End.X, rectangle.End.Y),
+                    transform * new Vector2(rectangle.End.X, rectangle.Position.Y),
+                    transform * new Vector2(rectangle.Position.X, rectangle.Position.Y),
+                };   
+        }
 
         base._Process(delta);
     }

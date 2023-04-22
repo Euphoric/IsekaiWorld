@@ -229,17 +229,35 @@ public class GameUserInterface
     private ItemDefinition? _currentItemSelection;
     private DesignationDefinition? _currentDesignation;
 
-    public void MouseClickOnMap()
+    public Vector2 MousePosition { get; private set; }
+    public HexCubeCoord MouseHexPosition { get; private set; }
+    public Rect2? SelectionRectangle { get; private set; }
+
+    public void MouseClickOnMap(bool isPressed)
     {
-        HexCubeCoord clickPosition = MouseHexPosition;
-        
+        if (isPressed)
+        {
+            SelectionRectangle = new Rect2(MousePosition, Vector2.Zero);
+        }
+        else
+        {
+            SelectionRectangle = null;
+            
+            HexCubeCoord clickPosition = MouseHexPosition;
+            ApplyCurrentTool(clickPosition);
+        }
+    }
+
+    private void ApplyCurrentTool(HexCubeCoord clickPosition)
+    {
         switch (_currentTool)
         {
             case Tool.Selection:
                 SelectItemOn(clickPosition);
                 break;
             case Tool.Construction:
-                Messaging.Broadcast(new StartConstruction(clickPosition, ConstructionRotation, _currentConstructionSelection!));
+                Messaging.Broadcast(new StartConstruction(clickPosition, ConstructionRotation,
+                    _currentConstructionSelection!));
                 break;
             case Tool.PlaceBuilding:
                 Messaging.Broadcast(new SpawnBuilding(clickPosition, ConstructionRotation, _currentBuildingSelection!));
@@ -302,14 +320,17 @@ public class GameUserInterface
         }
     }
 
-    
-    public Vector2 MousePosition { get; private set; }
-    public HexCubeCoord MouseHexPosition { get; private set; }
-    
     public void MousePositionChanged(Vector2 mousePosition, HexCubeCoord mouseHexPosition)
     {
         MousePosition = mousePosition;
         MouseHexPosition = mouseHexPosition;
+
+        if (SelectionRectangle != null)
+        {
+            var x = SelectionRectangle.Value;
+            x.End = mousePosition;
+            SelectionRectangle = x;
+        }
     }
 }
 

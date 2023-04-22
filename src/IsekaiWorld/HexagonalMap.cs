@@ -383,9 +383,9 @@ public partial class HexagonalMap : Node2D
     {
         if (evnt is InputEventMouseButton mbEvent)
         {
-            if (mbEvent is { ButtonIndex: MouseButton.Left, Pressed: true })
+            if (mbEvent is { ButtonIndex: MouseButton.Left })
             {
-                _gui.MouseClickOnMap();
+                _gui.MouseClickOnMap(mbEvent.Pressed);
             }
         }
 
