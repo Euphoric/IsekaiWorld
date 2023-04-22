@@ -54,7 +54,7 @@ public class GameEntity
         var constructionJobGiver = new ConstructionJobGiver(this);
         var cutWoodJobGiver = new CutWoodJobGiver(this);
         var harvestJobGiver = new GatherJobGiver(this);
-        Jobs = new JobSystem(new IJobGiver[] { eatJobGiver, haulJobGiver, deconstructJobGiver, constructionJobGiver, cutWoodJobGiver, harvestJobGiver });
+        Jobs = new JobSystem(new IJobGiver[] { eatJobGiver, deconstructJobGiver, constructionJobGiver, cutWoodJobGiver, harvestJobGiver, haulJobGiver });
     }
 
     private void HandleMessage(IEntityMessage mssg)
