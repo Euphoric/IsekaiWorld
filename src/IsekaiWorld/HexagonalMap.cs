@@ -15,11 +15,10 @@ public partial class HexagonalMap : Node2D
 
     private bool _isDirty;
     private HexagonNode _mouseoverHexagon = null!;
-    [Obsolete("Use messaging")]
-    private GameEntity _game = null!;
+    [Obsolete("Use messaging")] private GameEntity _game = null!;
 
     private GameUserInterface _gui = null!;
-    
+
     public HexagonalMap()
     {
         TextureRepeat = TextureRepeatEnum.Enabled;
@@ -40,7 +39,7 @@ public partial class HexagonalMap : Node2D
         var gameNode = GetNode<GameNode>("/root/GameNode");
         _game = gameNode.GameEntity;
         _gui = gameNode.Gui;
-            
+
         base._EnterTree();
     }
 
@@ -380,27 +379,26 @@ public partial class HexagonalMap : Node2D
         }
     }
 
-    public override void _UnhandledInput(InputEvent @event)
+    public override void _UnhandledInput(InputEvent evnt)
     {
-        if (@event is InputEventMouseButton mouseButton)
+        if (evnt is InputEventMouseButton mbEvent)
         {
-            if (mouseButton.ButtonIndex == MouseButton.Left && mouseButton.Pressed)
+            if (mbEvent is { ButtonIndex: MouseButton.Left, Pressed: true })
             {
-                var clickPosition = _mouseoverHexagon.HexPosition;
-                _gui.MouseClickOnMap(clickPosition);
+                _gui.MouseClickOnMap();
             }
         }
 
-        base._Input(@event);
+        base._Input(evnt);
     }
 
     public override void _Process(double delta)
     {
-        var position = GetLocalMousePosition();
-
-        var hex = HexCubeCoord.FromPosition(position, 1);
-        _mouseoverHexagon.HexPosition = hex;
-
+        var mousePosition = GetLocalMousePosition();
+        var mouseHexPosition = HexCubeCoord.FromPosition(mousePosition, 1);
+        _gui.MousePositionChanged(mousePosition, mouseHexPosition);
+        _mouseoverHexagon.HexPosition = _gui.MouseHexPosition;
+        
         if (_isDirty)
         {
             RefreshGameMap();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 namespace IsekaiWorld;
 
@@ -228,8 +229,10 @@ public class GameUserInterface
     private ItemDefinition? _currentItemSelection;
     private DesignationDefinition? _currentDesignation;
 
-    public void MouseClickOnMap(HexCubeCoord clickPosition)
+    public void MouseClickOnMap()
     {
+        HexCubeCoord clickPosition = MouseHexPosition;
+        
         switch (_currentTool)
         {
             case Tool.Selection:
@@ -297,6 +300,16 @@ public class GameUserInterface
         {
             Messaging.Broadcast(new SetCharacterHunger(cs.Id, 0.31));
         }
+    }
+
+    
+    public Vector2 MousePosition { get; private set; }
+    public HexCubeCoord MouseHexPosition { get; private set; }
+    
+    public void MousePositionChanged(Vector2 mousePosition, HexCubeCoord mouseHexPosition)
+    {
+        MousePosition = mousePosition;
+        MouseHexPosition = mouseHexPosition;
     }
 }
 
