@@ -257,12 +257,20 @@ public class GameUserInterface
                 SelectItemOn(MouseHexPosition);
                 break;
             case Tool.Construction:
-                Messaging.Broadcast(new StartConstruction(MouseHexPosition, ConstructionRotation,
-                    _currentConstructionSelection!));
+                foreach (var hexPosition in HighlightedHexes)
+                {
+                    var msg = new StartConstruction(hexPosition, ConstructionRotation, _currentConstructionSelection!);
+                    Messaging.Broadcast(msg);
+                }
+
                 break;
             case Tool.PlaceBuilding:
-                Messaging.Broadcast(new SpawnBuilding(MouseHexPosition, ConstructionRotation,
-                    _currentBuildingSelection!));
+                foreach (var hexPosition in HighlightedHexes)
+                {
+                    var msg = new SpawnBuilding(hexPosition, ConstructionRotation, _currentBuildingSelection!);
+                    Messaging.Broadcast(msg);
+                }
+
                 break;
             case Tool.PlaceItem:
                 Messaging.Broadcast(new SpawnItem(MouseHexPosition, _currentItemSelection!, 1));
