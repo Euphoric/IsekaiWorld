@@ -233,7 +233,8 @@ public class GameUserInterface
     public HexCubeCoord MouseHexPosition { get; private set; }
     public Rect2? SelectionRectangle { get; private set; }
     public List<HexCubeCoord> HighlightedHexes { get; } = new();
-    
+    public SelectionOptions SelectionOption { get; set; }
+
     public void MouseClickOnMap(bool isPressed)
     {
         if (isPressed)
@@ -243,7 +244,7 @@ public class GameUserInterface
         else
         {
             SelectionRectangle = null;
-            
+
             ApplyCurrentTool();
         }
     }
@@ -260,7 +261,8 @@ public class GameUserInterface
                     _currentConstructionSelection!));
                 break;
             case Tool.PlaceBuilding:
-                Messaging.Broadcast(new SpawnBuilding(MouseHexPosition, ConstructionRotation, _currentBuildingSelection!));
+                Messaging.Broadcast(new SpawnBuilding(MouseHexPosition, ConstructionRotation,
+                    _currentBuildingSelection!));
                 break;
             case Tool.PlaceItem:
                 Messaging.Broadcast(new SpawnItem(MouseHexPosition, _currentItemSelection!, 1));
@@ -268,8 +270,9 @@ public class GameUserInterface
             case Tool.Designate:
                 foreach (var hexPosition in HighlightedHexes)
                 {
-                    Messaging.Broadcast(new Designate(hexPosition, _currentDesignation!));   
+                    Messaging.Broadcast(new Designate(hexPosition, _currentDesignation!));
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -337,23 +340,16 @@ public class GameUserInterface
 
             var fromHex = HexCubeCoord.FromPosition(rect.Position, 1);
             var toHex = HexCubeCoord.FromPosition(rect.End, 1);
-            FillRectangleBetweenHexes(fromHex, toHex, HighlightedHexes);
-        }
-    }
-
-    private static void FillRectangleBetweenHexes(HexCubeCoord fromHex, HexCubeCoord toHex, ICollection<HexCubeCoord> list)
-    {
-        var fromHexOffset = fromHex.ToOffset();
-        var toHexOffset = toHex.ToOffset();
-        for (int col = Math.Min(fromHexOffset.Column, toHexOffset.Column);
-             col <= Math.Max(fromHexOffset.Column, toHexOffset.Column);
-             col++)
-        {
-            for (int row = Math.Min(fromHexOffset.Row, toHexOffset.Row);
-                 row <= Math.Max(fromHexOffset.Row, toHexOffset.Row);
-                 row++)
+            switch (SelectionOption)
             {
-                list.Add(new HexOffsetCoord(col, row).ToCube());
+                case SelectionOptions.Rectangle:
+                    HexCubeCoord.FillRectangleBetweenHexes(fromHex, toHex, HighlightedHexes);
+                    break;
+                case SelectionOptions.Line:
+                    HexCubeCoord.LineBetweenHexes(fromHex, toHex, HighlightedHexes);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }

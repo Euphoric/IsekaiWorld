@@ -58,6 +58,9 @@ text = "Debug label"
 [node name="RotationOptionButton" type="OptionButton" parent="UserInterface/TopMenuArea"]
 layout_mode = 2
 
+[node name="SelectionOptionButton" type="OptionButton" parent="UserInterface/TopMenuArea"]
+layout_mode = 2
+
 [node name="Menus" type="PanelContainer" parent="UserInterface/TopMenuArea"]
 layout_mode = 2
 

@@ -211,4 +211,56 @@ public readonly struct HexCubeCoord : IEquatable<HexCubeCoord>
         var row = R;
         return new HexOffsetCoord(col, row);
     }
+    
+    public static void FillRectangleBetweenHexes(HexCubeCoord fromHex, HexCubeCoord toHex,
+        ICollection<HexCubeCoord> list)
+    {
+        var fromHexOffset = fromHex.ToOffset();
+        var toHexOffset = toHex.ToOffset();
+        for (int col = Math.Min(fromHexOffset.Column, toHexOffset.Column);
+             col <= Math.Max(fromHexOffset.Column, toHexOffset.Column);
+             col++)
+        {
+            for (int row = Math.Min(fromHexOffset.Row, toHexOffset.Row);
+                 row <= Math.Max(fromHexOffset.Row, toHexOffset.Row);
+                 row++)
+            {
+                list.Add(new HexOffsetCoord(col, row).ToCube());
+            }
+        }
+    }
+
+    static float Lerp(float a, float b, float t)
+    {
+        return a + (b - a) * t;
+    }
+
+    static HexCubeCoord LerpRound(HexCubeCoord a, HexCubeCoord b, float t)
+    {
+        var r = Lerp(a.R, b.R, t);
+        var q = Lerp(a.Q, b.Q, t);
+        var s = Lerp(a.S, b.S, t);
+        return CubeRound(r, q, s);
+    }
+
+    public static int Distance(HexCubeCoord a, HexCubeCoord b)
+    {
+        return (Math.Abs(a.R - b.R) + Math.Abs(a.Q - b.Q) + Math.Abs(a.S - b.S)) / 2;
+    }
+
+    public static void LineBetweenHexes(HexCubeCoord a, HexCubeCoord b, ICollection<HexCubeCoord> list)
+    {
+        var dist = Distance(a, b);
+        if (dist == 0)
+        {
+            list.Add(a);
+        }
+        else
+        {
+            for (int i = 0; i <= dist; i++)
+            {
+                list.Add(LerpRound(a, b, i / (float)dist));
+            }
+        }
+    }
 }

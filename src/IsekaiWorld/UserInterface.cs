@@ -4,6 +4,12 @@ using Godot;
 
 namespace IsekaiWorld;
 
+public enum SelectionOptions
+{
+    Rectangle,
+    Line
+}
+
 public partial class UserInterface : CanvasLayer
 {
     public MessagingEndpoint Messaging { get; }
@@ -74,7 +80,15 @@ public partial class UserInterface : CanvasLayer
             DebugContainer.AddChild(setHungerButton);
         }
 
-
+        var selectionOptionButton = GetNode<OptionButton>("TopMenuArea/SelectionOptionButton");
+        
+        foreach (SelectionOptions selectionOption in Enum.GetValues(typeof(SelectionOptions)))
+        {
+            selectionOptionButton.AddItem(selectionOption.ToString(), (int)selectionOption);
+        }
+        selectionOptionButton.Selected = 0;
+        selectionOptionButton.ItemSelected += _on_selectionOption;
+            
         ConstructionContainer.Visible = false;
         BuildingContainer.Visible = false;
         PlaceItemContainer.Visible = false;
@@ -143,15 +157,28 @@ public partial class UserInterface : CanvasLayer
             selectionRectangle.Visible = true;
             var transform = hexagonMap.GetGlobalTransformWithCanvas();
             var rectangle = _gameUserInterface.SelectionRectangle.Value;
-            selectionRectangle.Points
-                = new []
-                {
-                    transform * new Vector2(rectangle.Position.X, rectangle.Position.Y),
-                    transform * new Vector2(rectangle.Position.X, rectangle.End.Y),
-                    transform * new Vector2(rectangle.End.X, rectangle.End.Y),
-                    transform * new Vector2(rectangle.End.X, rectangle.Position.Y),
-                    transform * new Vector2(rectangle.Position.X, rectangle.Position.Y),
-                };   
+            switch (_gameUserInterface.SelectionOption)
+            {
+                case SelectionOptions.Rectangle:
+                    selectionRectangle.Points
+                        = new[]
+                        {
+                            transform * new Vector2(rectangle.Position.X, rectangle.Position.Y),
+                            transform * new Vector2(rectangle.Position.X, rectangle.End.Y),
+                            transform * new Vector2(rectangle.End.X, rectangle.End.Y),
+                            transform * new Vector2(rectangle.End.X, rectangle.Position.Y),
+                            transform * new Vector2(rectangle.Position.X, rectangle.Position.Y),
+                        };
+                    break;
+                case SelectionOptions.Line:
+                    selectionRectangle.Points
+                        = new[]
+                        {
+                            transform * new Vector2(rectangle.Position.X, rectangle.Position.Y),
+                            transform * new Vector2(rectangle.End.X, rectangle.End.Y),
+                        };
+                    break;
+            }
         }
 
         base._Process(delta);
@@ -299,5 +326,11 @@ public partial class UserInterface : CanvasLayer
     public void _on_rotation_selected(long index)
     {
         _gameUserInterface.ConstructionRotation = (HexagonDirection)index;
+    }
+    
+    private void _on_selectionOption(long index)
+    {
+        var selectionOption = (SelectionOptions)index;
+        _gameUserInterface.SelectionOption = selectionOption;
     }
 }
