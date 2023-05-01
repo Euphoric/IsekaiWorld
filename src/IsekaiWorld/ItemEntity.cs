@@ -61,6 +61,8 @@ public class ItemEntity : IEntity
     public ISet<HexCubeCoord> OccupiedCells => new HashSet<HexCubeCoord> { Position };
     public ItemDefinition Definition { get; }
     public int Count { get; private set; }
+    
+    public bool ReservedForActivity { get; set; }
 
     public void AddCount(int count)
     {

@@ -16,6 +16,11 @@ public class PickUpItemActivity : Activity
         _count = count;
     }
 
+    public override void Reserve()
+    {
+        _item.ReservedForActivity = true;
+    }
+
     protected override void UpdateInner()
     {
         if (_character.Position != _item.Position)

@@ -18,7 +18,11 @@ public class HaulJobGiver : IJobGiver
         var stockpilePositions = _game.Buildings.Where(x => x.Definition == BuildingDefinitions.StockpileZone)
             .SelectMany(x => x.OccupiedCells).Distinct().ToImmutableHashSet();
 
-        var itemToHaul = _game.Items.FirstOrDefault(it => !stockpilePositions.Contains(it.Position));
+        var itemToHaul = _game
+            .Items
+            .Where(it => !stockpilePositions.Contains(it.Position))
+            .Where(it=>!it.ReservedForActivity)
+            .FirstOrDefault();
         if (itemToHaul == null) 
             return null;
         

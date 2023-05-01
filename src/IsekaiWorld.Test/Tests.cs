@@ -691,5 +691,21 @@ namespace IsekaiWorld
             var activeCharacters = new[] { characterA, characterB }.Where(x => x.ActivityName != null);
             activeCharacters.Should().ContainSingle();
         }
+        
+        [Fact]
+        public void Hauling_with_multiple_characters()
+        {
+            var game = CreateGame();
+
+            game.SpawnStockpile(new HexCubeCoord(1, 1, -2));
+            game.SpawnItem(new HexCubeCoord(-1, -1, 2), ItemDefinitions.Wood, 1);
+            
+            var characterA = game.AddCharacter("Test guy A", HexCubeCoord.Zero);
+            var characterB = game.AddCharacter("Test guy B", HexCubeCoord.Zero + HexagonDirection.Left);
+
+            game.UpdateUntil(_ => characterA.ActivityName != null || characterB.ActivityName != null);
+            var activeCharacters = new[] { characterA, characterB }.Where(x => x.ActivityName != null);
+            activeCharacters.Should().ContainSingle();
+        }
     }
 }
