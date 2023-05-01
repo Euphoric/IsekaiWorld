@@ -55,6 +55,10 @@ public class CharacterEntity : IEntity, IItemHolder
         if (!_activityList.Any())
         {
             _activityList = _game.Jobs.GetJobActivity(this)?.ToList() ?? new List<Activity>();
+            foreach (var activity in _activityList)
+            {
+                activity.Reserve();
+            }
         }
 
         var currentActivity = _activityList.FirstOrDefault();

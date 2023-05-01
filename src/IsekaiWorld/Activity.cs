@@ -1,4 +1,5 @@
 using System;
+using System.Reflection.Metadata;
 
 namespace IsekaiWorld;
 
@@ -27,4 +28,6 @@ public abstract class Activity
     }
 
     protected abstract void UpdateInner();
+
+    public virtual void Reserve() { }
 }

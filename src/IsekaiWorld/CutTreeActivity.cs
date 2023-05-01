@@ -14,6 +14,11 @@ public class CutTreeActivity : Activity
         Tree = tree;
     }
 
+    public override void Reserve()
+    {
+        Tree.ReservedForActivity = true;
+    }
+
     protected override void UpdateInner()
     {
         bool isNextToEntity = Character.Position.IsNextTo(Tree.Position);

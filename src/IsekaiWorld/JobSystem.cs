@@ -20,9 +20,9 @@ public class JobSystem : IJobGiver
     {
         foreach (var jobGiver in _jobGivers)
         {
-            var a = jobGiver.GetJobActivity(character);
-            if (a != null)
-                return a;
+            var jobs = jobGiver.GetJobActivity(character);
+            if (jobs != null)
+                return jobs;
         }
 
         return null;

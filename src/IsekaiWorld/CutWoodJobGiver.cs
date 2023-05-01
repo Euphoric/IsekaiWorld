@@ -24,8 +24,6 @@ public class CutWoodJobGiver : IJobGiver
         if (tree == null)
             return null;
 
-        tree.ReservedForActivity = true;
-
         return new Activity[]
         {
             new MovementActivity(_game, _game.Pathfinding, character, tree.Position.Neighbors()),

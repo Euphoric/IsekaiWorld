@@ -23,8 +23,6 @@ public class GatherJobGiver : IJobGiver
         if (toGather == null)
             return null;
 
-        toGather.ReservedForActivity = true;
-        
         return new Activity[]
         {
             new MovementActivity(_game, _game.Pathfinding, character, toGather.Position.Neighbors()),

@@ -14,6 +14,11 @@ public class GatherActivity : Activity
         EntityToGather = entityToGather;
     }
 
+    public override void Reserve()
+    {
+        EntityToGather.ReservedForActivity = true;
+    }
+
     protected override void UpdateInner()
     {
         bool isNextToEntity =
