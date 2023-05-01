@@ -43,10 +43,26 @@ public class CharacterView
         CharacterNode character = new CharacterNode();
         character.Name = "CharacterSpriteNode";
         character.Scale = Vector2.One * 0.017f;
-        character.BodyType = "Female";
-        character.Clothes = "DameDress/DameDress";
-        character.Hair = "Hair_Female/AFUf08";
-        character.HairColor = new Color("FAF0BE");
+        if (message.Label == "Eve")
+        {
+            character.BodyType = "Female";
+            character.Clothes = "DameDress/DameDress";
+            character.Hair = "Hair_Female/AFUf08";
+            character.HairColor = new Color("FAF0BE");
+        }
+        else if (message.Label == "Adam")
+        {
+            character.BodyType = "Male";
+            character.Clothes = "ShirtBasic/ShirtBasic";
+            character.ClothesColor = new Color("CFCFCF");
+            character.Hair = "Hair_Male/AFUm03";
+            character.HairColor = new Color("BB6D3E");
+        }
+        else
+        {
+            throw new Exception("Unknown character label");
+        }
+
         characterHexagon.AddChild(character);
         
         var mapNode = _gameNode.EntitiesNode;

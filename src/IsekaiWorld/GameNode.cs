@@ -63,8 +63,8 @@ public partial class GameNode : Node
 		//var mapGenerator = new ConstructionTestMapGenerator();
 		_game.Initialize(mapGenerator);
 
-		//var adamCharacter = _game.AddCharacter("Adam");
-		//adamCharacter.Position = new HexCubeCoord(1, 1, -2);
+		var adamCharacter = _game.AddCharacter("Adam");
+		adamCharacter.Position = new HexCubeCoord(1, 1, -2);
 		var eveCharacter = _game.AddCharacter("Eve");
 		eveCharacter.Position = new HexCubeCoord(1, -1, 0);
 
