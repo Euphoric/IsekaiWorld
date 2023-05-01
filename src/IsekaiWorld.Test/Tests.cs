@@ -644,5 +644,21 @@ namespace IsekaiWorld
                 .Should()
                 .NotContain(new { Definition = ConstructionDefinitions.StoneTileFloor, Position = position });
         }
+        
+        [Fact]
+        public void Cut_trees_with_multiple_characters()
+        {
+            var game = CreateGame();
+
+            var treeA = game.SpawnBuilding(new HexCubeCoord(5, -3, -2), HexagonDirection.Left, BuildingDefinitions.Plant.TreeOak);
+            var characterA = game.AddCharacter("Test guy A", HexCubeCoord.Zero);
+            var characterB = game.AddCharacter("Test guy B", HexCubeCoord.Zero + HexagonDirection.Left);
+
+            game.Designate(treeA.Position, DesignationDefinitions.CutWood);
+
+            game.UpdateUntil(_ => characterA.ActivityName == "CutTreeActivity" || characterB.ActivityName == "CutTreeActivity");
+            var activeCharacters = new[] { characterA, characterB }.Where(x => x.ActivityName != null);
+            activeCharacters.Should().ContainSingle();
+        }
     }
 }

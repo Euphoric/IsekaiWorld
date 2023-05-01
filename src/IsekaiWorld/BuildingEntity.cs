@@ -52,6 +52,8 @@ public class BuildingEntity : IEntity
 
     public ItemDefinition? ReservedForItem { get; private set; }
     public DesignationDefinition? Designation { get; set; }
+    
+    public bool ReservedForActivity { get; set; }
 
     public void ReserveForItem(ItemDefinition item)
     {

@@ -14,11 +14,17 @@ public class CutWoodJobGiver : IJobGiver
 
     public IReadOnlyList<Activity>? GetJobActivity(CharacterEntity character)
     {
-        var treesToCut = _game.Buildings.Where(x => x.Definition == BuildingDefinitions.Plant.TreeOak && x.Designation == DesignationDefinitions.CutWood);
-        
+        var treesToCut = _game
+                .Buildings
+                .Where(x => x.Definition == BuildingDefinitions.Plant.TreeOak && x.Designation == DesignationDefinitions.CutWood)
+                .Where(x => !x.ReservedForActivity)
+            ;
+
         var tree = treesToCut.FirstOrDefault();
         if (tree == null)
             return null;
+
+        tree.ReservedForActivity = true;
 
         return new Activity[]
         {
