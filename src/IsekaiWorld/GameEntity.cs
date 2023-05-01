@@ -96,15 +96,14 @@ public class GameEntity
         MessagingHub.Register(Messaging);
         
         Speed = 1;
-
-        var (map, entities) = mapGenerator.GenerateNewMap();
-        GameMap = map;
-        entities.ForEach(AddEntity);
-
+        
+        GameMap = new HexagonalMapEntity(mapGenerator.MapSize);
+        mapGenerator.GenerateMap(this);
+        
         Pathfinding = new HexagonPathfinding();
         Pathfinding.BuildMap(GameMap);
         MessagingHub.Register(Pathfinding.Messaging);
-
+        
         // Probably shouldn't be here. Find better place for initial surface update.
         Messaging.Broadcast(new SurfaceChanged(GameMap.Cells));
     }
