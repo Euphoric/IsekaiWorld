@@ -14,7 +14,10 @@ public class ConstructionJobGiver : IJobGiver
 
     public IReadOnlyList<Activity>? GetJobActivity(CharacterEntity character)
     {
-        var construction = _game.Constructions.FirstOrDefault();
+        var construction = 
+            _game.Constructions
+                .Where(x=>!x.ReservedForActivity)
+                .FirstOrDefault();
         if (construction == null)
             return null;
 

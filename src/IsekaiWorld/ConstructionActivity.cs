@@ -14,6 +14,11 @@ public class ConstructionActivity : Activity
         Construction = construction;
     }
 
+    public override void Reserve()
+    {
+        Construction.ReservedForActivity = true;
+    }
+
     protected override void UpdateInner()
     {
         bool isNextToEntity = Character.Position.IsNextTo(Construction.Position);

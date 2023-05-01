@@ -656,7 +656,7 @@ namespace IsekaiWorld
 
             game.Designate(treeA.Position, DesignationDefinitions.CutWood);
 
-            game.UpdateUntil(_ => characterA.ActivityName == "CutTreeActivity" || characterB.ActivityName == "CutTreeActivity");
+            game.UpdateUntil(_ => characterA.ActivityName != null || characterB.ActivityName != null);
             var activeCharacters = new[] { characterA, characterB }.Where(x => x.ActivityName != null);
             activeCharacters.Should().ContainSingle();
         }
@@ -672,7 +672,22 @@ namespace IsekaiWorld
 
             game.Designate(riceEntity.Position, DesignationDefinitions.Gather);
 
-            game.UpdateUntil(_ => characterA.ActivityName == "GatherActivity" || characterB.ActivityName == "GatherActivity");
+            game.UpdateUntil(_ => characterA.ActivityName != null || characterB.ActivityName != null);
+            var activeCharacters = new[] { characterA, characterB }.Where(x => x.ActivityName != null);
+            activeCharacters.Should().ContainSingle();
+        }
+        
+        [Fact]
+        public void Construct_without_resources_with_multiple_characters()
+        {
+            var game = CreateGame();
+
+            game.StartConstruction(new HexCubeCoord(-4, 3, 1), HexagonDirection.Left, ConstructionDefinitions.StoneWall);
+            
+            var characterA = game.AddCharacter("Test guy A", HexCubeCoord.Zero);
+            var characterB = game.AddCharacter("Test guy B", HexCubeCoord.Zero + HexagonDirection.Left);
+
+            game.UpdateUntil(_ => characterA.ActivityName != null || characterB.ActivityName != null);
             var activeCharacters = new[] { characterA, characterB }.Where(x => x.ActivityName != null);
             activeCharacters.Should().ContainSingle();
         }

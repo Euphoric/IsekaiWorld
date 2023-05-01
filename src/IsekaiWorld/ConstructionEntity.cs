@@ -44,6 +44,8 @@ public class ConstructionEntity : IEntity
     public bool IsFinished => Progress >= CompleteProgress;
     public bool MaterialsDelivered { get; set; }
     
+    public bool ReservedForActivity { get; set; }
+
     public void Initialize()
     {
     }
