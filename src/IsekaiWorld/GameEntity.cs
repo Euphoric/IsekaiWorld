@@ -14,6 +14,9 @@ public class GameEntity
     
     public IReadOnlyList<ConstructionEntity> Constructions => _entities.OfType<ConstructionEntity>().ToList();
     public IReadOnlyList<BuildingEntity> Buildings => _entities.OfType<BuildingEntity>().ToList();
+    /// <summary>
+    /// All items in game. Including the ones being carried by characters.
+    /// </summary>
     public IReadOnlyList<ItemEntity> Items => _entities.OfType<ItemEntity>().ToList();
 
     private readonly List<IEntity> _entities = new();
@@ -42,7 +45,12 @@ public class GameEntity
         }
     }
 
-    public MapItems MapItems { get; } = new();
+    /// <summary>
+    /// Items laying on the map.
+    /// </summary>
+    public IEnumerable<ItemEntity> MapItems => Items.Where(it => it.IsMapItem);
+    
+    public MapItems MapItemsHolder { get; } = new();
 
     public GameEntity()
     {
@@ -202,7 +210,7 @@ public class GameEntity
         if (existingEntity == null)
         {
             var itemEntity = new ItemEntity(this, position, item, count);
-            itemEntity.SetHolder(MapItems);
+            itemEntity.SetHolder(MapItemsHolder);
             AddEntity(itemEntity);
             itemEntity.Initialize();
             return itemEntity;

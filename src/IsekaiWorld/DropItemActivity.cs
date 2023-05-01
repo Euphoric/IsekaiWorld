@@ -32,12 +32,12 @@ public class DropItemActivity : Activity
                 throw new Exception("Abort because characters is not carrying the item to drop");
             }
             
-            var itemInPlace = Game.Items.FirstOrDefault(x => x.Position == _targetStockpile.Position && x.Definition == Item.Definition);
+            var itemInPlace = Game.MapItems.FirstOrDefault(x => x.Position == _targetStockpile.Position && x.Definition == Item.Definition);
             if (itemInPlace == null)
             {
                 // place item on ground
                 Item.Position = _targetStockpile.Position;
-                Item.SetHolder(Game.MapItems);
+                Item.SetHolder(Game.MapItemsHolder);
             }
             else
             {
