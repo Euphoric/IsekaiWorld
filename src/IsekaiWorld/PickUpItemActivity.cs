@@ -37,6 +37,7 @@ public class PickUpItemActivity : Activity
         }
         else
         {
+            _item.ReservedForActivity = false;
             IsFinished = true;            
         }
     }

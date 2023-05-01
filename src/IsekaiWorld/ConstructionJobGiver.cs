@@ -23,7 +23,11 @@ public class ConstructionJobGiver : IJobGiver
 
         if (construction.Definition.Material != null && !construction.MaterialsDelivered)
         {
-            var itemToDeliver = _game.Items.FirstOrDefault(x => x.Definition == construction.Definition.Material);
+            var itemToDeliver = 
+                _game.Items
+                    .Where(x => x.Definition == construction.Definition.Material)
+                    .Where(x=>!x.ReservedForActivity)
+                    .FirstOrDefault();
             if (itemToDeliver == null)
                 return null;
 

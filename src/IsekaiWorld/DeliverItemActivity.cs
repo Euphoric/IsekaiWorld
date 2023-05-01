@@ -18,6 +18,11 @@ public class DeliverItemActivity : Activity
         _construction = construction;
     }
 
+    public override void Reserve()
+    {
+        _construction.ReservedForActivity = true;
+    }
+
     protected override void UpdateInner()
     {
         var carriedItem = _character.CarriedItems.FirstOrDefault(x => x.Definition == _item.Definition && x.Count == 1);
@@ -36,7 +41,8 @@ public class DeliverItemActivity : Activity
         carriedItem.Remove();
 
         _construction.MaterialsDelivered = true;
-
+        _construction.ReservedForActivity = false;
+            
         IsFinished = true;
     }
 }
