@@ -23,7 +23,7 @@ public class DeconstructJobGiver : IJobGiver
 
         return new Activity[]
         {
-            new MovementActivity(_game, _game.Pathfinding, character, building.Position, true),
+            new MovementActivity(_game, _game.Pathfinding, character, building.Position.Neighbors()),
             new DeconstructActivity(_game, character, building)
         };
     }

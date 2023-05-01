@@ -14,18 +14,6 @@ public class MovementActivity : Activity
     private float _movementTimer;
     private Queue<HexCubeCoord>? _movementQueue;
 
-    [Obsolete("Use constructor with targets list")]
-    public MovementActivity(GameEntity game, HexagonPathfinding pathfinding, CharacterEntity charater, HexCubeCoord target, bool stopNextTo)
-        :this(game, pathfinding, charater, AllTargets(target, stopNextTo))
-    { }
-
-    private static List<HexCubeCoord> AllTargets(HexCubeCoord target, bool stopNextTo)
-    {
-        var stopNeighbors = stopNextTo ? target.Neighbors() : ImmutableList<HexCubeCoord>.Empty;
-        var targetAll = new List<HexCubeCoord> { target }.Concat(stopNeighbors).ToList();
-        return targetAll;
-    }
-
     public MovementActivity(GameEntity game, HexagonPathfinding pathfinding, CharacterEntity charater, HexCubeCoord target)
         :this(game, pathfinding, charater, new []{target})
     { }

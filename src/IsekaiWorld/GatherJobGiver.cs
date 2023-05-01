@@ -20,7 +20,7 @@ public class GatherJobGiver : IJobGiver
 
         return new Activity[]
         {
-            new MovementActivity(_game, _game.Pathfinding, character, toGather.Position, true),
+            new MovementActivity(_game, _game.Pathfinding, character, toGather.Position.Neighbors()),
             new GatherActivity(_game, character, toGather)
         };
     }
