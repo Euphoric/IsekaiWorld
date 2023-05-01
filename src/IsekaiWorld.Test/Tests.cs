@@ -822,5 +822,28 @@ namespace IsekaiWorld
             var eatenFood = 1;
             itemsInGame.Should().ContainKey(ItemDefinitions.Grains).WhoseValue.Should().Be(plantsList.Count * 1 - eatenFood);
         }
+        
+        [Fact]
+        public void Hungry_characters_eats_food()
+        {
+            var game = CreateGame();
+
+            var characterA = game.AddCharacter("Test guy A", HexCubeCoord.Zero);
+            characterA.SetHungerTo(0.2);
+            var characterB = game.AddCharacter("Test guy B", new HexCubeCoord(-1, 2, -1));
+            characterB.SetHungerTo(0.2);
+            
+            game.SpawnItem(new HexCubeCoord(-3, -2, 5), ItemDefinitions.Grains, 1);
+
+            game.UpdateUntil(_ => characterA.Hunger > 0.5 || characterB.Hunger > 0.5);
+            game.UpdateUntil(AllCharactersAreInactive);
+
+            game.Items.Should().BeEmpty();
+        }
+
+        private bool AllCharactersAreInactive(GameTestStep gts)
+        {
+            return gts.Game.Characters.All(ch => ch.ActivityName == null);
+        }
     }
 }

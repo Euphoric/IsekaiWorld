@@ -16,7 +16,11 @@ public class EatFoodJobGiver : IJobGiver
     {
         if (character.Hunger < 0.3)
         {
-            var foodItem = _game.MapItems.FirstOrDefault(x => x.Definition == ItemDefinitions.Grains);
+            var foodItem =
+                _game.MapItems
+                    .Where(x => x.Definition == ItemDefinitions.Grains)
+                    .Where(x => !x.ReservedForActivity)
+                    .FirstOrDefault();
             if (foodItem != null)
             {
                 return new Activity[]
