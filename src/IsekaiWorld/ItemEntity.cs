@@ -96,7 +96,7 @@ public class ItemEntity : IEntity
         {
             _isDirty = false;
             // TODO: Refactor this holder mess
-            if (_holder is MapItems)
+            if (IsMapItem)
             {
                 if (_previousHolder is CharacterEntity ce)
                 {
@@ -115,6 +115,8 @@ public class ItemEntity : IEntity
             }
         }
     }
+
+    public bool IsMapItem => _holder is MapItems;
 
     public void Remove()
     {

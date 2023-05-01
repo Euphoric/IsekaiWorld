@@ -21,6 +21,7 @@ public class HaulJobGiver : IJobGiver
         var itemToHaul = _game
             .Items
             .Where(it => !stockpilePositions.Contains(it.Position))
+            .Where(it=>it.IsMapItem)
             .Where(it=>!it.ReservedForActivity)
             .FirstOrDefault();
         if (itemToHaul == null) 

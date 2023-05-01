@@ -114,6 +114,18 @@ namespace IsekaiWorld
             return !gts.Game.Constructions.Any();
         }
 
+        private bool NoUncutTrees(GameTestStep gts)
+        {
+            var trees = gts.Game.Buildings.Where(x => x.Definition == BuildingDefinitions.Plant.TreeOak);
+            return !trees.Any();
+        }
+        
+        private bool NoUngatheredPlants(GameTestStep gts)
+        {
+            var plants = gts.Game.Buildings.Where(x => x.Definition == BuildingDefinitions.Plant.WildRice);
+            return !plants.Any();
+        }
+
         [Fact]
         public void Item_spawned()
         {
@@ -179,7 +191,7 @@ namespace IsekaiWorld
         {
             var game = CreateGame();
 
-            var character = game.AddCharacter("Test guy", HexCubeCoord.Zero, disableHunger:true);
+            game.AddCharacter("Test guy", HexCubeCoord.Zero, disableHunger:true);
             
             game.SpawnStockpile(new HexCubeCoord(0, 0, 0));
             game.SpawnStockpile(new HexCubeCoord(1, 0, -1));
@@ -723,6 +735,92 @@ namespace IsekaiWorld
             game.UpdateUntil(_ => characterA.ActivityName != null || characterB.ActivityName != null);
             var activeCharacters = new[] { characterA, characterB }.Where(x => x.ActivityName != null);
             activeCharacters.Should().ContainSingle();
+        }
+        
+        [Fact]
+        public void Hauling_to_stockpile_complex_multiple_charas()
+        {
+            var game = CreateGame();
+            
+            game.AddCharacter("Test guy A", HexCubeCoord.Zero);
+            game.AddCharacter("Test guy B", HexCubeCoord.Zero + HexagonDirection.Left);
+
+            var itemsPositions = new List<HexCubeCoord>();
+            HexCubeCoord.FillRectangleBetweenHexes(new HexOffsetCoord(-5, -5).ToCube(), new HexOffsetCoord(-2, -2).ToCube(), itemsPositions);
+            foreach (var coord in itemsPositions)
+            {
+                game.SpawnItem(coord, ItemDefinitions.Wood, 3);
+            }
+
+            game.SpawnStockpile(new HexOffsetCoord(2, 2).ToCube());
+            
+            var totalItemCountStart = game.Items.GroupBy(x => x.Definition)
+                .Select(grp => new { Definition = grp.Key, Count = grp.Sum(x => x.Count) }).ToList();
+
+            game.UpdateUntil(NoItemsOutsideStockpile, maxSteps: 10000);
+            game.UpdateUntil(NoCarriedItems);
+            
+            var multipleItemsOnSamePositions =
+                game.Items.GroupBy(it => it.Position)
+                    .Where(grp => grp.Count() > 1)
+                    .ToList();
+            multipleItemsOnSamePositions.Should().BeEmpty();
+
+            var totalItemCountEnd = game.Items.GroupBy(x => x.Definition)
+                .Select(grp => new { Definition = grp.Key, Count = grp.Sum(x => x.Count) }).ToList();
+            totalItemCountEnd.Should().BeEquivalentTo(totalItemCountStart);
+        }
+
+        [Fact]
+        public void Complex_simulation()
+        {
+            var game = CreateGame();
+            
+            game.AddCharacter("Test guy A", HexCubeCoord.Zero);
+            game.AddCharacter("Test guy B", HexCubeCoord.Zero + HexagonDirection.Left);
+
+            var treesList = new List<HexCubeCoord>();
+            HexCubeCoord.FillRectangleBetweenHexes(new HexOffsetCoord(-5, -5).ToCube(), new HexOffsetCoord(-2, -2).ToCube(), treesList);
+            foreach (var coord in treesList)
+            {
+                game.SpawnBuilding(coord, HexagonDirection.Left, BuildingDefinitions.Plant.TreeOak);
+                game.Designate(coord, DesignationDefinitions.CutWood);
+            }
+
+            var plantsList = new List<HexCubeCoord>();
+            HexCubeCoord.FillRectangleBetweenHexes(new HexOffsetCoord(2, 2).ToCube(), new HexOffsetCoord(5, 5).ToCube(), plantsList);
+            foreach (var coord in plantsList)
+            {
+                game.SpawnBuilding(coord, HexagonDirection.Left, BuildingDefinitions.Plant.WildRice);
+                game.Designate(coord, DesignationDefinitions.Gather);
+            }
+            
+            var constructionsList = new List<HexCubeCoord>();
+            HexCubeCoord.LineBetweenHexes(new HexOffsetCoord(-2, 2).ToCube(), new HexOffsetCoord(-5, 5).ToCube(), constructionsList);
+            foreach (var coord in constructionsList)
+            {
+                game.StartConstruction(coord, HexagonDirection.Left, ConstructionDefinitions.TestWoodenWall);
+            }
+
+            var stockpilesList = new List<HexCubeCoord>();
+            HexCubeCoord.FillRectangleBetweenHexes(new HexOffsetCoord(2, -2).ToCube(), new HexOffsetCoord(5, -5).ToCube(), stockpilesList);
+            foreach (var coord in stockpilesList)
+            {
+                game.StartConstruction(coord, HexagonDirection.Left, ConstructionDefinitions.StockpileZone);
+            }
+            
+            game.UpdateUntil(NoUncutTrees, maxSteps:10000);
+            game.UpdateUntil(NoUngatheredPlants);
+            game.UpdateUntil(NoActiveConstructions);
+            game.UpdateUntil(NoItemsOutsideStockpile, maxSteps:10000);
+            
+            var itemsInGame = 
+                game.Items
+                    .GroupBy(x => x.Definition)
+                    .ToDictionary(x => x.Key, x => x.Sum(c => c.Count));
+            itemsInGame.Should().ContainKey(ItemDefinitions.Wood).WhoseValue.Should().Be(treesList.Count * 5 - constructionsList.Count * 1);
+            var eatenFood = 1;
+            itemsInGame.Should().ContainKey(ItemDefinitions.Grains).WhoseValue.Should().Be(plantsList.Count * 1 - eatenFood);
         }
     }
 }

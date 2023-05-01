@@ -31,6 +31,11 @@ public class PickUpItemActivity : Activity
         if (!_executing)
         {
             _executing = true;
+
+            if (!_item.IsMapItem)
+            {
+                throw new Exception("Item must lay on the ground to be picked up.");
+            }
             
             var pickedItem = _item.PickUpItem(_count);
             pickedItem.SetHolder(_character);
