@@ -7,7 +7,10 @@ namespace IsekaiWorld;
 
 public interface IMapGenerator
 {
+    [Obsolete]
     (HexagonalMapEntity, List<IEntity>) GenerateNewMap();
+
+    void GenerateMap(GameEntity game);
 }
 
 public class MapGenerator : IMapGenerator
@@ -28,11 +31,13 @@ public class MapGenerator : IMapGenerator
                 Mathf.CeilToInt(center.Y), 1 / 1000f * 0.03f);
             var isRockWall = elevation < -0.6;
             var isRockSurface = elevation < -0.4;
-            
-            var isGrass =
-                surfaceNoise.CalcPixel2D(Mathf.CeilToInt(center.X), Mathf.CeilToInt(center.Y), 1 / 1000f * 0.04f) < 0.3f;
 
-            var surface = isRockSurface ? SurfaceDefinitions.RoughStone : isGrass ? SurfaceDefinitions.Grass : SurfaceDefinitions.Dirt;
+            var isGrass =
+                surfaceNoise.CalcPixel2D(Mathf.CeilToInt(center.X), Mathf.CeilToInt(center.Y), 1 / 1000f * 0.04f) <
+                0.3f;
+
+            var surface = isRockSurface ? SurfaceDefinitions.RoughStone :
+                isGrass ? SurfaceDefinitions.Grass : SurfaceDefinitions.Dirt;
             cell.Surface = surface;
 
             if (isRockWall)
@@ -72,13 +77,29 @@ public class MapGenerator : IMapGenerator
             allowedPlantCells.RemoveAt(cellIndex);
         }
 
-        foreach (var cell in map.Cells)
+        return (map, entities);
+    }
+
+    public void GenerateMap(GameEntity game)
+    {
+        
+        GenerateBasicHut(game);
+    }
+
+    private static void GenerateBasicHut(GameEntity game)
+    {
+        foreach (var cell in game.GameMap.Cells)
         {
             var isNearOrigin = cell.Position.DistanceFrom(HexCubeCoord.Zero) <= 6;
 
             if (isNearOrigin)
             {
-                entities.RemoveAll(x => x.OccupiedCells.Contains(cell.Position));
+                var entitiesOn = game.EntitiesOn(cell.Position);
+                foreach (var entity in entitiesOn)
+                {
+                    entity.Remove();
+                }
+
                 cell.Surface = SurfaceDefinitions.StoneTileFloor;
             }
 
@@ -92,7 +113,7 @@ public class MapGenerator : IMapGenerator
                 }
                 else
                 {
-                    entities.Add(new BuildingEntity(cell.Position, HexagonDirection.Left,
+                    game.AddEntity(new BuildingEntity(cell.Position, HexagonDirection.Left,
                         BuildingDefinitions.WoodenWall));
                 }
             }
@@ -103,18 +124,19 @@ public class MapGenerator : IMapGenerator
             var isHexant = cell.Position.Q <= 0 && cell.Position.R <= 0;
             if (isInsideA && !isInsideB && isHexant)
             {
-                entities.Add(
-                    new BuildingEntity(cell.Position, HexagonDirection.Left, BuildingDefinitions.StockpileZone));
+                game.AddEntity(new BuildingEntity(cell.Position, HexagonDirection.Left, BuildingDefinitions.StockpileZone));
             }
         }
 
-        entities.Add(new BuildingEntity(new HexCubeCoord(3, -5, 2), HexagonDirection.TopRight, BuildingDefinitions.WoodenChair));
-        entities.Add(new BuildingEntity(new HexCubeCoord(4, -5, 1), HexagonDirection.BottomRight, BuildingDefinitions.WoodenBed));
+        game.AddEntity(new BuildingEntity(new HexCubeCoord(3, -5, 2), HexagonDirection.TopRight,
+            BuildingDefinitions.WoodenChair));
+        game.AddEntity(new BuildingEntity(new HexCubeCoord(4, -5, 1), HexagonDirection.BottomRight,
+            BuildingDefinitions.WoodenBed));
 
-        entities.Add(new BuildingEntity(new HexCubeCoord(-3, 5, -2), HexagonDirection.BottomLeft, BuildingDefinitions.WoodenChair));
-        entities.Add(new BuildingEntity(new HexCubeCoord(-4, 5, -1), HexagonDirection.TopLeft, BuildingDefinitions.WoodenBed));
-
-        return (map, entities);
+        game.AddEntity(new BuildingEntity(new HexCubeCoord(-3, 5, -2), HexagonDirection.BottomLeft,
+            BuildingDefinitions.WoodenChair));
+        game.AddEntity(new BuildingEntity(new HexCubeCoord(-4, 5, -1), HexagonDirection.TopLeft,
+            BuildingDefinitions.WoodenBed));
     }
 }
 
@@ -122,7 +144,7 @@ public class EmptyMapGenerator : IMapGenerator
 {
     public (HexagonalMapEntity, List<IEntity>) GenerateNewMap()
     {
-        var map = new HexagonalMapEntity(8);
+        var map = new HexagonalMapEntity(16);
 
         foreach (var cell in map.Cells)
         {
@@ -131,6 +153,10 @@ public class EmptyMapGenerator : IMapGenerator
 
         List<IEntity> entities = new List<IEntity>();
         return (map, entities);
+    }
+
+    public void GenerateMap(GameEntity game)
+    {
     }
 }
 
@@ -202,6 +228,10 @@ public class WallTilingTestMapGenerator : IMapGenerator
 
         return (map, entities);
     }
+
+    public void GenerateMap(GameEntity game)
+    {
+    }
 }
 
 public class ConstructionTestMapGenerator : IMapGenerator
@@ -233,5 +263,9 @@ public class ConstructionTestMapGenerator : IMapGenerator
         }
 
         return (map, entities);
+    }
+
+    public void GenerateMap(GameEntity game)
+    {
     }
 }

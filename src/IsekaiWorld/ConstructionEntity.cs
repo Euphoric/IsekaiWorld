@@ -63,7 +63,7 @@ public class ConstructionEntity : IEntity
         }
     }
 
-    public void RemoveEntity()
+    public void Remove()
     {
         IsRemoved = true;
         _isDirty = true;

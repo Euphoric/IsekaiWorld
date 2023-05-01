@@ -82,7 +82,12 @@ public class CharacterEntity : IEntity, IItemHolder
 
         Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Label, Position, FacingDirection, currentActivity?.GetType().Name, Hunger));
     }
-    
+
+    public void Remove()
+    {
+        throw new NotImplementedException();
+    }
+
     private void MessageHandler(IEntityMessage msgg)
     {
         if (msgg is SetCharacterHunger msg)

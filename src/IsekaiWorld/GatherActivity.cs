@@ -31,7 +31,7 @@ public class GatherActivity : Activity
         
         if (!EntityToGather.IsRemoved)
         {
-            EntityToGather.RemoveEntity();
+            EntityToGather.Remove();
             var dropItem = EntityToGather.Definition.GatherDrop;
             if (dropItem != null)
             {

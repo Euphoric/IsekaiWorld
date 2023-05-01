@@ -34,7 +34,7 @@ public class ConstructionActivity : Activity
         else
         {
             IsFinished = true;
-            Construction.RemoveEntity();
+            Construction.Remove();
             if (Construction.Definition.PlaceBuilding != null)
             {
                 Game.SpawnBuilding(Construction.Position, Construction.Rotation, Construction.Definition.PlaceBuilding);

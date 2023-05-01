@@ -60,7 +60,7 @@ public class BuildingEntity : IEntity
         ReservedForItem = item;
     }
 
-    public void RemoveEntity()
+    public void Remove()
     {
         _toRemove = true;
         _isDirty = true;

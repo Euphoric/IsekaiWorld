@@ -26,7 +26,7 @@ public class DeconstructActivity : Activity
 
         if (_hasStarted)
         {
-            Building.RemoveEntity();
+            Building.Remove();
             IsFinished = true;
         }
         else

@@ -29,7 +29,7 @@ public class CutTreeActivity : Activity
         
         if (!Tree.IsRemoved)
         {
-            Tree.RemoveEntity();
+            Tree.Remove();
             Game.SpawnItem(Tree.Position, ItemDefinitions.Wood, 5);
         }
         else
