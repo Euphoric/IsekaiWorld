@@ -64,13 +64,13 @@ public class CharacterEntity : IEntity, IItemHolder
         var currentActivity = _activityList.FirstOrDefault();
         
         currentActivity?.Update();
-        
+
         if (currentActivity != null && currentActivity.IsFinished)
         {
             _activityList.Remove(currentActivity);
-            currentActivity = null;
+            currentActivity = _activityList.FirstOrDefault();
         }
-
+        
         if (!_game.Paused)
         {
             if (!DisableHunger)
