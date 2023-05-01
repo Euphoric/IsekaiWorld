@@ -76,8 +76,8 @@ public partial class GameNode : Node
 			var startTicks = watch.Elapsed.TotalMilliseconds;
 			
 			_game.Update();
-			
-			var maxTps = 60 * _game.Speed;
+
+			var maxTps = GameSpeed.BaseTps * _game.Speed;
 			var maxMs = 1000d / maxTps;
 			while (watch.Elapsed.TotalMilliseconds - startTicks < maxMs)
 			{ }

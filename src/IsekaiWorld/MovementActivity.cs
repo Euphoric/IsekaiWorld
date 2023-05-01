@@ -54,7 +54,8 @@ public class MovementActivity : Activity
         if (_movementQueue != null && _movementQueue.Any())
         {
             _movementTimer += 1;
-            var delayBetweenCells = 15f;
+            var moveSpeed = 3; // cells per second
+            var delayBetweenCells = GameSpeed.BaseTps / moveSpeed;
             if (_movementTimer > delayBetweenCells)
             {
                 _movementTimer -= delayBetweenCells;

@@ -29,7 +29,7 @@ public class ConstructionActivity : Activity
 
         if (!Construction.IsFinished)
         {
-            Construction.AddProgress(1);
+            Construction.AddProgress(GameSpeed.TimePerTick);
         }
         else
         {
