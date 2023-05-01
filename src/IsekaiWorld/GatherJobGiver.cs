@@ -14,10 +14,17 @@ public class GatherJobGiver : IJobGiver
     
     public IReadOnlyList<Activity>? GetJobActivity(CharacterEntity character)
     {
-        var toGather= _game.Buildings.FirstOrDefault(x => x.Designation == DesignationDefinitions.Gather);
+        var toGather= 
+            _game.Buildings
+                .Where(x => x.Designation == DesignationDefinitions.Gather)
+                .Where(x=> !x.ReservedForActivity)
+                .FirstOrDefault()
+            ;
         if (toGather == null)
             return null;
 
+        toGather.ReservedForActivity = true;
+        
         return new Activity[]
         {
             new MovementActivity(_game, _game.Pathfinding, character, toGather.Position.Neighbors()),

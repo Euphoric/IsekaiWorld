@@ -660,5 +660,21 @@ namespace IsekaiWorld
             var activeCharacters = new[] { characterA, characterB }.Where(x => x.ActivityName != null);
             activeCharacters.Should().ContainSingle();
         }
+        
+        [Fact]
+        public void Gather_with_multiple_characters()
+        {
+            var game = CreateGame();
+
+            var riceEntity = game.SpawnBuilding(new HexCubeCoord(-2, 2, 0), HexagonDirection.Left, BuildingDefinitions.Plant.WildRice);
+            var characterA = game.AddCharacter("Test guy A", HexCubeCoord.Zero);
+            var characterB = game.AddCharacter("Test guy B", HexCubeCoord.Zero + HexagonDirection.Left);
+
+            game.Designate(riceEntity.Position, DesignationDefinitions.Gather);
+
+            game.UpdateUntil(_ => characterA.ActivityName == "GatherActivity" || characterB.ActivityName == "GatherActivity");
+            var activeCharacters = new[] { characterA, characterB }.Where(x => x.ActivityName != null);
+            activeCharacters.Should().ContainSingle();
+        }
     }
 }
