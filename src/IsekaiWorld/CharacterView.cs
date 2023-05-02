@@ -64,9 +64,26 @@ public class CharacterView
         }
 
         characterHexagon.AddChild(character);
-        
+
         var mapNode = _gameNode.EntitiesNode;
         mapNode.AddChild(characterHexagon);
+        
+        var labelControl = new Node2D();
+        labelControl.Name = "LabelControl";
+        labelControl.Scale = Vector2.One / 35f;
+        characterHexagon.AddChild(labelControl);
+
+        var label = new Label
+        {
+            Name = "NameLabel",
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Top,
+            Size = new Vector2(200, 80),
+            Position = new Vector2(-100, 0)+new Vector2(0, 37),
+            AutowrapMode = TextServer.AutowrapMode.WordSmart,
+            Text = message.Label, // order of setting text matters
+        };
+        labelControl.AddChild(label);
     }
 
     private void OnCharacterUpdated(CharacterUpdated message)

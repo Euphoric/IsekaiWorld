@@ -50,12 +50,6 @@ public class MapItemView
                 Scale = Vector2.One / size
             };
 
-            var label = new Label();
-            label.Name = "CountLabel";
-            label.Text = itemUpdated.Count.ToString();
-            label.HorizontalAlignment = HorizontalAlignment.Center;
-            label.Scale = Vector2.One / 25f;
-
             var itemNode = new HexagonNode
             {
                 Name = itemUpdated.EntityId,
@@ -65,6 +59,14 @@ public class MapItemView
                 InnerSize = 0f,
             };
             itemNode.AddChild(sprite);
+            
+            var label = new Label
+            {
+                Name = "CountLabel",
+                Text = itemUpdated.Count.ToString(),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Scale = Vector2.One / 25f
+            };
             itemNode.AddChild(label);
 
             mapNode.AddChild(itemNode);
