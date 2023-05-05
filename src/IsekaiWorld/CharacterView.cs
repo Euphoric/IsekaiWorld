@@ -43,20 +43,37 @@ public class CharacterView
         CharacterNode character = new CharacterNode();
         character.Name = "CharacterSpriteNode";
         character.Scale = Vector2.One * 0.017f;
-        if (message.Label == "Eve")
-        {
-            character.BodyType = "Female";
-            character.Clothes = "DameDress/DameDress";
-            character.Hair = "Hair_Female/AFUf08";
-            character.HairColor = new Color("FAF0BE");
-        }
-        else if (message.Label == "Adam")
+        if (message.Label == "Anon")
         {
             character.BodyType = "Male";
             character.Clothes = "ShirtBasic/ShirtBasic";
             character.ClothesColor = new Color("CFCFCF");
             character.Hair = "Hair_Male/AFUm03";
             character.HairColor = new Color("BB6D3E");
+        }
+        else if (message.Label == "Miku")
+        {
+            character.BodyType = "Female";
+            character.Clothes = "ShirtBasic/ShirtBasic";
+            character.ClothesColor = new Color("5A676B");
+            character.Hair = "Hair_Female/AFUf25";
+            character.HairColor = new Color("47C8C0");
+        }
+        else if (message.Label == "Reimu")
+        {
+            character.BodyType = "Female";
+            character.Clothes = "Blouse/Blouse";
+            character.ClothesColor = new Color("FE0000");
+            character.Hair = "Hair_Female/AFUf20";
+            character.HairColor = new Color("3B1E08");
+        }
+        else if (message.Label == "Madoka")
+        {
+            character.BodyType = "Female";
+            character.Clothes = "DameDress/DameDress";
+            character.ClothesColor = new Color("ffb6bb");
+            character.Hair = "Hair_Female/AFUf10";
+            character.HairColor = new Color("ffbae4");
         }
         else
         {
