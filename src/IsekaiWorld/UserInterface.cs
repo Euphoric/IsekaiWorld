@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using Godot;
 
 namespace IsekaiWorld;
@@ -7,7 +6,8 @@ namespace IsekaiWorld;
 public enum SelectionOptions
 {
     Rectangle,
-    Line
+    Line,
+    HexagonRing
 }
 
 public partial class UserInterface : CanvasLayer
@@ -177,6 +177,9 @@ public partial class UserInterface : CanvasLayer
                             transform * new Vector2(rectangle.Position.X, rectangle.Position.Y),
                             transform * new Vector2(rectangle.End.X, rectangle.End.Y),
                         };
+                    break;
+                case SelectionOptions.HexagonRing:
+                    selectionRectangle.Visible = false;
                     break;
             }
         }

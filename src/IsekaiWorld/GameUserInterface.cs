@@ -356,6 +356,10 @@ public class GameUserInterface
                 case SelectionOptions.Line:
                     HexCubeCoord.LineBetweenHexes(fromHex, toHex, HighlightedHexes);
                     break;
+                case SelectionOptions.HexagonRing:
+                    var radius = HexCubeCoord.Distance(fromHex, toHex); 
+                    HighlightedHexes.AddRange(HexCubeCoord.HexagonRing(fromHex, radius));
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

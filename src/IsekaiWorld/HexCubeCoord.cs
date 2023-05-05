@@ -263,4 +263,35 @@ public readonly struct HexCubeCoord : IEquatable<HexCubeCoord>
             }
         }
     }
+
+    public static IEnumerable<HexCubeCoord> HexagonRing(HexCubeCoord fromHex, int radius)
+    {
+        if (radius == 0)
+        {
+            yield return fromHex;
+        }
+        var hex = fromHex;
+        for (int i = 0; i < radius; i++)
+        {
+            hex += HexagonDirection.Right;
+        }
+        var directionOrder = new[]
+        {
+            HexagonDirection.TopLeft,
+            HexagonDirection.Left,
+            HexagonDirection.BottomLeft,
+            HexagonDirection.BottomRight,
+            HexagonDirection.Right,
+            HexagonDirection.TopRight
+        };
+
+        foreach (var direction in directionOrder)
+        {
+            for (int i = 0; i < radius; i++)
+            {
+                yield return hex;
+                hex += direction;
+            }
+        }
+    }
 }
