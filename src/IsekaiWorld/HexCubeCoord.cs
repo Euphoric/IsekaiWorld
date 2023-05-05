@@ -264,33 +264,45 @@ public readonly struct HexCubeCoord : IEquatable<HexCubeCoord>
         }
     }
 
-    public static IEnumerable<HexCubeCoord> HexagonRing(HexCubeCoord fromHex, int radius)
+    private static readonly IReadOnlyCollection<HexagonDirection> DirectionOrder = new[]
+    {
+        HexagonDirection.TopLeft,
+        HexagonDirection.Left,
+        HexagonDirection.BottomLeft,
+        HexagonDirection.BottomRight,
+        HexagonDirection.Right,
+        HexagonDirection.TopRight
+    };
+    
+    public static IEnumerable<HexCubeCoord> HexagonRing(HexCubeCoord center, int radius)
     {
         if (radius == 0)
         {
-            yield return fromHex;
+            yield return center;
         }
-        var hex = fromHex;
+        var hex = center;
         for (int i = 0; i < radius; i++)
         {
             hex += HexagonDirection.Right;
         }
-        var directionOrder = new[]
-        {
-            HexagonDirection.TopLeft,
-            HexagonDirection.Left,
-            HexagonDirection.BottomLeft,
-            HexagonDirection.BottomRight,
-            HexagonDirection.Right,
-            HexagonDirection.TopRight
-        };
 
-        foreach (var direction in directionOrder)
+        foreach (var direction in DirectionOrder)
         {
             for (int i = 0; i < radius; i++)
             {
                 yield return hex;
                 hex += direction;
+            }
+        }
+    }
+
+    public static IEnumerable<HexCubeCoord> HexagonArea(HexCubeCoord center, int radius)
+    {
+        for (int r = 0; r <= radius; r++)
+        {
+            foreach (var hex in HexagonRing(center, r))
+            {
+                yield return hex;
             }
         }
     }

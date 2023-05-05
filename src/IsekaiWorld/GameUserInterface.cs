@@ -357,9 +357,17 @@ public class GameUserInterface
                     HexCubeCoord.LineBetweenHexes(fromHex, toHex, HighlightedHexes);
                     break;
                 case SelectionOptions.HexagonRing:
-                    var radius = HexCubeCoord.Distance(fromHex, toHex); 
+                {
+                    var radius = HexCubeCoord.Distance(fromHex, toHex);
                     HighlightedHexes.AddRange(HexCubeCoord.HexagonRing(fromHex, radius));
                     break;
+                }
+                case SelectionOptions.HexagonArea:
+                {
+                    var radius = HexCubeCoord.Distance(fromHex, toHex);
+                    HighlightedHexes.AddRange(HexCubeCoord.HexagonArea(fromHex, radius));
+                    break;
+                }
                 default:
                     throw new ArgumentOutOfRangeException();
             }

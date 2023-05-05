@@ -3,13 +3,6 @@ using Godot;
 
 namespace IsekaiWorld;
 
-public enum SelectionOptions
-{
-    Rectangle,
-    Line,
-    HexagonRing
-}
-
 public partial class UserInterface : CanvasLayer
 {
     public MessagingEndpoint Messaging { get; }
@@ -179,6 +172,7 @@ public partial class UserInterface : CanvasLayer
                         };
                     break;
                 case SelectionOptions.HexagonRing:
+                case SelectionOptions.HexagonArea:
                     selectionRectangle.Visible = false;
                     break;
             }
