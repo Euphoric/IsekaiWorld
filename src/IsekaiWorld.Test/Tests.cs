@@ -58,7 +58,7 @@ namespace IsekaiWorld
 
             game.UpdateUntil(_ => character.ActivityName == "ConstructionActivity");
             game.UpdateUntil(_ => character.Position.IsNextTo(construction.Position));
-            game.UpdateUntil(_ => character.ActivityName == null);
+            game.UpdateUntil(_ => character.IsIdle);
 
             game.Buildings
                 .Select(x => new { x.Definition, x.Position })
@@ -102,7 +102,7 @@ namespace IsekaiWorld
 
             game.UpdateUntil(_ => character.ActivityName == "ConstructionActivity");
             game.UpdateUntil(_ => character.Position.IsNextTo(construction.Position));
-            game.UpdateUntil(_ => character.ActivityName == null);
+            game.UpdateUntil(_ => character.IsIdle);
 
             game.Buildings
                 .Select(x => new { x.Definition, x.Position })
@@ -268,7 +268,7 @@ namespace IsekaiWorld
 
             game.UpdateUntil(_ => character.ActivityName == "CutTreeActivity");
             game.UpdateUntil(_ => character.Position.IsNextTo(tree.Position));
-            game.UpdateUntil(_ => character.ActivityName == null);
+            game.UpdateUntil(_ => character.IsIdle);
 
             game.Buildings.Should().NotContain(x => x.Position == tree.Position);
             game.Items.Should().Contain(x => x.Position == tree.Position && x.Definition == ItemDefinitions.Wood && x.Count == 5);
@@ -515,7 +515,7 @@ namespace IsekaiWorld
                 because: "Character was unable to eat");
             game.Items.Should().BeEmpty();
 
-            game.UpdateUntil(_ => character.ActivityName == null);
+            game.UpdateUntil(_ => character.IsIdle);
         }
 
         [Fact]
@@ -529,14 +529,14 @@ namespace IsekaiWorld
 
             game.UpdateUntil(_ => 0.27 < character.Hunger && character.Hunger < 0.28,
                 because: "Character should be hungry without food.");
-            character.ActivityName.Should().BeNull("Because there is no food to eat.");
+            character.ActivityName.Should().Be("IdleActivity", "Because there is no food to eat.");
 
             game.SpawnItem(HexCubeCoord.Zero, ItemDefinitions.Grains, 1);
 
             game.UpdateUntil(_ => character.ActivityName == "EatActivity");
             game.UpdateUntil(_ => 0.98 < character.Hunger && character.Hunger < 1.0,
                 because: "Character was unable to eat");
-            game.UpdateUntil(_ => character.ActivityName == null);
+            game.UpdateUntil(_ => character.IsIdle);
 
             game.Items.Should().BeEmpty();
         }
@@ -552,7 +552,7 @@ namespace IsekaiWorld
             character.SetHungerTo(0.31);
 
             game.UpdateUntil(_ => character.ActivityName == "EatActivity");
-            game.UpdateUntil(_ => character.ActivityName == null);
+            game.UpdateUntil(_ => character.IsIdle);
 
             game.Items.Select(x => new { x.Position, x.Definition, x.Count })
                 .Should()
@@ -573,7 +573,7 @@ namespace IsekaiWorld
             
             game.UpdateUntil(_ => character.ActivityName == "GatherActivity");
             game.UpdateUntil(_ => character.Position.IsNextTo(riceEntity.Position));
-            game.UpdateUntil(_ => character.ActivityName == null);
+            game.UpdateUntil(_ => character.IsIdle);
 
             game.Buildings.Should().NotContain(x => x.Position == riceEntity.Position);
             game.Items.Should().Contain(x => x.Position == riceEntity.Position && x.Definition == ItemDefinitions.Grains && x.Count == 1);
@@ -593,7 +593,7 @@ namespace IsekaiWorld
             
             game.UpdateUntil(_ => character.ActivityName == "GatherActivity");
             game.UpdateUntil(_ => character.Position.IsNextTo(plantEntity.Position));
-            game.UpdateUntil(_ => character.ActivityName == null);
+            game.UpdateUntil(_ => character.IsIdle);
 
             game.Buildings.Should().NotContain(x => x.Position == plantEntity.Position);
             game.Items.Should().BeEmpty();
@@ -632,7 +632,7 @@ namespace IsekaiWorld
 
             game.UpdateUntil(_ => character.ActivityName == "ConstructionActivity");
             game.UpdateUntil(_ => character.Position.IsNextTo(construction.Position));
-            game.UpdateUntil(_ => character.ActivityName == null);
+            game.UpdateUntil(_ => character.IsIdle);
 
             var surfaceCell = game.Surface.Single(x => x.Position == position);
             surfaceCell.Surface.Should().Be(SurfaceDefinitions.StoneTileFloor);
@@ -668,8 +668,8 @@ namespace IsekaiWorld
 
             game.Designate(treeA.Position, DesignationDefinitions.CutWood);
 
-            game.UpdateUntil(_ => characterA.ActivityName != null || characterB.ActivityName != null);
-            var activeCharacters = new[] { characterA, characterB }.Where(x => x.ActivityName != null);
+            game.UpdateUntil(_ => characterA.IsActive || characterB.IsActive);
+            var activeCharacters = new[] { characterA, characterB }.Where(x => x.IsActive);
             activeCharacters.Should().ContainSingle();
         }
         
@@ -684,8 +684,8 @@ namespace IsekaiWorld
 
             game.Designate(riceEntity.Position, DesignationDefinitions.Gather);
 
-            game.UpdateUntil(_ => characterA.ActivityName != null || characterB.ActivityName != null);
-            var activeCharacters = new[] { characterA, characterB }.Where(x => x.ActivityName != null);
+            game.UpdateUntil(_ => characterA.IsActive || characterB.IsActive);
+            var activeCharacters = new[] { characterA, characterB }.Where(x => x.IsActive);
             activeCharacters.Should().ContainSingle();
         }
         
@@ -699,8 +699,8 @@ namespace IsekaiWorld
             var characterA = game.AddCharacter("Test guy A", HexCubeCoord.Zero);
             var characterB = game.AddCharacter("Test guy B", HexCubeCoord.Zero + HexagonDirection.Left);
 
-            game.UpdateUntil(_ => characterA.ActivityName != null || characterB.ActivityName != null);
-            var activeCharacters = new[] { characterA, characterB }.Where(x => x.ActivityName != null);
+            game.UpdateUntil(_ => characterA.IsActive || characterB.IsActive);
+            var activeCharacters = new[] { characterA, characterB }.Where(x => x.IsActive);
             activeCharacters.Should().ContainSingle();
         }
         
@@ -716,8 +716,8 @@ namespace IsekaiWorld
             var characterA = game.AddCharacter("Test guy A", HexCubeCoord.Zero);
             var characterB = game.AddCharacter("Test guy B", HexCubeCoord.Zero + HexagonDirection.Left);
 
-            game.UpdateUntil(_ => characterA.ActivityName != null || characterB.ActivityName != null);
-            var activeCharacters = new[] { characterA, characterB }.Where(x => x.ActivityName != null);
+            game.UpdateUntil(_ => characterA.IsActive || characterB.IsActive);
+            var activeCharacters = new[] { characterA, characterB }.Where(x => x.IsActive);
             activeCharacters.Should().ContainSingle();
         }
         
@@ -726,13 +726,15 @@ namespace IsekaiWorld
         {
             var game = CreateGame();
             
-            game.SpawnBuilding(new HexCubeCoord(1, 1, -2), HexagonDirection.Left, BuildingDefinitions.WoodenWall);
+            var building = game.SpawnBuilding(new HexCubeCoord(1, 1, -2), HexagonDirection.Left, BuildingDefinitions.WoodenWall);
             
             var characterA = game.AddCharacter("Test guy A", HexCubeCoord.Zero);
             var characterB = game.AddCharacter("Test guy B", HexCubeCoord.Zero + HexagonDirection.Left);
 
-            game.UpdateUntil(_ => characterA.ActivityName != null || characterB.ActivityName != null);
-            var activeCharacters = new[] { characterA, characterB }.Where(x => x.ActivityName != null);
+            game.Designate(building.Position, DesignationDefinitions.Deconstruct);
+            
+            game.UpdateUntil(_ => characterA.IsActive || characterB.IsActive);
+            var activeCharacters = new[] { characterA, characterB }.Where(x => x.IsActive);
             activeCharacters.Should().ContainSingle();
         }
         
@@ -747,8 +749,8 @@ namespace IsekaiWorld
             var characterA = game.AddCharacter("Test guy A", HexCubeCoord.Zero);
             var characterB = game.AddCharacter("Test guy B", HexCubeCoord.Zero + HexagonDirection.Left);
 
-            game.UpdateUntil(_ => characterA.ActivityName != null || characterB.ActivityName != null);
-            var activeCharacters = new[] { characterA, characterB }.Where(x => x.ActivityName != null);
+            game.UpdateUntil(_ => characterA.IsActive || characterB.IsActive);
+            var activeCharacters = new[] { characterA, characterB }.Where(x => x.IsActive);
             activeCharacters.Should().ContainSingle();
         }
         
@@ -858,7 +860,7 @@ namespace IsekaiWorld
 
         private bool AllCharactersAreInactive(GameTestStep gts)
         {
-            return gts.Game.Characters.All(ch => ch.ActivityName == null);
+            return gts.Game.Characters.All(ch => ch.IsIdle);
         }
     }
 }

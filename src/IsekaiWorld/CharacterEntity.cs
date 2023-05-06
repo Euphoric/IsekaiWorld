@@ -61,14 +61,14 @@ public class CharacterEntity : IEntity, IItemHolder
             }
         }
 
-        var currentActivity = _activityList.FirstOrDefault();
+        Activity currentActivity = _activityList.FirstOrDefault() ?? new IdleActivity(_game);
         
-        currentActivity?.Update();
+        currentActivity.Update();
 
-        if (currentActivity != null && currentActivity.IsFinished)
+        if (currentActivity.IsFinished)
         {
             _activityList.Remove(currentActivity);
-            currentActivity = _activityList.FirstOrDefault();
+            currentActivity = _activityList.FirstOrDefault() ?? new IdleActivity(_game);
         }
         
         if (!_game.Paused)
@@ -80,7 +80,7 @@ public class CharacterEntity : IEntity, IItemHolder
             }
         }
 
-        Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Label, Position, FacingDirection, currentActivity?.GetType().Name, Hunger));
+        Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Label, Position, FacingDirection, currentActivity.GetType().Name, Hunger));
     }
 
     public void Remove()
@@ -112,6 +112,6 @@ public class CharacterEntity : IEntity, IItemHolder
     }
 }
 
-public record CharacterUpdated(String EntityId, String Label, HexCubeCoord Position, HexagonDirection FacingDirection, String? ActivityName, double Hunger) : IEntityMessage;
+public record CharacterUpdated(String EntityId, String Label, HexCubeCoord Position, HexagonDirection FacingDirection, String ActivityName, double Hunger) : IEntityMessage;
 
 public record SetCharacterHunger(String EntityId, double Hunger) : IEntityMessage;

@@ -11,7 +11,7 @@ public class CharacterTestView
     public String Id { get; }
     public String Label { get; private set; } = null!;
     public HexCubeCoord Position { get; private set; }
-    public string? ActivityName { get; private set; }
+    public string ActivityName { get; private set; } = "";
     public double Hunger { get; private set; }
 
     public List<ItemTestView> CarriedItems { get; } = new();
@@ -50,4 +50,8 @@ public class CharacterTestView
         CarriedItems.Remove(item);
         return item;
     }
+
+    public bool IsIdle => ActivityName is "" or "IdleActivity";
+
+    public bool IsActive => !IsIdle;
 }
