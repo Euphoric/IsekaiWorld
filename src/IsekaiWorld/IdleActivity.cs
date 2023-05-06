@@ -30,7 +30,7 @@ public class IdleActivity : Activity
                     activity.Reserve();
                 }
 
-                ActionPlan = activityList;
+                ActivityPlan = activityList;
                 IsFinished = true;
             }
         }
@@ -38,5 +38,5 @@ public class IdleActivity : Activity
         _planningDelay = (_planningDelay + 1) % GameSpeed.BaseTps;
     }
 
-    public List<Activity>? ActionPlan { get; private set; }
+    public List<Activity>? ActivityPlan { get; private set; }
 }
