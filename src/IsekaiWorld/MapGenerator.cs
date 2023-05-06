@@ -87,56 +87,58 @@ public class MapGenerator : IMapGenerator
 
     private static void GenerateBasicHut(GameEntity game)
     {
-        foreach (var cell in game.GameMap.Cells)
+        foreach (var pos in HexCubeCoord.HexagonArea(HexCubeCoord.Zero, 6))
         {
-            var isNearOrigin = cell.Position.DistanceFrom(HexCubeCoord.Zero) <= 6;
-
-            if (isNearOrigin)
+            var entitiesOn = game.EntitiesOn(pos);
+            foreach (var entity in entitiesOn)
             {
-                var entitiesOn = game.EntitiesOn(cell.Position);
-                foreach (var entity in entitiesOn)
-                {
-                    entity.Remove();
-                }
-
-                game.GameMap.SetCellSurface(cell.Position, SurfaceDefinitions.StoneTileFloor);
+                entity.Remove();
             }
-
-            var isOriginEdge = cell.Position.DistanceFrom(HexCubeCoord.Zero) == 6;
-            var isCenterLine = cell.Position.Q == cell.Position.R && cell.Position.Q > 0;
-            if (isOriginEdge)
+            
+            game.GameMap.SetCellSurface(pos, SurfaceDefinitions.StoneTileFloor);
+        }
+        
+        foreach (var pos in HexCubeCoord.HexagonRing(HexCubeCoord.Zero, 6))
+        {
+            var isCenterLine = pos.Q == pos.R && pos.Q > 0;
+            if (isCenterLine)
             {
-                if (isCenterLine)
-                {
-                    // add door
-                }
-                else
-                {
-                    game.AddEntity(new BuildingEntity(cell.Position, HexagonDirection.Left,
-                        BuildingDefinitions.WoodenWall));
-                }
+                // add door
             }
-
-            var isInsideA = cell.Position.DistanceFrom(HexCubeCoord.Zero) <= 5;
-
-            var isInsideB = cell.Position.DistanceFrom(HexCubeCoord.Zero) <= 1;
-            var isHexant = cell.Position.Q <= 0 && cell.Position.R <= 0;
-            if (isInsideA && !isInsideB && isHexant)
+            else
             {
-                game.AddEntity(new BuildingEntity(cell.Position, HexagonDirection.Left,
-                    BuildingDefinitions.StockpileZone));
+                game.SpawnBuilding(pos, HexagonDirection.Left,
+                    BuildingDefinitions.WoodenWall);
+            }
+        }
+        
+        foreach (var pos in HexCubeCoord.HexagonArea(HexCubeCoord.Zero, 5))
+        {
+            var isInsideB = pos.DistanceFrom(HexCubeCoord.Zero) <= 1;
+            var isHexant = pos.Q <= 0 && pos.R <= 0;
+            if (!isInsideB && isHexant)
+            {
+                game.SpawnBuilding(pos, HexagonDirection.Left,
+                    BuildingDefinitions.StockpileZone);
             }
         }
 
-        game.AddEntity(new BuildingEntity(new HexCubeCoord(3, -5, 2), HexagonDirection.TopRight,
-            BuildingDefinitions.WoodenChair));
-        game.AddEntity(new BuildingEntity(new HexCubeCoord(4, -5, 1), HexagonDirection.BottomRight,
-            BuildingDefinitions.WoodenBed));
+        game.SpawnBuilding(new HexCubeCoord(3, -5, 2), HexagonDirection.TopRight,
+            BuildingDefinitions.WoodenChair);
+        game.SpawnBuilding(new HexCubeCoord(4, -5, 1), HexagonDirection.BottomRight,
+            BuildingDefinitions.WoodenBed);
 
-        game.AddEntity(new BuildingEntity(new HexCubeCoord(-3, 5, -2), HexagonDirection.BottomLeft,
-            BuildingDefinitions.WoodenChair));
-        game.AddEntity(new BuildingEntity(new HexCubeCoord(-4, 5, -1), HexagonDirection.TopLeft,
-            BuildingDefinitions.WoodenBed));
+        game.SpawnBuilding(new HexCubeCoord(-3, 5, -2), HexagonDirection.BottomLeft,
+            BuildingDefinitions.WoodenChair);
+        game.SpawnBuilding(new HexCubeCoord(-4, 5, -1), HexagonDirection.TopLeft,
+            BuildingDefinitions.WoodenBed);
+
+        game.SpawnBuilding(new HexCubeCoord(5, -2, -3), HexagonDirection.Left, BuildingDefinitions.CraftingDesk);
+
+        var stockpiles = game.Buildings.Where(x => x.Definition == BuildingDefinitions.StockpileZone).ToList();
+
+        game.SpawnItem(stockpiles[0].Position, ItemDefinitions.Wood, 15);
+        game.SpawnItem(stockpiles[1].Position, ItemDefinitions.Grains, 5);
     }
 }
 
