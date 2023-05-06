@@ -17,7 +17,8 @@ public class CharacterEntity : IEntity, IItemHolder
     public ISet<HexCubeCoord> OccupiedCells => new HashSet<HexCubeCoord> { Position };
 
     private List<Activity> _activityList = new();
-
+    private Activity _currentActivity;
+    
     public string Label { get; }
 
     private bool _initialized;
@@ -38,6 +39,8 @@ public class CharacterEntity : IEntity, IItemHolder
         _game = game;
         _initialized = false;
         Hunger = 1;
+
+        _currentActivity = new IdleActivity(_game);
     }
 
     public void Initialize()
@@ -61,16 +64,14 @@ public class CharacterEntity : IEntity, IItemHolder
             }
         }
 
-        Activity currentActivity = _activityList.FirstOrDefault() ?? new IdleActivity(_game);
-        
-        currentActivity.Update();
-
-        if (currentActivity.IsFinished)
+        if (_currentActivity.IsFinished)
         {
-            _activityList.Remove(currentActivity);
-            currentActivity = _activityList.FirstOrDefault() ?? new IdleActivity(_game);
+            _activityList.Remove(_currentActivity);
+            _currentActivity = _activityList.FirstOrDefault() ?? new IdleActivity(_game);
         }
-        
+
+        _currentActivity.Update();
+
         if (!_game.Paused)
         {
             if (!DisableHunger)
@@ -80,7 +81,7 @@ public class CharacterEntity : IEntity, IItemHolder
             }
         }
 
-        Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Label, Position, FacingDirection, currentActivity.GetType().Name, Hunger));
+        Messaging.Broadcast(new CharacterUpdated(Id.ToString(), Label, Position, FacingDirection, _currentActivity.GetType().Name, Hunger));
     }
 
     public void Remove()
