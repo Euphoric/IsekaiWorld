@@ -14,10 +14,11 @@ public class DeconstructJobGiver : IJobGiver
 
     public IReadOnlyList<Activity>? GetJobActivity(CharacterEntity character)
     {
-        var buildingsToDeconstruct = 
-            _game.Buildings.Where(x => x.Designation == DesignationDefinitions.Deconstruct);
+        var building = _game.Buildings
+            .Where(x => x.Designation == DesignationDefinitions.Deconstruct)
+            .Where(x=>!x.ReservedForActivity)
+            .FirstOrDefault();
         
-        var building = buildingsToDeconstruct.FirstOrDefault();
         if (building == null)
             return null;
 

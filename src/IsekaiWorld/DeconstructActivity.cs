@@ -16,6 +16,11 @@ public class DeconstructActivity : Activity
         Building = building;
     }
 
+    public override void Reserve()
+    {
+        Building.ReservedForActivity = true;
+    }
+
     protected override void UpdateInner()
     {
         var canWork = Character.Position.IsNextTo(Building.Position);
