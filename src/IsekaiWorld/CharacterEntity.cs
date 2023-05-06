@@ -37,7 +37,7 @@ public class CharacterEntity : IEntity, IItemHolder
         _game = game;
         Hunger = 1;
 
-        _currentActivity = new IdleActivity(_game);
+        _currentActivity = new IdleActivity(_game, this);
     }
 
     public void Initialize()
@@ -47,19 +47,16 @@ public class CharacterEntity : IEntity, IItemHolder
 
     public void Update()
     {
-        if (!_activityList.Any())
-        {
-            _activityList = _game.Jobs.GetJobActivity(this)?.ToList() ?? new List<Activity>();
-            foreach (var activity in _activityList)
-            {
-                activity.Reserve();
-            }
-        }
-
         if (_currentActivity.IsFinished)
         {
             _activityList.Remove(_currentActivity);
-            _currentActivity = _activityList.FirstOrDefault() ?? new IdleActivity(_game);
+
+            if (_currentActivity is IdleActivity planningActivity)
+            {
+                _activityList = planningActivity.ActionPlan ?? throw new Exception("Finished planning activity must have valid action plan.");
+            }
+
+            _currentActivity = _activityList.FirstOrDefault() ?? new IdleActivity(_game, this);
         }
 
         _currentActivity.Update();
