@@ -8,17 +8,17 @@ namespace IsekaiWorld;
 public static class BuildingDefinitions
 {
     public static BuildingDefinition RockWall { get; } = new("Core.Rock.Wall", "Rock Wall", Color.Color8(69, 67, 63),
-        new Dictionary<HexagonDirection, string> { { HexagonDirection.Right, "res://Textures/Wall/wall texture.svg" } },
+        new Dictionary<HexagonDirection, string> { { HexagonDirection.Right, "res://Textures/Wall/wall texture smooth.svg" } },
         true, true);
 
     public static BuildingDefinition StoneWall { get; } = new("Core.Wall.Stone", "Stone Wall",
         Color.Color8(133, 133, 133),
-        new Dictionary<HexagonDirection, string> { { HexagonDirection.Right, "res://Textures/Wall/wall texture.svg" } },
+        new Dictionary<HexagonDirection, string> { { HexagonDirection.Right, "res://Textures/Wall/wall texture smooth.svg" } },
         true, true, new[] { DesignationDefinitions.Deconstruct }.ToImmutableHashSet());
 
     public static BuildingDefinition WoodenWall { get; } = new("Core.Wall.Wood", "Wooden Wall",
         Color.Color8(189, 116, 38),
-        new Dictionary<HexagonDirection, string> { { HexagonDirection.Right, "res://Textures/Wall/wall texture.svg" } },
+        new Dictionary<HexagonDirection, string> { { HexagonDirection.Right, "res://Textures/Wall/wall texture smooth.svg" } },
         true, true, new[] { DesignationDefinitions.Deconstruct }.ToImmutableHashSet());
 
     public static BuildingDefinition StockpileZone { get; } = new("Core.Zone.Stockpile", "Stockpile",

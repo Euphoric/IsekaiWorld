@@ -140,7 +140,7 @@ public partial class HexagonalMap : Node2D
                 }
                 else
                 {
-                    throw new InvalidOperationException("No hexagon triangle with such intex exists.");
+                    throw new InvalidOperationException("No hexagon triangle with such index exists.");
                 }
 
                 var isDirectNeighborWall = IsNeighborWall(connectedPositions, position + directNeighborDirection);
@@ -298,27 +298,27 @@ public partial class HexagonalMap : Node2D
                 // stars
                 else if (triangle == 0 && !isDirectNeighborWall && isRightNeighborWall && isLeftNeighborWall)
                 {
-                    textureHex = new Vector2(9, 1);
+                    textureHex = new Vector2(2, 4.5f);
                 }
                 else if (triangle == 1 && !isDirectNeighborWall && isRightNeighborWall && isLeftNeighborWall)
                 {
-                    textureHex = new Vector2(1, 1);
+                    textureHex = new Vector2(3, 6);
                 }
                 else if (triangle == 2 && !isDirectNeighborWall && isRightNeighborWall && isLeftNeighborWall)
                 {
-                    textureHex = new Vector2(1, 1);
+                    textureHex = new Vector2(1, 6);
                 }
                 else if (triangle == 3 && !isDirectNeighborWall && isRightNeighborWall && isLeftNeighborWall)
                 {
-                    textureHex = new Vector2(6, 1.5f);
+                    textureHex = new Vector2(2, 4.5f);
                 }
                 else if (triangle == 4 && !isDirectNeighborWall && isRightNeighborWall && isLeftNeighborWall)
                 {
-                    textureHex = new Vector2(3, 1);
+                    textureHex = new Vector2(9, 5);
                 }
                 else if (triangle == 5 && !isDirectNeighborWall && isRightNeighborWall && isLeftNeighborWall)
                 {
-                    textureHex = new Vector2(1, 1);
+                    textureHex = new Vector2(7, 5);
                 }
                 else
                 {
