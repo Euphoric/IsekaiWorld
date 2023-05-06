@@ -21,8 +21,6 @@ public class CharacterEntity : IEntity, IItemHolder
     
     public string Label { get; }
 
-    private bool _initialized;
-
     public double Hunger { get; set; }
     public HexagonDirection FacingDirection { get; set; }
     public bool DisableHunger { get; set; }
@@ -37,7 +35,6 @@ public class CharacterEntity : IEntity, IItemHolder
         
         Label = label;
         _game = game;
-        _initialized = false;
         Hunger = 1;
 
         _currentActivity = new IdleActivity(_game);
@@ -45,16 +42,11 @@ public class CharacterEntity : IEntity, IItemHolder
 
     public void Initialize()
     {
+        Messaging.Broadcast(new CharacterCreated(Id.ToString(), Label));
     }
 
     public void Update()
     {
-        if (!_initialized)
-        {
-            Messaging.Broadcast(new CharacterCreated(Id.ToString(), Label));
-            _initialized = true;
-        }
-        
         if (!_activityList.Any())
         {
             _activityList = _game.Jobs.GetJobActivity(this)?.ToList() ?? new List<Activity>();
