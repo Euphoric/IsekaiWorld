@@ -8,7 +8,7 @@ public class GameEntity
 {
     public HexagonalMapEntity GameMap { get; private set; } = null!;
     public HexagonPathfinding Pathfinding { get; private set; } = null!;
-    public JobSystem Jobs { get; }
+    public SequenceCompositeActivityPlanner Jobs { get; }
     public MessagingHub MessagingHub { get; }
     public MessagingEndpoint Messaging { get; }
     
@@ -56,13 +56,13 @@ public class GameEntity
     {
         MessagingHub = new MessagingHub();
         Messaging = new MessagingEndpoint(HandleMessage);
-        var eatJobGiver = new EatFoodJobGiver(this);
-        var haulJobGiver = new HaulJobGiver(this);
-        var deconstructJobGiver = new DeconstructJobGiver(this);
-        var constructionJobGiver = new ConstructionJobGiver(this);
-        var cutWoodJobGiver = new CutWoodJobGiver(this);
-        var harvestJobGiver = new GatherJobGiver(this);
-        Jobs = new JobSystem(new IJobGiver[] { eatJobGiver, deconstructJobGiver, constructionJobGiver, cutWoodJobGiver, harvestJobGiver, haulJobGiver });
+        var eatJobGiver = new EatFoodActivityPlanner(this);
+        var haulJobGiver = new HaulActivityPlanner(this);
+        var deconstructJobGiver = new DeconstructActivityPlanner(this);
+        var constructionJobGiver = new ConstructionActivityPlanner(this);
+        var cutWoodJobGiver = new CutWoodActivityPlanner(this);
+        var harvestJobGiver = new GatherActivityPlanner(this);
+        Jobs = new SequenceCompositeActivityPlanner(new IActivityPlanner[] { eatJobGiver, deconstructJobGiver, constructionJobGiver, cutWoodJobGiver, harvestJobGiver, haulJobGiver });
     }
 
     private void HandleMessage(IEntityMessage mssg)

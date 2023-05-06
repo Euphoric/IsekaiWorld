@@ -21,11 +21,11 @@ public class IdleActivity : Activity
     {
         if (_planningDelay == 0)
         {
-            var activityList = Game.Jobs.GetJobActivity(_character)?.ToList() ?? new List<Activity>();
+            var activityList = Game.Jobs.BuildPlan(_character);
 
-            if (activityList.Any())
+            if (activityList != null)
             {
-                foreach (var activity in activityList)
+                foreach (var activity in activityList.Activities)
                 {
                     activity.Reserve();
                 }
@@ -38,5 +38,5 @@ public class IdleActivity : Activity
         _planningDelay = (_planningDelay + 1) % GameSpeed.BaseTps;
     }
 
-    public List<Activity>? ActivityPlan { get; private set; }
+    public ActivityPlan? ActivityPlan { get; private set; }
 }

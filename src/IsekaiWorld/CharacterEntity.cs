@@ -53,7 +53,7 @@ public class CharacterEntity : IEntity, IItemHolder
 
             if (_currentActivity is IdleActivity planningActivity)
             {
-                _activityList = planningActivity.ActivityPlan ?? throw new Exception("Finished planning activity must have valid action plan.");
+                _activityList = planningActivity.ActivityPlan?.Activities.ToList() ?? throw new Exception("Finished planning activity must have valid action plan.");
             }
 
             _currentActivity = _activityList.FirstOrDefault() ?? new IdleActivity(_game, this);

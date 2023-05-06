@@ -1,18 +1,17 @@
-using System.Collections.Generic;
 using System.Linq;
 
 namespace IsekaiWorld;
 
-public class EatFoodJobGiver : IJobGiver
+public class EatFoodActivityPlanner : IActivityPlanner
 {
     private readonly GameEntity _game;
 
-    public EatFoodJobGiver(GameEntity game)
+    public EatFoodActivityPlanner(GameEntity game)
     {
         _game = game;
     }
 
-    public IReadOnlyList<Activity>? GetJobActivity(CharacterEntity character)
+    public ActivityPlan? BuildPlan(CharacterEntity character)
     {
         if (character.Hunger < 0.3)
         {
@@ -23,12 +22,14 @@ public class EatFoodJobGiver : IJobGiver
                     .FirstOrDefault();
             if (foodItem != null)
             {
-                return new Activity[]
-                {
-                    new MovementActivity(_game, _game.Pathfinding, character, foodItem.Position),
-                    new PickUpItemActivity(_game, character, foodItem, 1),
-                    new EatActivity(_game, character, foodItem)
-                };
+                return new ActivityPlan(
+                    new Activity[]
+                    {
+                        new MovementActivity(_game, _game.Pathfinding, character, foodItem.Position),
+                        new PickUpItemActivity(_game, character, foodItem, 1),
+                        new EatActivity(_game, character, foodItem)
+                    }
+                );
             }
         }
 
