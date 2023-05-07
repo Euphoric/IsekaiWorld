@@ -862,5 +862,23 @@ namespace IsekaiWorld
         {
             return gts.Game.Characters.All(ch => ch.IsIdle);
         }
+
+        [Fact]
+        public void Crafting_simple()
+        {
+            var game = CreateGame();
+
+            game.SpawnBuilding(new HexCubeCoord(5, 3, -8), HexagonDirection.Left, BuildingDefinitions.CraftingDesk);
+            
+            var characterA = game.AddCharacter("Test guy A", HexCubeCoord.Zero);
+        
+            game.AddCraftingBill(CraftingDefinitions.WoodenSpear);
+            
+            game.UpdateUntil(gts=>gts.Game.Items.Any(i=>i.Definition == ItemDefinitions.WoodenSpear));
+            var craftedItem = game.Items.First(i => i.Definition == ItemDefinitions.WoodenSpear);
+            craftedItem.Position.Should().Be(new HexCubeCoord(5, 3, -8));
+                
+            game.UpdateUntil(_ => characterA.IsIdle);
+        }
     }
 }

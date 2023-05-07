@@ -11,16 +11,17 @@ public class GameEntity
     public SequenceCompositeActivityPlanner Jobs { get; }
     public MessagingHub MessagingHub { get; }
     public MessagingEndpoint Messaging { get; }
-    
+
     public IReadOnlyList<ConstructionEntity> Constructions => _entities.OfType<ConstructionEntity>().ToList();
     public IReadOnlyList<BuildingEntity> Buildings => _entities.OfType<BuildingEntity>().ToList();
+
     /// <summary>
     /// All items in game. Including the ones being carried by characters.
     /// </summary>
     public IReadOnlyList<ItemEntity> Items => _entities.OfType<ItemEntity>().ToList();
 
     private readonly List<IEntity> _entities = new();
-    
+
     private int _speed;
 
     public int Speed
@@ -49,20 +50,26 @@ public class GameEntity
     /// Items laying on the map.
     /// </summary>
     public IEnumerable<ItemEntity> MapItems => Items.Where(it => it.IsMapItem);
-    
+
     public MapItems MapItemsHolder { get; } = new();
+
 
     public GameEntity()
     {
         MessagingHub = new MessagingHub();
         Messaging = new MessagingEndpoint(HandleMessage);
-        var eatJobGiver = new EatFoodActivityPlanner(this);
-        var haulJobGiver = new HaulActivityPlanner(this);
-        var deconstructJobGiver = new DeconstructActivityPlanner(this);
-        var constructionJobGiver = new ConstructionActivityPlanner(this);
-        var cutWoodJobGiver = new CutWoodActivityPlanner(this);
-        var harvestJobGiver = new GatherActivityPlanner(this);
-        Jobs = new SequenceCompositeActivityPlanner(new IActivityPlanner[] { eatJobGiver, deconstructJobGiver, constructionJobGiver, cutWoodJobGiver, harvestJobGiver, haulJobGiver });
+        var eatingPlanner = new EatFoodActivityPlanner(this);
+        var haulingPlanner = new HaulActivityPlanner(this);
+        var decustructPlanner = new DeconstructActivityPlanner(this);
+        var constructionPlanner = new ConstructionActivityPlanner(this);
+        var craftingPlanner = new CraftingPlanner(this);
+        var cutWoodPlanner = new CutWoodActivityPlanner(this);
+        var haulPlanner = new GatherActivityPlanner(this);
+        Jobs = new SequenceCompositeActivityPlanner(new IActivityPlanner[]
+        {
+            eatingPlanner, decustructPlanner, constructionPlanner, craftingPlanner, cutWoodPlanner, haulPlanner,
+            haulingPlanner
+        });
     }
 
     private void HandleMessage(IEntityMessage mssg)
@@ -94,16 +101,16 @@ public class GameEntity
     public void Initialize(IMapGenerator mapGenerator)
     {
         MessagingHub.Register(Messaging);
-        
+
         Speed = 1;
-        
+
         GameMap = new HexagonalMapEntity(mapGenerator.MapSize);
         mapGenerator.GenerateMap(this);
-        
+
         Pathfinding = new HexagonPathfinding();
         Pathfinding.BuildMap(GameMap);
         MessagingHub.Register(Pathfinding.Messaging);
-        
+
         // Probably shouldn't be here. Find better place for initial surface update.
         Messaging.Broadcast(new SurfaceChanged(GameMap.Cells));
     }
@@ -173,7 +180,7 @@ public class GameEntity
 
         return buildingEntity;
     }
-    
+
     public void SetFloor(HexCubeCoord position, SurfaceDefinition surface)
     {
         GameMap.SetCellSurface(position, surface);
@@ -235,5 +242,12 @@ public class GameEntity
         {
             building.TryDesignate(designation);
         }
+    }
+
+    public CraftingDefinition? BillToCraft { get; set; }
+
+    public void AddCraftingBill(CraftingDefinition billToCraft)
+    {
+        BillToCraft = billToCraft;
     }
 }

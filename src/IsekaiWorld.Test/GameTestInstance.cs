@@ -195,4 +195,9 @@ public class GameTestInstance
     {
         _game.SetFloor(position, surface);
     }
+
+    public void AddCraftingBill(CraftingDefinition billToCraft)
+    {
+        _game.AddCraftingBill(billToCraft);
+    }
 }
