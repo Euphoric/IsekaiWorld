@@ -139,6 +139,8 @@ public class MapGenerator : IMapGenerator
 
         game.SpawnItem(stockpiles[0].Position, ItemDefinitions.Wood, 15);
         game.SpawnItem(stockpiles[1].Position, ItemDefinitions.Grains, 5);
+
+        game.SpawnItem(HexCubeCoord.Zero + HexagonDirection.BottomRight, ItemDefinitions.WoodenSpear, 1);
     }
 }
 

@@ -3,19 +3,20 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cphq1042kbwo4"
-path="res://.godot/imported/WoodLog_a.png-847a8200f83ae80c7a67890495df44dc.ctex"
+path.s3tc="res://.godot/imported/WoodLog_a.png-847a8200f83ae80c7a67890495df44dc.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://Textures/Thing/WoodLog/WoodLog_a.png"
-dest_files=["res://.godot/imported/WoodLog_a.png-847a8200f83ae80c7a67890495df44dc.ctex"]
+dest_files=["res://.godot/imported/WoodLog_a.png-847a8200f83ae80c7a67890495df44dc.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1
@@ -31,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

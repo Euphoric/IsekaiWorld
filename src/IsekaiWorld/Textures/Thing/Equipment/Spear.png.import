@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://blwitbgmslhk4"
-path.s3tc="res://.godot/imported/WoodLog_c.png-c89dcf585af34475c50574802bcf2ee8.s3tc.ctex"
+uid="uid://dosvdnjaujkgt"
+path.s3tc="res://.godot/imported/Spear.png-32cd45b9fe1858581d6cc700888807e0.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Textures/Thing/WoodLog/WoodLog_c.png"
-dest_files=["res://.godot/imported/WoodLog_c.png-c89dcf585af34475c50574802bcf2ee8.s3tc.ctex"]
+source_file="res://Textures/Thing/Equipment/Spear.png"
+dest_files=["res://.godot/imported/Spear.png-32cd45b9fe1858581d6cc700888807e0.s3tc.ctex"]
 
 [params]
 
