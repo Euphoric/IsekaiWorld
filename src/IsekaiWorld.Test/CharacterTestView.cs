@@ -53,5 +53,5 @@ public class CharacterTestView
 
     public bool IsIdle => ActivityName is "" or "IdleActivity";
 
-    public bool IsActive => !IsIdle;
+    public bool IsActive => ActivityName is not ("" or "IdleActivity" or "ThinkingActivity");
 }

@@ -37,7 +37,7 @@ public class CharacterEntity : IEntity, IItemHolder
         _game = game;
         Hunger = 1;
 
-        _currentActivity = new IdleActivity(_game, this);
+        _currentActivity = new FinishedActivity(_game);
     }
 
     public void Initialize()
@@ -51,12 +51,12 @@ public class CharacterEntity : IEntity, IItemHolder
         {
             _activityList.Remove(_currentActivity);
 
-            if (_currentActivity is IdleActivity planningActivity)
+            if (_currentActivity is IPlanningActivity planningActivity)
             {
                 _activityList = planningActivity.ActivityPlan?.Activities.ToList() ?? throw new Exception("Finished planning activity must have valid action plan.");
             }
 
-            _currentActivity = _activityList.FirstOrDefault() ?? new IdleActivity(_game, this);
+            _currentActivity = _activityList.FirstOrDefault() ?? new ThinkingActivity(_game, this);
         }
 
         _currentActivity.Update();
