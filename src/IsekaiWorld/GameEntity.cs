@@ -247,10 +247,15 @@ public class GameEntity
         }
     }
 
-    public CraftingDefinition? BillToCraft { get; set; }
+    public CraftingDefinition? BillToCraft { get; private set; }
 
     public void AddCraftingBill(CraftingDefinition billToCraft)
     {
         BillToCraft = billToCraft;
+    }
+
+    public void CraftingFinished()
+    {
+        BillToCraft = null;
     }
 }

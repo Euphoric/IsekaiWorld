@@ -63,6 +63,8 @@ public class CraftingActivity : Activity
         {
             throw new Exception("Character must be on the interaction spot");
         }
+
+        Game.CraftingFinished();
         Game.SpawnItem(_craftingStation.Position, _billToCraft.Item, 1);
         IsFinished = true;
     }
