@@ -17,9 +17,9 @@ public class CraftingPlanner : IActivityPlanner
         var craftinStation =
             _game.Buildings
                 .Where(x => x.Definition == BuildingDefinitions.CraftingDesk)
-                .First();
+                .FirstOrDefault();
 
-        if (_game.BillToCraft != null)
+        if (_game.BillToCraft != null && craftinStation != null)
         {
             var interactionSpot = craftinStation.Position + HexagonDirection.TopLeft;
             
