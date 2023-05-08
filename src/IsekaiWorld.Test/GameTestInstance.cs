@@ -198,6 +198,6 @@ public class GameTestInstance
 
     public void AddCraftingBill(CraftingDefinition billToCraft)
     {
-        _game.AddCraftingBill(billToCraft);
+        _messaging.Broadcast(new AddCraftingBill(billToCraft));
     }
 }

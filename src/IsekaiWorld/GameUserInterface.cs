@@ -373,6 +373,11 @@ public class GameUserInterface
             }
         }
     }
+
+    public void AddCraftingBill(CraftingDefinition craftingDefinition)
+    {
+       Messaging.Broadcast(new AddCraftingBill(craftingDefinition)); 
+    }
 }
 
 public record SpawnBuilding(HexCubeCoord Position, HexagonDirection Rotation, BuildingDefinition Building) : IEntityMessage;
@@ -388,3 +393,5 @@ record SelectionChanged(string? SelectionLabel) : IEntityMessage;
 record SetSpeed(int Speed) : IEntityMessage;
 
 record TogglePause : IEntityMessage;
+
+public record AddCraftingBill(CraftingDefinition CraftingDefinition) : IEntityMessage;

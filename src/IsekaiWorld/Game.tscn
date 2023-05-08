@@ -76,6 +76,23 @@ layout_mode = 2
 [node name="DesignationContainer" type="GridContainer" parent="UserInterface/TopMenuArea/Menus"]
 layout_mode = 2
 
+[node name="CraftingContainer" type="GridContainer" parent="UserInterface/TopMenuArea/Menus"]
+layout_mode = 2
+
+[node name="QueuedBillsList" type="ItemList" parent="UserInterface/TopMenuArea/Menus/CraftingContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+auto_height = true
+
+[node name="CraftItem" type="Button" parent="UserInterface/TopMenuArea/Menus/CraftingContainer"]
+layout_mode = 2
+text = "Craft"
+
+[node name="CraftableItemsList" type="ItemList" parent="UserInterface/TopMenuArea/Menus/CraftingContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+auto_height = true
+
 [node name="DebugContainer" type="GridContainer" parent="UserInterface/TopMenuArea/Menus"]
 layout_mode = 2
 
@@ -118,6 +135,10 @@ text = "Place item"
 [node name="DesignationButton" type="Button" parent="UserInterface/BottomMenuArea/BottomMenu"]
 layout_mode = 2
 text = "Designation"
+
+[node name="CraftingButton" type="Button" parent="UserInterface/BottomMenuArea/BottomMenu"]
+layout_mode = 2
+text = "Crafting"
 
 [node name="DebugButton" type="Button" parent="UserInterface/BottomMenuArea/BottomMenu"]
 layout_mode = 2

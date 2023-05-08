@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Godot;
 
 namespace IsekaiWorld;
@@ -62,7 +63,8 @@ public partial class UserInterface : CanvasLayer
         RotationOptionButton.ItemSelected += _on_rotation_selected;
 
         SetUpDesignations();
-
+        SetUpCrafting();
+        
         {
             var debugButton = GetNode<Button>("BottomMenuArea/BottomMenu/DebugButton");
             debugButton.Pressed += _on_DebugButton_pressed;
@@ -87,6 +89,7 @@ public partial class UserInterface : CanvasLayer
         PlaceItemContainer.Visible = false;
         DesignationContainer.Visible = false;
         DebugContainer.Visible = false;
+        CraftingContainer.Visible = false;
     }
 
     private void SetUpDesignations()
@@ -108,6 +111,37 @@ public partial class UserInterface : CanvasLayer
             DesignationContainer.AddChild(button);
         }
     }
+    
+    private void SetUpCrafting()
+    {
+        var craftingButton = GetNode<Button>("BottomMenuArea/BottomMenu/CraftingButton");
+        craftingButton.Pressed += _on_CraftingButton_pressed;
+
+        var craftableItemsList = CraftingContainer.GetNode<ItemList>("CraftableItemsList");
+
+        foreach (var designation in CraftingDefinitions.Definitions)
+        {
+            var idx = craftableItemsList.AddItem(designation.Title);
+            craftableItemsList.SetItemMetadata(idx, designation.Id);
+        }
+
+        var craftItemBtn = CraftingContainer.GetNode<Button>("CraftItem");
+        craftItemBtn.Pressed += OnCraftItemBtnPressed;
+    }
+    
+    void OnCraftItemBtnPressed()
+    {
+        var craftableItemsList = CraftingContainer.GetNode<ItemList>("CraftableItemsList");
+        
+        var selectedIndex = craftableItemsList.GetSelectedItems().Cast<int?>().SingleOrDefault();
+        if (selectedIndex == null) 
+            return;
+        
+        var selectedCraftingId = craftableItemsList.GetItemMetadata(selectedIndex.Value).AsString();
+        var craftingDef = CraftingDefinitions.GetById(selectedCraftingId);
+
+        _gameUserInterface.AddCraftingBill(craftingDef);
+    }
 
     public Label ToolLabel => GetNode<Label>("BottomMenuArea/ToolLabel");
     public Container ConstructionContainer => GetNode<Container>("TopMenuArea/Menus/ConstructionContainer");
@@ -115,6 +149,7 @@ public partial class UserInterface : CanvasLayer
     public OptionButton RotationOptionButton => GetNode<OptionButton>("TopMenuArea/RotationOptionButton");
     public Container DesignationContainer => GetNode<Container>("TopMenuArea/Menus/DesignationContainer");
     public Container PlaceItemContainer => GetNode<Container>("TopMenuArea/Menus/PlaceItemContainer");
+    public Container CraftingContainer => GetNode<Container>("TopMenuArea/Menus/CraftingContainer");
     public Container DebugContainer => GetNode<Container>("TopMenuArea/Menus/DebugContainer");
 
     private void MessageHandler(IEntityMessage message)
@@ -242,9 +277,8 @@ public partial class UserInterface : CanvasLayer
 
         speedLabel.Text = label;
     }
-
-    // ReSharper disable once UnusedMember.Global
-    public void _on_SelectionButton_pressed()
+    
+    private void _on_SelectionButton_pressed()
     {
         ConstructionContainer.Visible = false;
         PlaceItemContainer.Visible = false;
@@ -253,33 +287,34 @@ public partial class UserInterface : CanvasLayer
 
         _gameUserInterface.SelectionSelected();
     }
-
-    // ReSharper disable once UnusedMember.Global
-    public void _on_ConstructionButton_pressed()
+    
+    private void _on_ConstructionButton_pressed()
     {
         PlaceItemContainer.Visible = false;
         DesignationContainer.Visible = false;
         DebugContainer.Visible = false;
         BuildingContainer.Visible = false;
+        CraftingContainer.Visible = false;
         ConstructionContainer.Visible = !ConstructionContainer.Visible;
     }
-
-    // ReSharper disable once UnusedMember.Global
-    public void _on_PlaceItemButton_pressed()
+    
+    private void _on_PlaceItemButton_pressed()
     {
         ConstructionContainer.Visible = false;
         DesignationContainer.Visible = false;
         DebugContainer.Visible = false;
         BuildingContainer.Visible = false;
+        CraftingContainer.Visible = false;
         PlaceItemContainer.Visible = !PlaceItemContainer.Visible;
     }
 
-    public void _on_DesignationButton_pressed()
+    private void _on_DesignationButton_pressed()
     {
         ConstructionContainer.Visible = false;
         PlaceItemContainer.Visible = false;
         DebugContainer.Visible = false;
         BuildingContainer.Visible = false;
+        CraftingContainer.Visible = false;
         DesignationContainer.Visible = !DesignationContainer.Visible;
     }
 
@@ -290,6 +325,7 @@ public partial class UserInterface : CanvasLayer
         DebugContainer.Visible = !DebugContainer.Visible;
         DesignationContainer.Visible = false;
         BuildingContainer.Visible = false;
+        CraftingContainer.Visible = false;
     }
     
     private void _on_BuildingButton_pressed()
@@ -298,8 +334,20 @@ public partial class UserInterface : CanvasLayer
         PlaceItemContainer.Visible = false;
         DebugContainer.Visible = false;
         DesignationContainer.Visible = false;
+        CraftingContainer.Visible = false;
         BuildingContainer.Visible = !BuildingContainer.Visible;
     }
+    
+    private void _on_CraftingButton_pressed()
+    {
+        ConstructionContainer.Visible = false;
+        PlaceItemContainer.Visible = false;
+        DebugContainer.Visible = false;
+        BuildingContainer.Visible = false;
+        CraftingContainer.Visible = !CraftingContainer.Visible;
+        DesignationContainer.Visible = false;
+    }
+
 
 
     public void _on_ConstructionSelectionButton_pressed(ConstructionDefinition definition)

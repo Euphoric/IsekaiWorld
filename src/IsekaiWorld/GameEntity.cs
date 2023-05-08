@@ -94,6 +94,9 @@ public class GameEntity
             case SpawnBuilding msg:
                 SpawnBuilding(msg.Position, msg.Rotation, msg.Building);
                 break;
+            case AddCraftingBill msg:
+                AddCraftingBill(msg.CraftingDefinition);
+                break;
         }
     }
 
