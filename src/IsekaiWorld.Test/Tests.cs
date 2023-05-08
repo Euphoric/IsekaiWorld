@@ -903,5 +903,52 @@ namespace IsekaiWorld
 
             game.UpdateUntil(_ => characterA.IsIdle);
         }
+        
+        [Fact]
+        public void Crafting_multiple_bills_in_sequence()
+        {
+            var game = CreateGame();
+
+            game.SpawnBuilding(new HexCubeCoord(5, 3, -8), HexagonDirection.Left, BuildingDefinitions.CraftingDesk);
+
+            var characterA = game.AddCharacter("Test guy A", HexCubeCoord.Zero);
+
+            game.AddCraftingBill(CraftingDefinitions.WoodenSpear);
+
+            game.UpdateUntil(_ => characterA.ActivityName == "CraftingActivity");
+            game.UpdateUntil(_ => characterA.IsIdle);
+            var craftedItem = 
+                game.Items
+                    .Where(x => x.Definition == ItemDefinitions.WoodenSpear)
+                    .Should().ContainSingle().Subject;
+            craftedItem.Position.Should().Be(new HexCubeCoord(5, 3, -8));
+
+            game.AddCraftingBill(CraftingDefinitions.WoodenSpear);
+            
+            game.UpdateUntil(_ => characterA.ActivityName == "CraftingActivity");
+            game.UpdateUntil(_ => characterA.IsIdle);
+            
+            var spearCount = game.Items.Where(x => x.Definition == ItemDefinitions.WoodenSpear).Sum(x => x.Count);
+            spearCount.Should().Be(2);
+        }
+        
+        [Fact]
+        public void Crafting_multiple_characters()
+        {
+            var game = CreateGame();
+
+            game.SpawnBuilding(new HexCubeCoord(5, 3, -8), HexagonDirection.Left, BuildingDefinitions.CraftingDesk);
+
+            var characterA = game.AddCharacter("Test guy A", HexCubeCoord.Zero);
+            var characterB = game.AddCharacter("Test guy B", HexCubeCoord.Zero + HexagonDirection.Left);
+
+            game.AddCraftingBill(CraftingDefinitions.WoodenSpear);
+
+            game.UpdateUntil(_ => characterA.IsActive || characterB.IsActive);
+            var activeCharacters = new[] { characterA, characterB }.Where(x => x.IsActive);
+            activeCharacters.Should().ContainSingle();
+            
+            game.UpdateUntil(_ => characterA.IsIdle && characterB.IsIdle);
+        }
     }
 }

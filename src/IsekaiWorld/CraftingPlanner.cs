@@ -17,12 +17,13 @@ public class CraftingPlanner : IActivityPlanner
         var craftinStation =
             _game.Buildings
                 .Where(x => x.Definition == BuildingDefinitions.CraftingDesk)
+                .Where(x => !x.ReservedForActivity)
                 .FirstOrDefault();
 
         if (_game.BillToCraft != null && craftinStation != null)
         {
             var interactionSpot = craftinStation.Position + HexagonDirection.TopLeft;
-            
+
             return new ActivityPlan(
                 new Activity[]
                 {
@@ -56,6 +57,11 @@ public class CraftingActivity : Activity
         _billToCraft = billToCraft;
     }
 
+    public override void Reserve()
+    {
+        _craftingStation.ReservedForActivity = true;
+    }
+
     protected override void UpdateInner()
     {
         var interactionPoint = _craftingStation.Position + HexagonDirection.TopLeft;
@@ -67,5 +73,6 @@ public class CraftingActivity : Activity
         Game.CraftingFinished();
         Game.SpawnItem(_craftingStation.Position, _billToCraft.Item, 1);
         IsFinished = true;
+        _craftingStation.ReservedForActivity = false;
     }
 }
