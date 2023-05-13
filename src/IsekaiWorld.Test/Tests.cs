@@ -810,8 +810,8 @@ namespace IsekaiWorld
         {
             var game = CreateGame();
 
-            game.AddCharacter("Test guy A", HexCubeCoord.Zero, disableHunger:true);
-            game.AddCharacter("Test guy B", HexCubeCoord.Zero + HexagonDirection.Left, disableHunger:true);
+            game.AddCharacter("Test guy A", HexCubeCoord.Zero, disableHunger: true);
+            game.AddCharacter("Test guy B", HexCubeCoord.Zero + HexagonDirection.Left, disableHunger: true);
 
             var treesList = new List<HexCubeCoord>();
             HexCubeCoord.FillRectangleBetweenHexes(new HexOffsetCoord(-5, -5).ToCube(),
@@ -852,7 +852,7 @@ namespace IsekaiWorld
             game.UpdateUntil(NoActiveConstructions);
             game.UpdateUntil(NoItemsOutsideStockpile, maxSteps: 10000);
             game.UpdateUntil(NoCarriedItems);
-            
+
             var itemsInGame =
                 game.Items
                     .GroupBy(x => x.Definition)
@@ -903,7 +903,7 @@ namespace IsekaiWorld
 
             game.UpdateUntil(_ => characterA.IsIdle);
         }
-        
+
         [Fact]
         public void Crafting_multiple_bills_in_sequence()
         {
@@ -917,21 +917,21 @@ namespace IsekaiWorld
 
             game.UpdateUntil(_ => characterA.ActivityName == "CraftingActivity");
             game.UpdateUntil(_ => characterA.IsIdle);
-            var craftedItem = 
+            var craftedItem =
                 game.Items
                     .Where(x => x.Definition == ItemDefinitions.WoodenSpear)
                     .Should().ContainSingle().Subject;
             craftedItem.Position.Should().Be(new HexCubeCoord(5, 3, -8));
 
             game.AddCraftingBill(CraftingDefinitions.WoodenSpear);
-            
+
             game.UpdateUntil(_ => characterA.ActivityName == "CraftingActivity");
             game.UpdateUntil(_ => characterA.IsIdle);
-            
+
             var spearCount = game.Items.Where(x => x.Definition == ItemDefinitions.WoodenSpear).Sum(x => x.Count);
             spearCount.Should().Be(2);
         }
-        
+
         [Fact]
         public void Crafting_multiple_characters()
         {
@@ -947,10 +947,10 @@ namespace IsekaiWorld
             game.UpdateUntil(_ => characterA.IsActive || characterB.IsActive);
             var activeCharacters = new[] { characterA, characterB }.Where(x => x.IsActive);
             activeCharacters.Should().ContainSingle();
-            
+
             game.UpdateUntil(_ => characterA.IsIdle && characterB.IsIdle);
         }
-        
+
         [Fact]
         public void Spawning_item_on_stockpile_makes_it_used()
         {
@@ -962,11 +962,11 @@ namespace IsekaiWorld
             game.SpawnItem(stockpile.Position, ItemDefinitions.Grains, 1);
             var originalPosition = new HexCubeCoord(-1, -1, 2);
             var item = game.SpawnItem(originalPosition, ItemDefinitions.Wood, 1);
-            
+
             game.Update();
             game.UpdateUntil(_ => character.IsIdle);
 
             item.Position.Should().Be(originalPosition);
-        }       
+        }
     }
 }
