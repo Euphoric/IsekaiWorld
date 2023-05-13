@@ -43,6 +43,8 @@ public class GameTestInstance
         set => _game.Paused = value;
     }
 
+    public long Ticks { get; private set; }
+
     public BuildingTestView SpawnBuilding(HexCubeCoord position, HexagonDirection direction,
         BuildingDefinition building)
     {
@@ -64,6 +66,7 @@ public class GameTestInstance
 
     public void Update()
     {
+        Ticks++;
         _game.Update();
         _messageHub.DistributeMessages();
     }

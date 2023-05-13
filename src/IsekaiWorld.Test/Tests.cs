@@ -897,11 +897,18 @@ namespace IsekaiWorld
 
             game.AddCraftingBill(CraftingDefinitions.WoodenSpear);
 
+            game.UpdateUntil(_ => characterA.ActivityName == "CraftingActivity");
+            var startTick = game.Ticks;
+            game.UpdateUntil(_ => characterA.ActivityName != "CraftingActivity");
+            var endTicks = game.Ticks;
+            game.UpdateUntil(_ => characterA.IsIdle);
+            
             game.UpdateUntil(gts => gts.Game.Items.Any(i => i.Definition == ItemDefinitions.WoodenSpear));
             var craftedItem = game.Items.First(i => i.Definition == ItemDefinitions.WoodenSpear);
             craftedItem.Position.Should().Be(new HexCubeCoord(5, 3, -8));
 
-            game.UpdateUntil(_ => characterA.IsIdle);
+            var elapsedTicks = (endTicks-startTick);
+            elapsedTicks.Should().Be(GameSpeed.BaseTps * 3);
         }
 
         [Fact]

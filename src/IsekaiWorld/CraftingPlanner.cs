@@ -62,6 +62,8 @@ public class CraftingActivity : Activity
         _craftingStation.ReservedForActivity = true;
     }
 
+    private int _craftingTimer = 0;
+    
     protected override void UpdateInner()
     {
         var interactionPoint = _craftingStation.Position + HexagonDirection.TopLeft;
@@ -69,10 +71,15 @@ public class CraftingActivity : Activity
         {
             throw new Exception("Character must be on the interaction spot");
         }
+        
+        _craftingTimer++;
 
-        Game.CraftingFinished();
-        Game.SpawnItem(_craftingStation.Position, _billToCraft.Item, 1);
-        IsFinished = true;
-        _craftingStation.ReservedForActivity = false;
+        if (_craftingTimer >= GameSpeed.BaseTps * 3)
+        {
+            Game.CraftingFinished();
+            Game.SpawnItem(_craftingStation.Position, _billToCraft.Item, 1);
+            IsFinished = true;
+            _craftingStation.ReservedForActivity = false;            
+        }
     }
 }
