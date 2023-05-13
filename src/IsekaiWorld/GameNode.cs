@@ -58,19 +58,20 @@ public partial class GameNode : Node
 
 	private void GameLoop()
 	{
-		var mapGenerator = new MapGenerator();
+		//var mapGenerator = new MapGenerator();
+		var mapGenerator = new EmptyMapGenerator();
 		//var mapGenerator = new WallTilingTestMapGenerator();
 		//var mapGenerator = new ConstructionTestMapGenerator();
 		_game.Initialize(mapGenerator);
 
 		var characterA = _game.AddCharacter("Anon");
 		characterA.Position = new HexCubeCoord(1, 1, -2);
-		var characterB = _game.AddCharacter("Miku");
-		characterB.Position = new HexCubeCoord(1, -1, 0);
-		var characterC = _game.AddCharacter("Reimu");
-		characterC.Position = new HexCubeCoord(-1, -1, 2);
-		var characterD = _game.AddCharacter("Madoka");
-		characterC.Position = new HexCubeCoord(-2, -1, 3);
+		// var characterB = _game.AddCharacter("Miku");
+		// characterB.Position = new HexCubeCoord(1, -1, 0);
+		// var characterC = _game.AddCharacter("Reimu");
+		// characterC.Position = new HexCubeCoord(-1, -1, 2);
+		// var characterD = _game.AddCharacter("Madoka");
+		// characterC.Position = new HexCubeCoord(-2, -1, 3);
 		
 		Stopwatch watch = Stopwatch.StartNew();
 		double lastUpdate = watch.Elapsed.TotalMilliseconds;

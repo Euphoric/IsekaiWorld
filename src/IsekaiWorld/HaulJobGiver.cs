@@ -14,8 +14,11 @@ public class HaulActivityPlanner : IActivityPlanner
 
     public ActivityPlan? BuildPlan(CharacterEntity character)
     {
-        var stockpilePositions = _game.Buildings.Where(x => x.Definition == BuildingDefinitions.StockpileZone)
-            .SelectMany(x => x.OccupiedCells).Distinct().ToImmutableHashSet();
+        var stockpilePositions =
+            _game.Buildings
+                .Where(x => x.Definition == BuildingDefinitions.StockpileZone)
+                .SelectMany(x => x.OccupiedCells)
+                .Distinct().ToImmutableHashSet();
 
         var itemToHaul =
             _game.MapItems
@@ -25,12 +28,16 @@ public class HaulActivityPlanner : IActivityPlanner
         if (itemToHaul == null)
             return null;
 
+        var itemsByPosition =
+            _game.MapItems.GroupBy(x => x.Position)
+                .ToImmutableDictionary(x => x.Key, x => x.Select(i => i.Definition).ToImmutableHashSet());
+
         var targetStockpile =
             _game.Buildings
-                .FirstOrDefault(x =>
-                    x.Definition == BuildingDefinitions.StockpileZone &&
-                    (x.ReservedForItem == null || x.ReservedForItem == itemToHaul.Definition)
-                );
+                .Where(x => x.Definition == BuildingDefinitions.StockpileZone)
+                .Where(s => itemsByPosition.GetValueOrDefault(s.Position)?.Contains(itemToHaul.Definition) ?? true)
+                .Where(x => !x.ReservedForActivity)
+                .FirstOrDefault();
         if (targetStockpile == null)
             return null;
 

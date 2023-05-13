@@ -810,8 +810,8 @@ namespace IsekaiWorld
         {
             var game = CreateGame();
 
-            game.AddCharacter("Test guy A", HexCubeCoord.Zero);
-            game.AddCharacter("Test guy B", HexCubeCoord.Zero + HexagonDirection.Left);
+            game.AddCharacter("Test guy A", HexCubeCoord.Zero, disableHunger:true);
+            game.AddCharacter("Test guy B", HexCubeCoord.Zero + HexagonDirection.Left, disableHunger:true);
 
             var treesList = new List<HexCubeCoord>();
             HexCubeCoord.FillRectangleBetweenHexes(new HexOffsetCoord(-5, -5).ToCube(),
@@ -851,16 +851,16 @@ namespace IsekaiWorld
             game.UpdateUntil(NoUngatheredPlants);
             game.UpdateUntil(NoActiveConstructions);
             game.UpdateUntil(NoItemsOutsideStockpile, maxSteps: 10000);
-
+            game.UpdateUntil(NoCarriedItems);
+            
             var itemsInGame =
                 game.Items
                     .GroupBy(x => x.Definition)
                     .ToDictionary(x => x.Key, x => x.Sum(c => c.Count));
             itemsInGame.Should().ContainKey(ItemDefinitions.Wood).WhoseValue.Should()
                 .Be(treesList.Count * 5 - constructionsList.Count * 1);
-            var eatenFood = 1;
             itemsInGame.Should().ContainKey(ItemDefinitions.Grains).WhoseValue.Should()
-                .Be(plantsList.Count * 1 - eatenFood);
+                .Be(plantsList.Count * 1);
         }
 
         [Fact]
@@ -950,5 +950,23 @@ namespace IsekaiWorld
             
             game.UpdateUntil(_ => characterA.IsIdle && characterB.IsIdle);
         }
+        
+        [Fact]
+        public void Spawning_item_on_stockpile_makes_it_used()
+        {
+            var game = CreateGame();
+
+            var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
+
+            var stockpile = game.SpawnStockpile(new HexCubeCoord(1, 1, -2));
+            game.SpawnItem(stockpile.Position, ItemDefinitions.Grains, 1);
+            var originalPosition = new HexCubeCoord(-1, -1, 2);
+            var item = game.SpawnItem(originalPosition, ItemDefinitions.Wood, 1);
+            
+            game.Update();
+            game.UpdateUntil(_ => character.IsIdle);
+
+            item.Position.Should().Be(originalPosition);
+        }       
     }
 }
