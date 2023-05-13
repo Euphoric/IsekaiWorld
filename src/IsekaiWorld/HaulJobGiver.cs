@@ -45,7 +45,7 @@ public class HaulActivityPlanner : IActivityPlanner
             new Activity[]
             {
                 new MovementActivity(_game, _game.Pathfinding, character, itemToHaul.Position),
-                new PickUpItemActivity(_game, character, itemToHaul, itemToHaul.Count),
+                new PickUpItemActivity(_game, character, itemToHaul, null),
                 new MovementActivity(_game, _game.Pathfinding, character, targetStockpile.Position),
                 new DropItemActivity(_game, character, itemToHaul, targetStockpile)
             }

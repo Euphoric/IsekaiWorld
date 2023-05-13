@@ -6,10 +6,10 @@ public class PickUpItemActivity : Activity
 {
     private readonly CharacterEntity _character;
     private readonly ItemEntity _item;
-    private readonly int _count;
+    private readonly int? _count;
     private bool _executing;
     
-    public PickUpItemActivity(GameEntity game, CharacterEntity character, ItemEntity item, int count) : base(game)
+    public PickUpItemActivity(GameEntity game, CharacterEntity character, ItemEntity item, int? count) : base(game)
     {
         _character = character;
         _item = item;
@@ -37,7 +37,7 @@ public class PickUpItemActivity : Activity
                 throw new Exception("Item must lay on the ground to be picked up.");
             }
             
-            var pickedItem = _item.PickUpItem(_count);
+            var pickedItem = _item.PickUpItem(_count ?? _item.Count);
             pickedItem.SetHolder(_character);
         }
         else

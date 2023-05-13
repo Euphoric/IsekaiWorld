@@ -968,5 +968,28 @@ namespace IsekaiWorld
 
             item.Position.Should().Be(originalPosition);
         }
+        
+        [Fact]
+        public void Adding_item_to_stack_planned_to_haul()
+        {
+            var game = CreateGame();
+
+            var character = game.AddCharacter("Test guy", HexCubeCoord.Zero);
+            var breakPosition = character.Position + HexagonDirection.Left;
+            var itemPosition = breakPosition + HexagonDirection.Left;
+            var stockpilePosition = character.Position + HexagonDirection.Right;
+            
+            game.SpawnStockpile(stockpilePosition);
+            var item = game.SpawnItem(itemPosition, ItemDefinitions.Wood, 1);
+
+            game.UpdateUntil(_ => character.Position == breakPosition);
+            
+            game.SpawnItem(itemPosition, ItemDefinitions.Wood, 1);
+            
+            game.UpdateUntil(_ => character.IsIdle);
+
+            item.Position.Should().Be(stockpilePosition);
+            item.Count.Should().Be(2);
+        }
     }
 }
