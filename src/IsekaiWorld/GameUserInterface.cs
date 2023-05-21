@@ -7,10 +7,6 @@ namespace IsekaiWorld;
 
 public class GameUserInterface
 {
-    private bool _selectedLabelDirty;
-
-    private EntitySelection? _currentSelection;
-
     public MessagingEndpoint Messaging { get; }
 
     public GameUserInterface()
@@ -18,7 +14,7 @@ public class GameUserInterface
         Messaging = new MessagingEndpoint(HandleMessage);
     }
 
-    private abstract class EntitySelection
+    public abstract class EntitySelection
     {
         public string Id { get; }
 
@@ -34,8 +30,6 @@ public class GameUserInterface
 
         public HexCubeCoord Position { get; set; }
         public string TextLabel { get; protected set; } = "";
-
-        public abstract bool Update();
     }
 
     private class ConstructionEntityItem : EntitySelection
@@ -49,18 +43,14 @@ public class GameUserInterface
             base.Update(msg.Position);
             Definition = msg.Definition;
             ProgressRelative = msg.ProgressRelative;
+            
+            var progress = Godot.Mathf.FloorToInt(ProgressRelative * 100);
+            TextLabel = $"Construction: {Definition.Label} Progress: {progress}";
         }
 
         public ConstructionDefinition Definition { get; set; } = null!;
 
         public float ProgressRelative { get; set; }
-
-        public override bool Update()
-        {
-            var progress = Godot.Mathf.FloorToInt(ProgressRelative * 100);
-            TextLabel = $"Construction: {Definition.Label} Progress: {progress}";
-            return true;
-        }
     }
 
     private class BuildingEntityItem : EntitySelection
@@ -73,15 +63,10 @@ public class GameUserInterface
         {
             base.Update(msg.Position);
             Definition = msg.Definition;
+            TextLabel = "Building: " + Definition.Label;
         }
 
         public BuildingDefinition Definition { get; set; } = null!;
-
-        public override bool Update()
-        {
-            TextLabel = "Building: " + Definition.Label;
-            return true;
-        }
     }
 
     private class CharacterSelection : EntitySelection
@@ -96,6 +81,8 @@ public class GameUserInterface
             Label = msg.Label;
             ActivityName = msg.ActivityName;
             Hunger = msg.Hunger;
+            
+            TextLabel = $"Character: {Label} / Activity: {ActivityName} / Hunger: {Hunger * 100:F1}";
         }
 
         public double Hunger { get; set; }
@@ -103,12 +90,6 @@ public class GameUserInterface
         public string? ActivityName { get; set; }
 
         public string Label { get; set; } = null!;
-
-        public override bool Update()
-        {
-            TextLabel = $"Character: {Label} / Activity: {ActivityName} / Hunger: {Hunger * 100:F1}";
-            return true;
-        }
     }
 
     private class ItemEntityItem : EntitySelection
@@ -122,17 +103,13 @@ public class GameUserInterface
             base.Update(msg.Position);
             Definition = msg.Definition;
             Count = msg.Count;
+            
+            TextLabel = $"Item: {Definition.Label} Count: {Count}";
         }
 
         public int Count { get; set; }
 
         public ItemDefinition Definition { get; set; } = null!;
-
-        public override bool Update()
-        {
-            TextLabel = $"Item: {Definition.Label} Count: {Count}";
-            return true;
-        }
     }
 
     private readonly Dictionary<String, EntitySelection> _selectionEntities = new();
@@ -141,8 +118,13 @@ public class GameUserInterface
         Func<String, TSelection> newFunc, Action<TMsg, TSelection> update)
         where TSelection : EntitySelection
     {
-        var e = _selectionEntities.GetOrAdd(id(msg), newFunc);
-        update(msg, (TSelection)e);
+        var updatedEntity = _selectionEntities.GetOrAdd(id(msg), newFunc);
+        update(msg, (TSelection)updatedEntity);
+
+        if (CurrentSelection == updatedEntity)
+        {
+            OnCurrentSelectionChanged?.Invoke(CurrentSelection);
+        }
     }
 
     private void HandleMessage(IEntityMessage mssg)
@@ -188,19 +170,7 @@ public class GameUserInterface
 
     public void Update()
     {
-        if (_selectedLabelDirty)
-        {
-            Messaging.Broadcast(new SelectionChanged(_currentSelection?.TextLabel));
-            _selectedLabelDirty = false;
-        }
 
-        if (_currentSelection != null)
-        {
-            if (_currentSelection.Update())
-            {
-                Messaging.Broadcast(new SelectionChanged(_currentSelection?.TextLabel));
-            }
-        }
     }
 
     private void SelectItemOn(HexCubeCoord position)
@@ -209,8 +179,7 @@ public class GameUserInterface
 
         if (selectedEntity != null)
         {
-            _selectedLabelDirty = true;
-            _currentSelection = selectedEntity;
+            CurrentSelection = selectedEntity;
         }
     }
 
@@ -228,12 +197,21 @@ public class GameUserInterface
     private BuildingDefinition? _currentBuildingSelection;
     private ItemDefinition? _currentItemSelection;
     private DesignationDefinition? _currentDesignation;
+    private EntitySelection? _currentSelection;
 
     public Vector2 MousePosition { get; private set; }
     public HexCubeCoord MouseHexPosition { get; private set; }
     public Rect2? SelectionRectangle { get; private set; }
     public List<HexCubeCoord> HighlightedHexes { get; } = new();
     public SelectionOptions SelectionOption { get; set; }
+
+    public EntitySelection? CurrentSelection
+    {
+        get => _currentSelection;
+        set { _currentSelection = value; OnCurrentSelectionChanged?.Invoke(_currentSelection); }
+    }
+
+    public event Action<EntitySelection?>? OnCurrentSelectionChanged; 
 
     public void MouseClickOnMap(bool isPressed)
     {
@@ -328,7 +306,7 @@ public class GameUserInterface
 
     public void SetCharacterHealth()
     {
-        if (_currentSelection is CharacterSelection cs)
+        if (CurrentSelection is CharacterSelection cs)
         {
             Messaging.Broadcast(new SetCharacterHunger(cs.Id, 0.31));
         }
@@ -387,8 +365,6 @@ public record Designate(HexCubeCoord Position, DesignationDefinition Designation
 public record SpawnItem(HexCubeCoord Position, ItemDefinition Definition, int Count) : IEntityMessage;
 
 public record StartConstruction(HexCubeCoord Position, HexagonDirection Rotation, ConstructionDefinition Definition) : IEntityMessage;
-
-record SelectionChanged(string? SelectionLabel) : IEntityMessage;
 
 record SetSpeed(int Speed) : IEntityMessage;
 

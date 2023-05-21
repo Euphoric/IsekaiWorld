@@ -18,6 +18,13 @@ public partial class UserInterface : CanvasLayer
     public void Initialize(GameUserInterface gameUserInterface)
     {
         _gameUserInterface = gameUserInterface;
+        _gameUserInterface.OnCurrentSelectionChanged += GameUserInterfaceOnOnCurrentSelectionChanged;
+    }
+
+    private void GameUserInterfaceOnOnCurrentSelectionChanged(GameUserInterface.EntitySelection? selection)
+    {
+        var selectionLabel = GetNode<Label>("BottomMenuArea/SelectionLabel");
+        selectionLabel.Text = selection?.TextLabel;
     }
 
     public override void _Ready()
@@ -156,9 +163,6 @@ public partial class UserInterface : CanvasLayer
     {
         switch (message)
         {
-            case SelectionChanged selectedEntityChanged:
-                OnSelectedEntityChanged(selectedEntityChanged);
-                break;
             case TpsChanged tpsChanged:
                 OnTpsChanged(tpsChanged);
                 break;
@@ -247,12 +251,6 @@ public partial class UserInterface : CanvasLayer
         }
 
         base._Input(evnt);
-    }
-
-    private void OnSelectedEntityChanged(SelectionChanged message)
-    {
-        var selectionLabel = GetNode<Label>("BottomMenuArea/SelectionLabel");
-        selectionLabel.Text = message.SelectionLabel;
     }
 
     private void OnTpsChanged(TpsChanged tpsChanged)
