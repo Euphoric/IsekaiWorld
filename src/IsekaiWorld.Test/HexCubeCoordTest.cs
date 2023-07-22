@@ -1,5 +1,6 @@
 
 using FluentAssertions;
+using IsekaiWorld.Game;
 using Xunit;
 
 namespace IsekaiWorld;

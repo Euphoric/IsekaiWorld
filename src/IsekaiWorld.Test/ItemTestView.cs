@@ -1,3 +1,5 @@
+using IsekaiWorld.Game;
+
 namespace IsekaiWorld;
 
 public class ItemTestView

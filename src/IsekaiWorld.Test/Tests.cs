@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using IsekaiWorld.Game;
 using Xunit;
 
 namespace IsekaiWorld

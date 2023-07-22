@@ -1,4 +1,4 @@
-using Godot;
+using IsekaiWorld.Game;
 
 namespace IsekaiWorld;
 

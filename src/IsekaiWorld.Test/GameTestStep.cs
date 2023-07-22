@@ -1,5 +1,3 @@
-using System;
-
 namespace IsekaiWorld
 {
     public class GameTestStep

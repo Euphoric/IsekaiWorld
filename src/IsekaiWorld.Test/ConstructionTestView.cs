@@ -1,4 +1,4 @@
-using System;
+using IsekaiWorld.Game;
 
 namespace IsekaiWorld;
 

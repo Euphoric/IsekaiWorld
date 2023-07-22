@@ -14,7 +14,7 @@ public partial class CharacterTest : Node2D
 			var hair = "Hair_Female/AFUf08";
 			var hairColor = new Color("FAF0BE");
 
-			var characterNode = new CharacterNode();
+			var characterNode = new View.CharacterNode();
 			characterNode.Direction = "west";
 			characterNode.BodyType = bodyType;
 			characterNode.Clothes = clothes;
@@ -24,7 +24,7 @@ public partial class CharacterTest : Node2D
 			characterNode.Position = new Vector2(100 + 75 * 0, 350);
 			AddChild(characterNode);
 
-			var characterNode1 = new CharacterNode();
+			var characterNode1 = new View.CharacterNode();
 			characterNode1.Direction = "south";
 			characterNode1.BodyType = bodyType;
 			characterNode1.Clothes = clothes;
@@ -34,7 +34,7 @@ public partial class CharacterTest : Node2D
 			characterNode1.Position = new Vector2(100 + 75 * 1, 350);
 			AddChild(characterNode1);
 
-			var characterNode2 = new CharacterNode();
+			var characterNode2 = new View.CharacterNode();
 			characterNode2.Direction = "east";
 			characterNode2.BodyType = bodyType;
 			characterNode2.Clothes = clothes;
@@ -44,7 +44,7 @@ public partial class CharacterTest : Node2D
 			characterNode2.Position = new Vector2(100 + 75 * 2, 350);
 			AddChild(characterNode2);
 
-			var characterNode3 = new CharacterNode();
+			var characterNode3 = new View.CharacterNode();
 			characterNode3.Direction = "north";
 			characterNode3.BodyType = bodyType;
 			characterNode3.Clothes = clothes;
@@ -61,7 +61,7 @@ public partial class CharacterTest : Node2D
 			var hair = "Hair_Male/AFUm03";
 			var hairColor = new Color("bb6d3e");
 
-			var characterNode = new CharacterNode();
+			var characterNode = new View.CharacterNode();
 			characterNode.Direction = "west";
 			characterNode.BodyType = bodyType;
 			characterNode.Clothes = clothes;
@@ -71,7 +71,7 @@ public partial class CharacterTest : Node2D
 			characterNode.Position = new Vector2(100 + 75 * 0, 500);
 			AddChild(characterNode);
 
-			var characterNode1 = new CharacterNode();
+			var characterNode1 = new View.CharacterNode();
 			characterNode1.Direction = "south";
 			characterNode1.BodyType = bodyType;
 			characterNode1.Clothes = clothes;
@@ -81,7 +81,7 @@ public partial class CharacterTest : Node2D
 			characterNode1.Position = new Vector2(100 + 75 * 1, 500);
 			AddChild(characterNode1);
 
-			var characterNode2 = new CharacterNode();
+			var characterNode2 = new View.CharacterNode();
 			characterNode2.Direction = "east";
 			characterNode2.BodyType = bodyType;
 			characterNode2.Clothes = clothes;
@@ -91,7 +91,7 @@ public partial class CharacterTest : Node2D
 			characterNode2.Position = new Vector2(100 + 75 * 2, 500);
 			AddChild(characterNode2);
 
-			var characterNode3 = new CharacterNode();
+			var characterNode3 = new View.CharacterNode();
 			characterNode3.Direction = "north";
 			characterNode3.BodyType = bodyType;
 			characterNode3.Clothes = clothes;

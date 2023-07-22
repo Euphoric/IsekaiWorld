@@ -1,12 +1,12 @@
-[gd_scene load_steps=8 format=3 uid="uid://bifs0rinylo1w"]
+[gd_scene load_steps=8 format=3 uid="uid://b1kncd1uyamv3"]
 
-[ext_resource type="Script" path="res://HexagonalMap.cs" id="1"]
-[ext_resource type="Script" path="res://MapCamera.cs" id="2"]
-[ext_resource type="Script" path="res://FPSLabel.cs" id="3"]
-[ext_resource type="Script" path="res://HexagonalMapSurface.cs" id="3_2ej4f"]
-[ext_resource type="Script" path="res://GameNode.cs" id="4"]
-[ext_resource type="Script" path="res://UserInterface.cs" id="5"]
-[ext_resource type="Script" path="res://UIOverlay.cs" id="5_x6qfm"]
+[ext_resource type="Script" path="res://View/HexagonalMap.cs" id="1"]
+[ext_resource type="Script" path="res://View/MapCamera.cs" id="2"]
+[ext_resource type="Script" path="res://View/FPSLabel.cs" id="3"]
+[ext_resource type="Script" path="res://View/HexagonalMapSurface.cs" id="3_2ej4f"]
+[ext_resource type="Script" path="res://View/GameNode.cs" id="4"]
+[ext_resource type="Script" path="res://View/UserInterface.cs" id="5"]
+[ext_resource type="Script" path="res://View/UIOverlay.cs" id="5_x6qfm"]
 
 [node name="GameNode" type="Node"]
 script = ExtResource("4")
