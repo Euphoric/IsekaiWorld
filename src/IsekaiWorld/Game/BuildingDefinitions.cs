@@ -70,6 +70,18 @@ public static class BuildingDefinitions
             { HexagonDirection.TopRight, "res://Textures/Placeholder/Wide_topright.svg" }
         }, allowedDesignations: new[] { DesignationDefinitions.Deconstruct }.ToImmutableHashSet());
 
+    public static BuildingDefinition CombatDummy { get; } = new("Core.Structure.CombatDummy", "Combat dummy",
+        Colors.White, 
+        new Dictionary<HexagonDirection, string>
+        {
+            { HexagonDirection.Right, "res://Textures/Structure/Dummy.png" },
+            { HexagonDirection.BottomRight, "res://Textures/Structure/Dummy.png" },
+            { HexagonDirection.BottomLeft, "res://Textures/Structure/Dummy.png" },
+            { HexagonDirection.Left, "res://Textures/Structure/Dummy.png" },
+            { HexagonDirection.TopLeft, "res://Textures/Structure/Dummy.png" },
+            { HexagonDirection.TopRight, "res://Textures/Structure/Dummy.png" }
+        }, allowedDesignations: new[] { DesignationDefinitions.Deconstruct }.ToImmutableHashSet());
+
     public static class Plant
     {
         public static BuildingDefinition TreeOak { get; } = new("Core.Tree.Oak", "Oak tree", Colors.White,
@@ -111,6 +123,8 @@ public static class BuildingDefinitions
             { WoodenBed.Id, WoodenBed },
             { TableStoveFueled.Id, TableStoveFueled },
             { CraftingDesk.Id, CraftingDesk },
+            
+            { CombatDummy.Id, CombatDummy },
             
             { Plant.Grass.Id, Plant.Grass },
             { Plant.TreeOak.Id, Plant.TreeOak },

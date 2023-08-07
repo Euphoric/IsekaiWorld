@@ -180,6 +180,13 @@ public class BuildingView
 
                     sprite.Scale = (new Vector2(1 * Mathf.Sqrt(3), 1) * 2) / spriteInTextureScale;
                 }
+                
+                if (message.Definition == BuildingDefinitions.CombatDummy)
+                {
+                    sprite.Scale = Vector2.One / texture.GetSize();
+                    sprite.Scale *= 1.3f;
+                    sprite.Scale *= new Vector2(1, texture.GetHeight() / (float)texture.GetWidth());
+                }
             }
         }
 

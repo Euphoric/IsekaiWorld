@@ -22,6 +22,8 @@ public static class ConstructionDefinitions
     
     public static readonly ConstructionDefinition CraftingDesk = new("Core.Production.CraftingDesk", "Crafting desk", BuildingDefinitions.CraftingDesk, null, 0);
     
+    public static readonly ConstructionDefinition CombatDummy = new("Core.Structure.CombatDummy", "Combat dummy", BuildingDefinitions.CombatDummy, null, 0);
+    
     private static readonly Dictionary<string, ConstructionDefinition> DefinitionsMap =
         new()
         {
@@ -36,7 +38,9 @@ public static class ConstructionDefinitions
             { WoodenChair.Id, WoodenChair },
             { WoodenBed.Id, WoodenBed},
             { TableStoveFueled.Id, TableStoveFueled},
-            { CraftingDesk.Id, CraftingDesk}
+            { CraftingDesk.Id, CraftingDesk},
+            
+            { CombatDummy.Id, CombatDummy}
         };
     
     public static IReadOnlyList<ConstructionDefinition> Definitions => DefinitionsMap.Values.ToList();
